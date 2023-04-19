@@ -1,4 +1,4 @@
-# planup
+# PlanUp
 
 A new Flutter project.
 
