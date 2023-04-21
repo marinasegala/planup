@@ -11,8 +11,20 @@ class New extends StatelessWidget{
       appBar: AppBar(
         title: const Text('Crea il tuo viaggio'),
       ),
-      body: Center(child: Text('You have pressed the button times.')),
-      
+      body: Align(
+          alignment: Alignment.topCenter,//aligns to topCenter
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                child: const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/profile.jpg'),
+                )
+              ),
+              
+          ],) 
+        ),
     );
   }
 }
