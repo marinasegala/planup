@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'creazione_vacanza.dart';
 
 class Home extends StatelessWidget{
   const Home({super.key});
@@ -28,6 +29,13 @@ class FabExample extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add your onPressed code here!
+          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //                 content: Text('Text button is pressed')));
+          // const New();
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const New()),
+            );
         },
         child: const Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 255, 217, 104),
