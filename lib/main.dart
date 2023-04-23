@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'profilo.dart';
+import 'package:planup/profile.dart';
 import 'home.dart';
 
 void main() => runApp(const MyApp());
@@ -10,8 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyStatefulWidget(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'Arial'),
+      home: const MyStatefulWidget(),
     );
   }
 }
@@ -29,7 +30,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Profilo(),
+    ProfilePage(),
     Text(
       'Index 2: School',
       style: optionStyle,
@@ -58,13 +59,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_sharp),
-            label: 'Me',
-          ),
+              icon: Icon(Icons.account_circle_sharp), label: 'Me'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.supervisor_account),
-            label: 'Amici',
-          ),
+              icon: Icon(Icons.supervisor_account), label: 'Amici'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
@@ -73,4 +70,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
-

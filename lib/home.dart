@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
-import 'creazione_vacanza.dart';
+import 'package:planup/create_travel.dart';
 
-class Home extends StatelessWidget{
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const FabExample(),
-    );
-  }
+  State<Home> createState() => HomePage();
 }
 
-
-class FabExample extends StatelessWidget {
-  const FabExample({super.key});
-
+class HomePage extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('I TUOI VIAGGI'),
+        title: const Text('I tuoi viaggi'),
       ),
-      body: const Center(child: Text('Press the button below!')),
+      body: const Center(child: Text('Press the + button below!')),
       // An example of the floating action button.
       //
       // https://m3.material.io/components/floating-action-button/specs
@@ -33,13 +26,13 @@ class FabExample extends StatelessWidget {
           //                 content: Text('Text button is pressed')));
           // const New();
           Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const New()),
-            );
+            context,
+            MaterialPageRoute(builder: (context) => const CreateTravelPage()),
+          );
         },
-        child: const Icon(Icons.add),
-        backgroundColor: Color.fromARGB(255, 255, 217, 104),
+        backgroundColor: const Color.fromARGB(255, 255, 217, 104),
         foregroundColor: Colors.black,
+        child: const Icon(Icons.add),
       ),
     );
   }
