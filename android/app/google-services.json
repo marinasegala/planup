@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "587003715617",
+    "firebase_url": "https://prova-fe9b2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "prova-fe9b2",
+    "storage_bucket": "prova-fe9b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587003715617:android:50520e622020cb09b38360",
+        "android_client_info": {
+          "package_name": "com.example.planup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587003715617-pgl38avr00213h55d4744p0aid2pc642.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl2G8yQvNThHTgM-j7OPqgs52Vy1QV7BY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587003715617-pgl38avr00213h55d4744p0aid2pc642.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "587003715617-a255jqvgf26v9c9ane9hub9jk9upeav6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.planup"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

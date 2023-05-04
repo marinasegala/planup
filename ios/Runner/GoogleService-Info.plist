@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>587003715617-a255jqvgf26v9c9ane9hub9jk9upeav6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.587003715617-a255jqvgf26v9c9ane9hub9jk9upeav6</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB8pGXs9q52QHWFirJtVFyE2QyBaBZZDjQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>587003715617</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.planup</string>
+	<key>PROJECT_ID</key>
+	<string>prova-fe9b2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>prova-fe9b2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:587003715617:ios:9efb4c3b4ae1e031b38360</string>
+	<key>DATABASE_URL</key>
+	<string>https://prova-fe9b2-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

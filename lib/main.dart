@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:planup/profile.dart';
 import 'home.dart';
 
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
