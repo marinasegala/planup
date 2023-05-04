@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+final List<String> images = [
+  'assets/montagna.jpg',
+  'assets/vienna.jpg',
+];
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,27 +32,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 )),
             const Text("Mario", style: TextStyle(fontSize: 25)),
             const Text("mario_rossi", style: TextStyle(fontSize: 15)),
-            ImageSlideshow(
-              width: 300,
-              height: 200,
-              initialPage:
-                  0, // The page to show when first creating the [ImageSlideshow].
-              indicatorColor: Colors.blue,
-              indicatorRadius: 3,
-              indicatorBackgroundColor: Colors.grey,
-              autoPlayInterval: 3000,
-              isLoop: true,
-              // The widgets to display in the [ImageSlideshow], add the sample image file into the images folder
-              children: [
-                Image.asset(
-                  'images/sample_image_1.jpg',
-                  fit: BoxFit.cover,
-                ),
-                Image.asset(
-                  'images/sample_image_2.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ],
+            const Divider(
+              color: Colors.white,
+              height: 20,
+            ),
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 2.0,
+                enlargeCenterPage: true,
+                enlargeStrategy: CenterPageEnlargeStrategy.height,
+              ),
+              items: imageSliders,
             ),
           ],
         ),
@@ -55,3 +51,45 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+final List<Widget> imageSliders = images
+    .map((item) => Container(
+          child: Container(
+            margin: const EdgeInsets.all(5.0),
+            child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                child: Stack(
+                  children: <Widget>[
+                    Image.asset(item, fit: BoxFit.cover, width: 1000.0),
+                    Positioned(
+                      bottom: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(200, 0, 0, 0),
+                              Color.fromARGB(0, 0, 0, 0)
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        child: Text(
+                          'No. ${images.indexOf(item)} image',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ),
+        ))
+    .toList();
