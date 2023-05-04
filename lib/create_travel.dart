@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class CreateTravelPage extends StatelessWidget {
@@ -36,6 +37,16 @@ class CreateTravelForm extends StatefulWidget {
 class _CreateTravelFormState extends State<CreateTravelForm> {
   final _formKey = GlobalKey<FormState>();
 
+  late DatabaseReference db;
+  final nameController = TextEditingController();
+  final partController = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    db = FirebaseDatabase.instance.ref().child('Travel');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -46,6 +57,7 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: nameController,
               strutStyle: const StrutStyle(
                 height: 0.6,
               ),
@@ -68,6 +80,7 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: partController,
               strutStyle: const StrutStyle(
                 height: 0.6,
               ),
@@ -92,11 +105,18 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
             child: ElevatedButton(
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
+                Map<String, String> travel = {
+                  'name' : nameController.text,
+                  'participant' : partController.text,
+                };
+                db.push().set(travel);
                 if (_formKey.currentState!.validate()) {
                   // if the form is valid, display a snackbar. In the real world,
                   // you'd often call a server or save the information in a database.
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')));
+                      const SnackBar(content: Text('Processing Data'))
+                  );
+                  Navigator.pop(context);
                 }
               },
               child: const Text('Submit'),
