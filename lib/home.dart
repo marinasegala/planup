@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'create_travel.dart';
+import 'package:searchbar_animation/searchbar_animation.dart';
 
-import 'package:planup/db/travel_db.dart';
+import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
+
+import 'show/trav_card.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,44 +16,50 @@ class Home extends StatefulWidget {
 }
 
 class _HomePage extends State<Home> {
+  final DataRepository repository = DataRepository();
+  
+  final boldStyle = const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 
-  // late List<Travel> travel;
-  // bool isLoading = false;
-
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   refreshTravel();
-  // }
-
-  // @override
-  // void dispose(){
-  //   TravelDatabase.instance.close();
-  //   super.dispose();
-  // }
-
-  // Future refreshTravel() async{
-  //   setState(() => isLoading = true);
-  //   this.travel = await TravelDatabase.instance.readAll();
-  //   setState(() => isLoading = false);
-  // }
+  bool _searchBoolean = true; 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('I tuoi viaggi'),
-        actions: [Icon(Icons.search), SizedBox(width: 12)],
+        title: !_searchBoolean ? const Text('I tuoi viaggi') : _searchTextField(),
+        //actions: const [Icon(Icons.search), SizedBox(width: 12)],
+              // onPressed: () => Navigator.of(context) //dentro IconBotton
+              //     .push(MaterialPageRoute(builder: (_) => const SearchPage())),
+        actions: !_searchBoolean
+        ? [
+          IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            setState(() {
+              _searchBoolean = true;
+            });
+          })
+        ] 
+        : [
+          IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                _searchBoolean = false;
+              });
+            }
+          )
+        ]
       ),
-      body: const Center(child: Text('Press the + button below!')),
-      // body: Center(
-      //   child: isLoading
-      //     ? CircularProgressIndicator()
-      //     : travel.isEmpty
-      //     ? Text('No Travel', style: TextStyle(color: Colors.white, fontSize: 24))
-      //     : buildTravel(),
-      //   ),
-      
+      // body: const Center(child: Text('Press the + button below!')),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: repository.getStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const LinearProgressIndicator();
+
+          return _buildList(context, snapshot.data?.docs ?? []);
+      }),
+
       // // An example of the floating action button.
       // //
       // // https://m3.material.io/components/floating-action-button/specs
@@ -57,13 +67,10 @@ class _HomePage extends State<Home> {
       floatingActionButton: FloatingActionButton(
         
         onPressed: () {
-          // Add your onPressed code here!
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //                 content: Text('Text button is pressed')));
-          // const New();
+          
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CreateTravelPage()),
+            MaterialPageRoute(builder: (context) => CreateTravelPage()),
           );
         },
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
@@ -83,24 +90,74 @@ class _HomePage extends State<Home> {
         ),*/
     );
   }
-/*
-  Widget buildTravel() => StaggeredGridView.countBuilder(
-    padding: EdgeInsets.all(8),
-    itemCount: travel.length,
-    staggeredTileBuilder: (index) => StaggeredTile.fit(2),
-    crossAxisCount: 4,
-    crossAxisSpacing: 4,
-    itemBuilder: (context, index) {
-      final trav = travel[index];
 
-      return GestureDetector(
-        onTap: () async{
-          await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => Delate(id: travel.id!),
-          ));
-        }
-      )
-    },
-  );
-  */
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 10.0),
+      children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
+    );
+  } 
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    final trav = Travel.fromSnapshot(snapshot);
+    return TravCard(trav: trav, boldStyle: boldStyle );
+  }
+
+  Widget _searchTextField() {
+    return const TextField(
+      autofocus: true, //Display the keyboard when TextField is displayed
+      cursorColor: Colors.white,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+      ),
+      textInputAction: TextInputAction.search, //Specify the action button on the keyboard
+      decoration: InputDecoration( //Style of TextField
+        enabledBorder: UnderlineInputBorder( //Default TextField border
+          borderSide: BorderSide(color: Colors.white)
+        ),
+        focusedBorder: UnderlineInputBorder( //Borders when a TextField is in focus
+          borderSide: BorderSide(color: Colors.white)
+        ),
+        hintText: 'Search', //Text that is displayed when nothing is entered.
+        hintStyle: TextStyle( //Style of hintText
+          color: Colors.white60,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+}
+
+class SearchPage extends StatelessWidget {
+  const SearchPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          // The search area here
+          title: Container(
+        width: double.infinity,
+        height: 40,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(5)),
+        child: Center(
+          child: TextField(
+            decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    /* Clear the search field */
+                  },
+                ),
+                hintText: 'Search...',
+                border: InputBorder.none),
+          ),
+        ),
+      )),
+    );
+  }
 }
