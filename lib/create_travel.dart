@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/travel.dart';
@@ -78,33 +79,22 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //const SizedBox(width: 20,),
-              ElevatedButton(
-                onPressed: () {
-                  if (nameTrav != null && part.isNotEmpty) {
-                    final newTrav = Travel(nameTrav!, partecipant: part);
-                    repository.add(newTrav);
-                    //Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data'))
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Annulla'),
-              ),
+              //const SizedBox(width: 20,),              
               const SizedBox(height: 20, width: 20,),
               ElevatedButton(
                 onPressed: () {
-                  if (nameTrav != null && part.isNotEmpty) {
-                    final newTrav = Travel(nameTrav!, partecipant: part);
-                    repository.add(newTrav);
-                    //Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data'))
-                    );
-                    Navigator.pop(context);
+                  if (FirebaseAuth.instance.currentUser != null) {
+                    if (nameTrav != null && part.isNotEmpty) {
+                      final newTrav = Travel(nameTrav!, partecipant: part, userid: FirebaseAuth.instance.currentUser?.uid);
+                      repository.add(newTrav);
+                      //Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data'))
+                      );
+                      Navigator.pop(context);
+                    }
                   }
+                        //print(user.uid);
                 },
                 child: const Text('Invia'),
               ),

@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/Users/marinasegala/Documents/namer_app/PlanUp/windows/flutter"
+    "cmake.sourceDirectory": "/Users/marinasegala/Documents/namer_app/PlanUp/windows/flutter",
+    "C_Cpp.errorSquiggles": "disabled"
 }
