@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planup/db/authentication_service.dart';
 import 'package:planup/home.dart';
 
 class LoginPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class LoginPage extends StatelessWidget {
 
         // logo
         Image.asset(
-          'assets/planup_black.jpg',
+          'assets/planup_black.png',
           height: 150,
           width: 150,
         ),
@@ -44,7 +45,11 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      //onTap: ,
+      onTap: () async {
+        await AuthenticationServices().signInWithGoogle();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      },
       child: Container(
         padding: const EdgeInsets.all(25),
         margin: const EdgeInsets.symmetric(horizontal: 25),
