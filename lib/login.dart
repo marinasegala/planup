@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
 
         // logo
         Image.asset(
-          'assets/planup.jpeg',
+          'assets/planup_black.jpg',
           height: 150,
           width: 150,
         ),

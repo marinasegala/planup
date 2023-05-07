@@ -38,7 +38,6 @@ dependencies:
   firebase_core: ^2.10.0
   firebase_database: ^10.1.1
   flutter_image_slideshow: ^0.1.5
-  searchbar_animation: ^0.0.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -75,7 +74,7 @@ flutter:
     - assets/vienna.jpg
     - assets/montagna.jpg
     - assets/google.jpg
-    - assets/planup.jpeg
+    - assets/planup_black.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
