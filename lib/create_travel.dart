@@ -74,59 +74,65 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
               onChanged: (text) => part = text,
             ),
           ),
-          const Text('Durata del viaggio', ),  
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //const SizedBox(width: 20,),
-              ElevatedButton(
-                onPressed: () {
-                  if (nameTrav != null && part.isNotEmpty) {
-                    final newTrav = Travel(nameTrav!, partecipant: part);
-                    repository.add(newTrav);
-                    //Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data'))
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Annulla'),
-              ),
-              const SizedBox(height: 20, width: 20,),
-              ElevatedButton(
-                onPressed: () {
-                  if (nameTrav != null && part.isNotEmpty) {
-                    final newTrav = Travel(nameTrav!, partecipant: part);
-                    repository.add(newTrav);
-                    //Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data'))
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Invia'),
-              ),
-            ],
-          ),
+            // child: TextFormField(
+            //   strutStyle: const StrutStyle(
+            //     height: 0.6,
+            //   ),
+            //   decoration: const InputDecoration(
+            //     icon: Icon(Icons.pin_drop_outlined),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            //     ),
+            //     labelText: 'Nome del viaggio',
+            //   ),
+            //   // the validator receives the text that the user has entered.
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Inserisci il nome del viaggio';
+            //     }
+            //     return null;
+            //   },
+            // ),
+          
           // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       if (nameTrav != null && part.isNotEmpty) {
-          //         final newTrav = Travel(nameTrav!, partecipant: part);
-          //         repository.addPet(newTrav);
-          //         //Navigator.of(context).pop();
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //             const SnackBar(content: Text('Processing Data'))
-          //         );
-          //         Navigator.pop(context);
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextFormField(
+          //     strutStyle: const StrutStyle(
+          //       height: 0.6,
+          //     ),
+          //     decoration: const InputDecoration(
+          //       icon: Icon(Icons.groups_outlined),
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          //       ),
+          //       labelText: 'Numero di persone',
+          //     ),
+          //     // the validator receives the text that the user has entered.
+          //     validator: (value) {
+          //       if (value == null || value.isEmpty) {
+          //         return 'Inserisci il numero di persone';
           //       }
+          //       return null;
           //     },
-          //     child: const Text('Submit'),
           //   ),
           // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                if (nameTrav != null && part.isNotEmpty) {
+                  final newTrav = Travel(nameTrav!, partecipant: part);
+                  repository.addPet(newTrav);
+                  //Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Processing Data'))
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ),
         ],
       ),
     );
