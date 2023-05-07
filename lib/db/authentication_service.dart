@@ -18,7 +18,7 @@ class AuthenticationServices {
       );
 
       // let sign in
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      return await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       print(e.message);
       throw e;

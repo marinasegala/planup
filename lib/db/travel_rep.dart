@@ -11,7 +11,7 @@ class DataRepository {
     return collection.snapshots();
   }
   // 3
-  Future<DocumentReference> addPet(Travel trav) {
+  Future<DocumentReference> add(Travel trav) {
     return collection.add(trav.toJson());
   }
   // 4

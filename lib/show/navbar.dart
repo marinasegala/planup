@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:planup/home_travel.dart';
 import 'package:planup/profile.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class NavBar extends StatefulWidget {
+  const NavBar({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<NavBar> createState() => _NavBarState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -51,7 +51,6 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
       ),
     );
-    //return const NavBar();
   }
   
 }
