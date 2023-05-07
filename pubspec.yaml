@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^2.10.0
   firebase_database: ^10.1.1
   flutter_image_slideshow: ^0.1.5
+  searchbar_animation: ^0.0.4
 
 
   # The following adds the Cupertino Icons font to your application.
