@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import "package:flutter/material.dart";
+import 'package:planup/login.dart';
 import 'package:planup/profile.dart';
 import 'home.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +35,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Home(),
+    LoginPage(),
     ProfilePage(),
     Text(
       'Index 2: School',
