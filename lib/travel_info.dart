@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planup/show/item_card.dart';
 
 import 'db/travel_rep.dart';
 import 'model/travel.dart';
@@ -12,6 +13,8 @@ class TravInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         appBar: AppBar(
           title: Text(trav.name),
@@ -22,7 +25,23 @@ class TravInfo extends StatelessWidget {
               }),
         ),
         
-        body: const Center(child: Text('TODO: add widget')),
+        //body: const Center(child: Text('TODO: add widget')),
+
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              ItemWidget(name: 'Biglietti'),
+              const SizedBox(height: 10),
+              ItemWidget(name: 'Mappa'),
+              const SizedBox(height: 10),
+              ItemWidget(name: 'Acquisti in comune'),
+              const SizedBox(height: 10),
+              ItemWidget(name: 'Cosa portare'),
+              const SizedBox(height: 10),
+              ItemWidget(name: 'Note'),
+          ]),
+        ),
       ),
     );
   }

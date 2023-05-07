@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import "package:flutter/material.dart";
-import 'package:planup/home.dart';
-import 'package:planup/login.dart';
-import 'profile.dart';
-import 'home_travel.dart';
+import 'home.dart';
+import 'login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'Arial'),
-      home: const LoginPage(),
+      home: const HomePage(),
     );
   }
 }

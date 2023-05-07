@@ -26,36 +26,26 @@ class _HomePage extends State<HomeTravel> {
     return Scaffold(
       appBar: AppBar(
         title: !_searchBoolean ? const Text('I tuoi viaggi') : _searchTextField(),
-        //actions: const [Icon(Icons.search), SizedBox(width: 12)],
-              // onPressed: () => Navigator.of(context) //dentro IconBotton
-              //     .push(MaterialPageRoute(builder: (_) => const SearchPage())),
         actions: !_searchBoolean
-        ? [
-          IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            setState(() {
-              _searchBoolean = true;
-            });
-          })
-        ] 
-        : [
-          IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              setState(() {
-                _searchBoolean = false;
-              });
-            }
-          )
-        ]
+        ? [ IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                setState(() { 
+                  _searchBoolean = true; 
+              });}
+          )] 
+        : [ IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                setState(() {
+                  _searchBoolean = false;
+              });}
+          )]
       ),
-      // body: const Center(child: Text('Press the + button below!')),
       body: StreamBuilder<QuerySnapshot>(
         stream: repository.getStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const LinearProgressIndicator();
-
           return _buildList(context, snapshot.data?.docs ?? []);
       }),
 
@@ -64,9 +54,7 @@ class _HomePage extends State<HomeTravel> {
       // // https://m3.material.io/components/floating-action-button/specs
 
       floatingActionButton: FloatingActionButton(
-        
         onPressed: () {
-          
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateTravelPage()),
@@ -76,17 +64,6 @@ class _HomePage extends State<HomeTravel> {
         foregroundColor: Colors.black,
         child: const Icon(Icons.add),
       ),
-      /*
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async{
-            await Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => AddEditNotePage())
-            );
-            refreshTravel();
-          },
-          backgroundColor: Colors.black,
-          child: Icon(Icons.add),
-        ),*/
     );
   }
 
