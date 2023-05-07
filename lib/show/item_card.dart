@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/widgets/tickets.dart';
 
 final _lightColors = [
   Colors.amber.shade300,
@@ -13,45 +14,46 @@ final _lightColors = [
 
 class ItemWidget extends StatelessWidget {
   String name ='';
+  IconData icon;
+  int index;
 
   ItemWidget({
     Key? key,
     required this.name,
-    //required this.index,
+    required this.icon,
+    required this.index,
   }) : super(key: key);
-  
-  
-  //String get name => this.name;
-  //const ItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    /// Pick colors from the accent colors based on index
-    const color = Color.fromARGB(255, 231, 242, 239); //_lightColors[index % _lightColors.length];
-    //final time = DateFormat.yMMMd().format(note.createdTime);
-    //final minHeight = getMinHeight(index);
-
-    return Card(
-      color: color,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 55, minWidth: 350),
-        padding: const EdgeInsets.all(8),
-        //child: Column(
-          //mainAxisSize: MainAxisSize.min,
-          //crossAxisAlignment: CrossAxisAlignment.start,
-        child: //  children: [
-            Text(
-              name,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          //],
-        ),
-      
+    return GestureDetector(
+      onTap: () {
+        switch (index) {
+          case 2:
+            
+            break;
+          
+          default: Navigator.push(context, MaterialPageRoute(builder: (context) => const Tickets()),);
+        }
+      },
+      child: Card(
+        color: const Color.fromARGB(255, 231, 242, 239),
+          child: SizedBox(
+            width: 270,
+            height: 90,
+            child: Row(
+              children: [
+                const SizedBox(width: 15),
+                Icon(icon),
+                const SizedBox(width: 10),
+                Text(
+                  name, 
+                  style:const TextStyle(fontSize: 20,fontWeight: FontWeight.bold)
+                ),
+              ],
+            )
+          ),
+      ) 
     );
   }
 }

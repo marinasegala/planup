@@ -47,16 +47,6 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
   String part = '';
   final DataRepository repository = DataRepository();
 
-
-  // late DatabaseReference db;
-  // final nameController = TextEditingController();
-  // final partController = TextEditingController();
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   db = FirebaseDatabase.instance.ref().child('Travel');
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -130,12 +120,6 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
               onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                // Map<String, String> travel = {
-                //   'name' : nameController.text,
-                //   'participant' : partController.text,
-                // };
-                // db.push().set(travel);
                 if (nameTrav != null && part.isNotEmpty) {
                   final newTrav = Travel(nameTrav!, partecipant: part);
                   repository.addPet(newTrav);

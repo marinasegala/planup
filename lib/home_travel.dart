@@ -11,10 +11,10 @@ class HomeTravel extends StatefulWidget {
   const HomeTravel({super.key});
 
   @override
-  State<HomeTravel> createState() => _HomePage();
+  State<HomeTravel> createState() => _HomeTravelState();
 }
 
-class _HomePage extends State<HomeTravel> {
+class _HomeTravelState extends State<HomeTravel> {
   final DataRepository repository = DataRepository();
   
   final boldStyle = const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
