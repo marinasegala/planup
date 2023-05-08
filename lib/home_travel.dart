@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'create_travel.dart';
 
@@ -76,7 +77,12 @@ class _HomeTravelState extends State<HomeTravel> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trav = Travel.fromSnapshot(snapshot);
-    return TravCard(trav: trav, boldStyle: boldStyle );
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (trav.userid == FirebaseAuth.instance.currentUser?.uid){
+        return TravCard(trav: trav, boldStyle: boldStyle );
+      }
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _searchTextField() {

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:planup/friends.dart';
 import 'package:planup/home_travel.dart';
 import 'package:planup/profile.dart';
-import 'package:planup/show/userinfo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,10 +19,7 @@ class _HomePageState extends State<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeTravel(),
     ProfilePage(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    FriendPage()
   ];
 
   void _onItemTapped(int index) {
