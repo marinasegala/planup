@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/home_travel.dart';
 import 'package:planup/profile.dart';
+import 'package:planup/show/userinfo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

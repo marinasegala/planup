@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+import 'db/authentication_service.dart';
 
 final List<String> images = [
   'assets/montagna.jpg',
@@ -14,8 +19,17 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late String? name;
+  late String? profilePhoto;
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      final user = FirebaseAuth.instance.currentUser;
+      for (final providerProfile in user!.providerData) {
+        name = providerProfile.displayName;
+        profilePhoto = providerProfile.photoURL;
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Il mio profilo"),
@@ -24,14 +38,31 @@ class _ProfilePageState extends State<ProfilePage> {
         alignment: Alignment.topCenter, //aligns to topCenter
         child: Column(
           children: [
-            Container(
-                padding: const EdgeInsets.fromLTRB(0, 31, 0, 10),
-                child: const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/profile.jpg'),
-                )),
-            const Text("Mario", style: TextStyle(fontSize: 25)),
-            const Text("mario_rossi", style: TextStyle(fontSize: 15)),
+            Row(),
+            const SizedBox(height: 20),
+            profilePhoto != null
+              ? ClipOval(
+                  child: Material(
+                    child: Image.network(
+                      profilePhoto as String,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                )
+              : const ClipOval(
+                  child: Material(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                      ),
+                    ),
+                  ),
+                ),
+            const SizedBox(height: 15),
+            Text( name as String, style: const TextStyle(fontSize: 22)),
+            //const Text("mario_rossi", style: TextStyle(fontSize: 15)),
             const Divider(
               color: Colors.white,
               height: 20,
