@@ -17,7 +17,6 @@ class TravInfo extends StatelessWidget {
     return SafeArea(
         top: false,
         bottom: false,
-        
         child: Scaffold(
           appBar: AppBar(
             title: Text(trav.name),

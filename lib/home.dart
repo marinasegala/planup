@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
+      
     );
     //return const NavBar();
   }
-  
 }
