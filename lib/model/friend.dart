@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Friend {
   String name;
-  Image? image;
+  String email;
   String? userid;
 
-  Friend(this.name, {this.image, this.userid});
+  Friend(this.name, this.email, {this.userid});
 
   factory Friend.fromSnapshot(DocumentSnapshot snapshot) {
     final newFriend = Friend.fromJson(snapshot.data() as Map<String, dynamic>);
@@ -26,11 +26,13 @@ class Friend {
 Friend _friendFromJson(Map<String, dynamic> json) {
   return Friend(
     json['name'] as String,
+    json['email'] as String,
     userid: json['userid'] as String?,
   );
 }
 
 Map<String, dynamic> _friendToJson(Friend instance) => <String, dynamic>{
       'name': instance.name,
+      'email': instance.email,
       'userid': instance.userid,
     };

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:planup/model/friend.dart';
+import 'package:planup/db/users_rep.dart';
+import 'package:planup/model/userAccount.dart';
 
 class FriendPage extends StatefulWidget {
   const FriendPage({super.key});
@@ -10,42 +12,76 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPageState extends State<FriendPage> {
-  final TextEditingController _searchController = TextEditingController();
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final UsersRepository repository = UsersRepository();
+
+  List<UserAccount> users = [];
+
+  Future getUsers() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('name', isNotEqualTo: currentUser.displayName)
+        .get()
+        .then((snapshot) => snapshot.docs.forEach((doc) {
+              users.add(UserAccount.fromSnapshot(doc));
+            }));
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    final user = UserAccount.fromSnapshot(snapshot);
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (user.userid != currentUser.uid) {
+        return ListTile(title: Text(user.name));
+      }
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _noItem() {
+    return const Center(child: Text('Non hai ancora amici, aggiungili!'));
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 10.0),
+      children: snapshot!.map((user) => _buildListItem(context, user)).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Friend> users = [];
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        for (final providerProfile in user.providerData) {
-          users.add(providerProfile.displayName as Friend);
-        }
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(title: const Text("Cerca amici"), actions: <Widget>[
-        IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: FriendSearch());
-            }),
+        FutureBuilder(
+          future: getUsers(),
+          builder: (context, snapshot) {
+            return IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: FriendSearch(users: users));
+                });
+          },
+        ),
       ]),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: repository.getStream(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return _noItem();
+            }
+            return _buildList(context, snapshot.data?.docs ?? []);
+          }),
     );
   }
 }
 
 class FriendSearch extends SearchDelegate<String> {
-  final users = [
-    Friend('Mario Rossi', userid: '1'),
-    Friend('Luigi Verdi', userid: '2'),
-    Friend('Giovanni Bianchi', userid: '3'),
-    Friend('Giuseppe Neri', userid: '4'),
-  ];
+  final List<UserAccount> users;
 
-  final recentUsers = [
-    Friend('Mario Rossi', userid: '1'),
-    Friend('Luigi Verdi', userid: '2'),
-  ];
+  FriendSearch({required this.users});
+
+  final recentUsers = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -63,8 +99,7 @@ class FriendSearch extends SearchDelegate<String> {
   Widget buildLeading(BuildContext context) {
     // leading icon on the left of the app bar
     return IconButton(
-      icon: AnimatedIcon(
-          icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+      icon: const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, '');
       },
@@ -73,13 +108,20 @@ class FriendSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return SizedBox(
-      height: 50.0,
-      child: Card(
-        color: Colors.lightBlue.shade100,
-        child: Center(child: Text(query)),
-      ),
-    );
+    List<String> matchQuery = [];
+    for (var user in users) {
+      if (user.name.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(user.name);
+      }
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: ((context, index) {
+          var result = matchQuery[index];
+          return ListTile(
+            title: Text(result),
+          );
+        }));
   }
 
   @override
@@ -87,12 +129,8 @@ class FriendSearch extends SearchDelegate<String> {
     final suggestion = query.isEmpty
         ? recentUsers
         : users.where((element) => element.name.startsWith(query)).toList();
-
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          showResults(context);
-        },
         leading: const Icon(Icons.person),
         title: RichText(
             text: TextSpan(

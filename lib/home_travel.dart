@@ -17,12 +17,12 @@ class HomeTravel extends StatefulWidget {
 
 class _HomeTravelState extends State<HomeTravel> {
   final DataRepository repository = DataRepository();
-  
-  final boldStyle = const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
+
+  final boldStyle =
+      const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 
   @override
   Widget build(BuildContext context) {
-    
     // final trav = Travel.fromSnapshot(snapshot);
     // if (FirebaseAuth.instance.currentUser != null) {
     //   if (trav.userid == FirebaseAuth.instance.currentUser?.uid){
@@ -34,13 +34,13 @@ class _HomeTravelState extends State<HomeTravel> {
         title: const Text('I tuoi viaggi'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: repository.getStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return _noItem();
-          }//const LinearProgressIndicator();
-          return _buildList(context, snapshot.data?.docs ?? []);
-      }),
+          stream: repository.getStream(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return _noItem();
+            } //const LinearProgressIndicator();
+            return _buildList(context, snapshot.data?.docs ?? []);
+          }),
 
       // // An example of the floating action button.
       // //
@@ -60,8 +60,9 @@ class _HomeTravelState extends State<HomeTravel> {
     );
   }
 
-  Widget _noItem(){ //TODO: sistemare perche non va
-    return Column(children: const [ Text('Non hai viaggi')]);
+  Widget _noItem() {
+    //TODO: sistemare perche non va
+    return const Center(child: Text('Non hai viaggi'));
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
@@ -69,13 +70,13 @@ class _HomeTravelState extends State<HomeTravel> {
       padding: const EdgeInsets.only(top: 10.0),
       children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
     );
-  } 
+  }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     if (FirebaseAuth.instance.currentUser != null) {
-      if (trav.userid == FirebaseAuth.instance.currentUser?.uid){
-        return TravCard(trav: trav, boldStyle: boldStyle );
+      if (trav.userid == FirebaseAuth.instance.currentUser?.uid) {
+        return TravCard(trav: trav, boldStyle: boldStyle);
       }
     }
     return const SizedBox.shrink();
