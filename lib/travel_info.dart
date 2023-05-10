@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planup/setting_travel.dart';
 import 'package:planup/show/item_card.dart';
 import 'package:planup/show/navbar.dart';
 import 'package:planup/widgets/tickets.dart';
@@ -25,6 +26,17 @@ class TravInfo extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 }),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Setting(trav: trav)),
+                  );
+                }, 
+                icon: const Icon(Icons.settings)
+              ),
+            ],
           ),
           
           //body: const Center(child: Text('TODO: add widget')),

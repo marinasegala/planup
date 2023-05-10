@@ -61,7 +61,11 @@ class _HomeTravelState extends State<HomeTravel> {
   }
 
   Widget _noItem(){ //TODO: sistemare perche non va
-    return Column(children: const [ Text('Non hai viaggi')]);
+    return SizedBox(
+                child: Center(
+                    child:
+                        Text("You haven't booked any appointment for!")),
+              );
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
