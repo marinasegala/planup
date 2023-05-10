@@ -7,16 +7,17 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'db/travel_rep.dart';
+
 //TODO: far partire il calendario da 'oggi'
 class CreateTravelPage extends StatelessWidget {
   CreateTravelPage({super.key});
-  
-  final DataRepository repository = DataRepository();
 
+  final DataRepository repository = DataRepository();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Crea il tuo viaggio'),
       ),
@@ -58,7 +59,7 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
     DateTime(2021, 8, 10),
     DateTime(2021, 8, 13),
   ];
-  
+
   String _getValueText(
     CalendarDatePicker2Type datePickerType,
     List<DateTime?> values,
@@ -92,12 +93,11 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
 
   @override
   Widget build(BuildContext context) {
-
     _buildCalendarDialogButton() {
-      const dayTextStyle = 
-        TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
+      const dayTextStyle =
+          TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
       final weekendTextStyle =
-        TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w600);
+          TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w600);
       final anniversaryTextStyle = TextStyle(
         color: Colors.red[400],
         fontWeight: FontWeight.w700,
@@ -180,45 +180,44 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
           isSelected,
           textStyle,
         }) {
-        return Center(
-          child: Container(
-            decoration: decoration,
-            height: 36,
-            width: 72,
-            child: Center(
-              child: Semantics(
-                selected: isSelected,
-                button: true,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      year.toString(),
-                      style: textStyle,
-                    ),
-                    if (isCurrentYear == true)
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.only(left: 5),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.redAccent,
-                        ),
+          return Center(
+            child: Container(
+              decoration: decoration,
+              height: 36,
+              width: 72,
+              child: Center(
+                child: Semantics(
+                  selected: isSelected,
+                  button: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        year.toString(),
+                        style: textStyle,
                       ),
-                  ],
+                      if (isCurrentYear == true)
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          margin: const EdgeInsets.only(left: 5),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
 
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children:[ElevatedButton(
+      return Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          ElevatedButton(
             onPressed: () async {
               final values = await showCalendarDatePicker2Dialog(
                 context: context,
@@ -237,44 +236,48 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
                 });
               }
             },
-            child: const Center(child: Text('Apri il calendario', style: TextStyle(fontSize: 16),)),
+            child: const Center(
+                child: Text(
+              'Apri il calendario',
+              style: TextStyle(fontSize: 16),
+            )),
           ),
-      ]),
-    );
-  }
+        ]),
+      );
+    }
+
     var macroCharts = _buildCalendarDialogButton();
     var microCharts = Center(
-      child: ToggleSwitch(
-        initialLabelIndex: _swapDate ? 0 : 1,
-        minWidth: 85.0,
-        minHeight: 50.0,
-        activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
-        inactiveBgColor: Color.fromARGB(255, 223, 227, 229),
-        totalSwitches: 4,
-        labels: const ['Giornata', 'Weekend', 'Settimana', 'Altro'],
-        onToggle: (index) {
-          switch (index) {
-            case 0:
-              date = 'Giornata';
-              break;
-            case 1: 
-              date = 'Weekend';
-              break;
-            case 2: 
-              date = 'Settimana';
-              break;
-            case 3: 
-              date = 'Altro';
-              break;
-          }
-          
-          // setState(() {
-          //   _swapDate = !_swapDate;
-          // });
-          print('switched to $index -- $date');
-        },
-      )
-    );
+        child: ToggleSwitch(
+      initialLabelIndex: _swapDate ? 0 : 1,
+      minWidth: 85.0,
+      minHeight: 50.0,
+      activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
+      inactiveBgColor: Color.fromARGB(255, 223, 227, 229),
+      totalSwitches: 4,
+      labels: const ['Giornata', 'Weekend', 'Settimana', 'Altro'],
+      onToggle: (index) {
+        switch (index) {
+          case 0:
+            date = 'Giornata';
+            break;
+          case 1:
+            date = 'Weekend';
+            break;
+          case 2:
+            date = 'Settimana';
+            break;
+          case 3:
+            date = 'Altro';
+            break;
+        }
+
+        // setState(() {
+        //   _swapDate = !_swapDate;
+        // });
+        print('switched to $index -- $date');
+      },
+    ));
 
     var swapTile = Container(
       child: (_swapDate) ? macroCharts : microCharts,
@@ -290,8 +293,9 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
             child: TextField(
               autofocus: true,
               decoration: const InputDecoration(
-                icon: Icon(Icons.pin_drop_outlined),
-                border: OutlineInputBorder(), hintText: 'Inserire il nome del viaggio'),
+                  icon: Icon(Icons.pin_drop_outlined),
+                  border: OutlineInputBorder(),
+                  hintText: 'Inserire il nome del viaggio'),
               onChanged: (text) => nameTrav = text,
             ),
           ),
@@ -300,24 +304,36 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
             child: TextField(
               autofocus: true,
               decoration: const InputDecoration(
-                icon: Icon(Icons.groups_outlined),
-                border: OutlineInputBorder(), hintText: 'Numero di partecipanti'),
+                  icon: Icon(Icons.groups_outlined),
+                  border: OutlineInputBorder(),
+                  hintText: 'Numero di partecipanti'),
               onChanged: (text) => part = text,
             ),
           ),
-          Column(children: [ 
+          Column(children: [
             Row(
               children: const [
-                SizedBox(width: 10, height: 50,),
-                Text('Durata del viaggio', style: TextStyle(fontSize: 17),),
+                SizedBox(
+                  width: 10,
+                  height: 50,
+                ),
+                Text(
+                  'Durata del viaggio',
+                  style: TextStyle(fontSize: 17),
+                ),
               ],
             ),
             const SizedBox.shrink(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('So già le date del mio viaggio', style: TextStyle(fontSize: 16),),
-                const SizedBox(width: 25,),
+                const Text(
+                  'So già le date del mio viaggio',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  width: 25,
+                ),
                 ToggleSwitch(
                   initialLabelIndex: _swapDate ? 0 : 1,
                   minWidth: 45.0,
@@ -336,10 +352,14 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             swapTile,
           ]),
-          const SizedBox(height: 30,),
+          const SizedBox(
+            height: 30,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -347,12 +367,14 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
                 onPressed: () {
                   if (FirebaseAuth.instance.currentUser != null) {
                     if (nameTrav != null && part.isNotEmpty) {
-                      final newTrav = Travel(nameTrav!, partecipant: part, userid: FirebaseAuth.instance.currentUser?.uid, date: date);
+                      final newTrav = Travel(nameTrav!,
+                          partecipant: part,
+                          userid: FirebaseAuth.instance.currentUser?.uid,
+                          date: date);
                       repository.add(newTrav);
                       //Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data'))
-                      );
+                          const SnackBar(content: Text('Processing Data')));
                       Navigator.pop(context);
                     }
                   }
@@ -361,11 +383,8 @@ class _CreateTravelFormState extends State<CreateTravelForm> {
               ),
             ],
           ),
-          
         ],
       ),
     );
-    
   }
-
 }

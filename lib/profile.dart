@@ -1,10 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'db/authentication_service.dart';
 
 final List<String> images = [
   'assets/montagna.jpg',
@@ -41,27 +37,27 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(),
             const SizedBox(height: 20),
             profilePhoto != null
-              ? ClipOval(
-                  child: Material(
-                    child: Image.network(
-                      profilePhoto as String,
-                      fit: BoxFit.fitHeight,
+                ? ClipOval(
+                    child: Material(
+                      child: Image.network(
+                        profilePhoto as String,
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
-                  ),
-                )
-              : const ClipOval(
-                  child: Material(
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Icon(
-                        Icons.person,
-                        size: 60,
+                  )
+                : const ClipOval(
+                    child: Material(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                        ),
                       ),
                     ),
                   ),
-                ),
             const SizedBox(height: 15),
-            Text( name as String, style: const TextStyle(fontSize: 22)),
+            Text(name as String, style: const TextStyle(fontSize: 22)),
             //const Text("mario_rossi", style: TextStyle(fontSize: 15)),
             const Divider(
               color: Colors.white,
