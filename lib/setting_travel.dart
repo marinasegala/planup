@@ -14,6 +14,10 @@ class Setting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String updateName;
+    String updatePart;
+    String part = trav.partecipant;
+    
     return SafeArea(
         top: false,
         bottom: false,
@@ -28,8 +32,34 @@ class Setting extends StatelessWidget {
             
           ),
           
-          body: const Center(child: Text('TODO: add widget')),
-          
+          //body: const Center(child: Text('TODO: add widget')),
+          body: Column(
+            children: [
+              const SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: 
+                TextField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      icon: const Icon(Icons.pin_drop_outlined),
+                      hintText: 'Nome del viaggio:  ${trav.name}'),
+                  onChanged: (text) => updateName = text,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: 
+                TextField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      icon: const Icon(Icons.group_outlined),
+                      hintText: 'Numero di partecipanti:  ${trav.partecipant}'),
+                  onChanged: (text) => updateName = text,
+                ),
+              ),
+            ],
+          ),
         ),
     );
   }
