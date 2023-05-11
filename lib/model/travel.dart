@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class Travel {
   String name;
-  String partecipant;
+  int partecipant;
   String? userid;
   String? date;
 
@@ -32,7 +32,7 @@ class Travel {
 Travel _travFromJson(Map<String, dynamic> json) {
   return Travel(
     json['name'] as String,
-    partecipant: json['partecipant'] as String,
+    partecipant: json['partecipant'] as int,
     userid: json['userid'] as String?,
     date: json['exactly date'] as String?,
   );

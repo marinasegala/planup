@@ -15,7 +15,7 @@ class _TicketState extends State<Tickets> {
       bottom: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('I tuoi biglietti'),
+          title: const Text('I miei biglietti'),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {

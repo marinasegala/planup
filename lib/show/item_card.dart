@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/widgets/shopping.dart';
 import 'package:planup/widgets/tickets.dart';
 
 final _lightColors = [
@@ -29,8 +30,8 @@ class ItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         switch (index) {
-          case 2:
-            
+          case 3:
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Shopping()),);
             break;
           
           default: Navigator.push(context, MaterialPageRoute(builder: (context) => const Tickets()),);

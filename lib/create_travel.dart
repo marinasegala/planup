@@ -489,7 +489,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                             if (FirebaseAuth.instance.currentUser != null) {
                               if (nameTrav != null && part.isNotEmpty) {
                                 final newTrav = Travel(nameTrav!,
-                                    partecipant: part,
+                                    partecipant: int.parse(part),
                                     userid: FirebaseAuth.instance.currentUser?.uid,
                                     date: date);
                                 repository.add(newTrav);
