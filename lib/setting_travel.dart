@@ -16,7 +16,6 @@ class Setting extends StatelessWidget {
   Widget build(BuildContext context) {
     String updateName;
     String updatePart;
-    String part = trav.partecipant;
     
     return SafeArea(
         top: false,
