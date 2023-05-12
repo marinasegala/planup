@@ -1,17 +1,15 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Friend {
-  String name;
-  String email;
+  String? id;
   String? userid;
+  String? userIdFriend;
 
-  Friend(this.name, this.email, {this.userid});
+  Friend({this.id, this.userid, this.userIdFriend});
 
   factory Friend.fromSnapshot(DocumentSnapshot snapshot) {
     final newFriend = Friend.fromJson(snapshot.data() as Map<String, dynamic>);
-    newFriend.userid = snapshot.reference.id;
+    newFriend.id = snapshot.reference.id;
     return newFriend;
   }
 
@@ -20,19 +18,19 @@ class Friend {
   Map<String, dynamic> toJson() => _friendToJson(this);
 
   @override
-  String toString() => 'Friend<$name>';
+  String toString() => 'Friend<$userid, $userIdFriend>';
 }
 
 Friend _friendFromJson(Map<String, dynamic> json) {
   return Friend(
-    json['name'] as String,
-    json['email'] as String,
+    id: json['id'] as String?,
     userid: json['userid'] as String?,
+    userIdFriend: json['userIdFriend'] as String?,
   );
 }
 
 Map<String, dynamic> _friendToJson(Friend instance) => <String, dynamic>{
-      'name': instance.name,
-      'email': instance.email,
+      'id': instance.id,
       'userid': instance.userid,
+      'userIdFriend': instance.userIdFriend,
     };

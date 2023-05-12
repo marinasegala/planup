@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/authentication_service.dart';
+import 'package:planup/db/users_rep.dart';
 import 'package:planup/home.dart';
 
 class LoginPage extends StatelessWidget {
@@ -31,7 +30,7 @@ class LoginPage extends StatelessWidget {
 
         const SizedBox(height: 25),
 
-        const LoginButton(),
+        LoginButton(),
 
         const SizedBox(
           height: 25,
@@ -42,7 +41,9 @@ class LoginPage extends StatelessWidget {
 }
 
 class LoginButton extends StatelessWidget {
-  const LoginButton({super.key});
+  LoginButton({super.key});
+
+  final UsersRepository repository = UsersRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class LoginButton extends StatelessWidget {
         var user = await AuthenticationServices().signInWithGoogle();
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePage()));
-        await addUser(user!.displayName!, "", user.email!, user.email!);
+        await repository.addUser(user);
       },
       child: Container(
         padding: const EdgeInsets.all(25),
@@ -70,15 +71,5 @@ class LoginButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future addUser(
-      String firstname, String lastname, String username, String email) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'first_name': firstname,
-      'last_name': lastname,
-      'username': username,
-      'email': email,
-    });
   }
 }

@@ -9,8 +9,8 @@ class FriendsRepository {
     return collectionReference.snapshots();
   }
 
-  Future<DocumentReference> addFriend(Friend friend) {
-    return collectionReference.add(friend.toJson());
+  Future<DocumentReference> addFriend(Friend friend) async {
+    return await collectionReference.add(friend.toJson());
   }
 
   void updateFriend(Friend friend) async {

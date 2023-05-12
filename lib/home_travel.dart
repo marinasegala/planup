@@ -36,10 +36,16 @@ class _HomeTravelState extends State<HomeTravel> {
       body: StreamBuilder<QuerySnapshot>(
           stream: repository.getStream(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return _noItem();
-            } //const LinearProgressIndicator();
-            return _buildList(context, snapshot.data?.docs ?? []);
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: Text("Loading..."));
+            } else {
+              final hasMyOnwTravel = _hasMyOnwTravel(snapshot);
+              if (!hasMyOnwTravel) {
+                return _noItem();
+              } else {
+                return _buildList(context, snapshot.data!.docs);
+              }
+            }
           }),
 
       // // An example of the floating action button.
@@ -81,4 +87,16 @@ class _HomeTravelState extends State<HomeTravel> {
     }
     return const SizedBox.shrink();
   }
+}
+
+// function that return if there is a travel created by the user
+bool _hasMyOnwTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final trav = snapshot.data!.docs;
+  for (var i = 0; i < trav.length; i++) {
+    if (trav[i]['userid'] == currentUser.uid) {
+      return true;
+    }
+  }
+  return false;
 }
