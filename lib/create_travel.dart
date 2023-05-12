@@ -435,13 +435,26 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                   Column(children: [
                     const Row(
                       children: [
-                        SizedBox(
-                          width: 10,
-                          height: 50,
-                        ),
-                        Text(
-                          'Durata del viaggio',
-                          style: TextStyle(fontSize: 17),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (FirebaseAuth.instance.currentUser != null) {
+                              if (nameTrav != null && part.isNotEmpty) {
+                                final newTrav = Travel(nameTrav!,
+                                    partecipant: int.parse(part),
+                                    userid:
+                                        FirebaseAuth.instance.currentUser?.uid,
+                                    date: date);
+                                repository.add(newTrav);
+                                //Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')));
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          child: const Text('Invia',
+                              style: TextStyle(fontSize: 16)),
                         ),
                       ],
                     ),
