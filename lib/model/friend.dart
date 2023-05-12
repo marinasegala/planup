@@ -5,7 +5,7 @@ class Friend {
   String? userid;
   String? userIdFriend;
 
-  Friend({this.id, this.userid, this.userIdFriend});
+  Friend({this.userid, this.userIdFriend});
 
   factory Friend.fromSnapshot(DocumentSnapshot snapshot) {
     final newFriend = Friend.fromJson(snapshot.data() as Map<String, dynamic>);
@@ -23,14 +23,12 @@ class Friend {
 
 Friend _friendFromJson(Map<String, dynamic> json) {
   return Friend(
-    id: json['id'] as String?,
     userid: json['userid'] as String?,
     userIdFriend: json['userIdFriend'] as String?,
   );
 }
 
 Map<String, dynamic> _friendToJson(Friend instance) => <String, dynamic>{
-      'id': instance.id,
       'userid': instance.userid,
       'userIdFriend': instance.userIdFriend,
     };
