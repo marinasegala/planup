@@ -53,8 +53,7 @@ class Setting extends StatelessWidget {
             ],
           ),
         ),
-        body: const Center(child: Text('TODO: add widget')),
-      ),
+        // body: const Center(child: Text('TODO: add widget')),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Travel {
   String name;
-  int partecipant;
+  String partecipant;
   String? userid;
   String? date;
 
@@ -31,7 +31,7 @@ class Travel {
 Travel _travFromJson(Map<String, dynamic> json) {
   return Travel(
     json['name'] as String,
-    partecipant: json['partecipant'] as int,
+    partecipant: json['partecipant'] as String,
     userid: json['userid'] as String?,
     date: json['exactly date'] as String?,
   );

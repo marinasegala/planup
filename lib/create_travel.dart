@@ -9,59 +9,6 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'db/travel_rep.dart';
 
 //TODO: far partire il calendario da 'oggi'
-// class CreateTravelPage extends StatelessWidget {
-
-//   CreateTravelPage({super.key});
-
-//   final DataRepository repository = DataRepository();
-
-// XFile? image;
-// final ImagePicker picker = ImagePicker();
-// Future getImage(ImageSource media) async {
-//   var img = await picker.pickImage(source: media);
-
-//   setState(() {
-//     image = img;
-//   });
-// }
-
-//   @override
-//   Widget build(BuildContext context) {
-// return Scaffold(
-//   resizeToAvoidBottomInset: false,
-//   appBar: AppBar(
-//     title: const Text('Crea il tuo viaggio'),
-//   ),
-//   body: Align(
-//       alignment: Alignment.topCenter, //aligns to topCenter
-//       child: Column(
-//         children: [
-//           //Container(
-//               //padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-//               image != null
-//                 ? Padding(
-//                     padding: const EdgeInsets.symmetric(horizontal: 20),
-//                     child: ClipRRect(
-//                       borderRadius: BorderRadius.circular(8),
-//                       child: Image.file(
-//                         //to show image, you type like this.
-//                         File(image!.path),
-//                         fit: BoxFit.cover,
-//                         width: MediaQuery.of(context).size.width,
-//                         height: 300,
-//                       ),
-//                     ),
-//                   )
-//                 : const Text(
-//                     "No Image",
-//                     style: TextStyle(fontSize: 20),
-//                   ),
-//           CreateTravelForm(),
-//         ],
-//       )),
-// );
-//   }
-// }
 
 class CreateTravelPage extends StatefulWidget {
   CreateTravelPage({Key? key}) : super(key: key);
@@ -433,14 +380,14 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     ),
                   ),
                   Column(children: [
-                    const Row(
+                    Row(
                       children: [
                         ElevatedButton(
                           onPressed: () {
                             if (FirebaseAuth.instance.currentUser != null) {
                               if (nameTrav != null && part.isNotEmpty) {
                                 final newTrav = Travel(nameTrav!,
-                                    partecipant: int.parse(part),
+                                    partecipant: part,
                                     userid:
                                         FirebaseAuth.instance.currentUser?.uid,
                                     date: date);
