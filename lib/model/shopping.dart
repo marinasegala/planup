@@ -4,14 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Shop {
   String name;
   double price;
-  // String description;
+  String desc;
+
   String? userid;
 
   String? referenceId;
   // 4
   Shop(this.name,
       {required this.price,
-      // required this.description,
+      required this.desc,
       required this.userid,
       this.referenceId});
   // 5
@@ -33,7 +34,7 @@ Shop _shopFromJson(Map<String, dynamic> json) {
   return Shop(
     json['name'] as String,
     price: json['price'] as double,
-    // description: json['description'] as String,
+    desc: json['description'] as String,
     userid: json['userid'] as String?,
   );
 }
@@ -41,6 +42,6 @@ Shop _shopFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _shopToJson(Shop instance) => <String, dynamic>{
       'name': instance.name,
       'price': instance.price,
-      // 'description': instance.description,
+      'description': instance.desc,
       'userid': instance.userid,
     };

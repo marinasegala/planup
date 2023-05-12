@@ -35,14 +35,19 @@ class _ShoppingState extends State<Shopping> {
               }),
         ),
         
-        // body: const Center(child: Text('TODO: add widget')),
         body: StreamBuilder<QuerySnapshot>(
           stream: repository.getStream(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return _noItem();
-            } //const LinearProgressIndicator();
-            return _buildList(context, snapshot.data?.docs ?? []);
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: Text("Loading..."));
+            } else {
+              final hasMyOnwData = _hasMyOnwData(snapshot);
+              if (!hasMyOnwData) {
+                return _noItem();
+              } else {
+                return _buildList(context, snapshot.data!.docs);
+              }
+            }
           }),
 
         floatingActionButton: FloatingActionButton(
@@ -61,10 +66,8 @@ class _ShoppingState extends State<Shopping> {
     );
   }
 
-  Widget _noItem() {
-    //TODO: sistemare perche non va
-    return const Center(child: Text('Non hai viaggi'));
-  }
+  Widget _noItem() { return const Center(child: Text('Non hai ancora acquisti')); }
+
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
     return ListView(
@@ -82,5 +85,15 @@ class _ShoppingState extends State<Shopping> {
     }
     return const SizedBox.shrink();
   }
+}
 
+bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot) {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final shop = snapshot.data!.docs;
+  for (var i = 0; i < shop.length; i++) {
+    if (shop[i]['userid'] == currentUser.uid) {
+      return true;
+    }
+  }
+  return false;
 }

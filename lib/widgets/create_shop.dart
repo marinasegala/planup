@@ -18,6 +18,7 @@ class _CreateItemState extends State<CreateShopItem>{
 
   String? nameShop;
   String price = '';
+  String desc='';
   final DataRepository repository = DataRepository();
   
   @override
@@ -36,24 +37,45 @@ class _CreateItemState extends State<CreateShopItem>{
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextField(
+                child: TextFormField(
                   autofocus: true,
                   decoration: const InputDecoration(
                       icon: Icon(Icons.shopping_bag_outlined),
-                      border: OutlineInputBorder(),
-                      hintText: 'Inserire il nome della nuova spesa'),
+                      hintText: 'Inserire il nome della nuova spesa *'),
                   onChanged: (text) => nameShop = text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo obbligatorio';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.euro_outlined),
+                      hintText: 'Prezzo *'),
+                  onChanged: (text) => price = text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo obbligatorio';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
+                  maxLength: 30,
                   autofocus: true,
                   decoration: const InputDecoration(
-                      icon: Icon(Icons.euro_outlined),
-                      border: OutlineInputBorder(),
-                      hintText: 'Prezzo'),
-                  onChanged: (text) => price = text,
+                      icon: Icon(Icons.description_outlined),
+                      hintText: 'Descrizione'),
+                  onChanged: (text) => desc = text,
                 ),
               ),
               const SizedBox(height: 30),
@@ -63,12 +85,15 @@ class _CreateItemState extends State<CreateShopItem>{
                   ElevatedButton(
                     onPressed: () {
                       if (FirebaseAuth.instance.currentUser != null) {
-                        if (nameShop != null && price.isNotEmpty) {
+                        if (_formKey.currentState!.validate()) {
+                          if(desc==''){
+                            desc='null';
+                          }
                           final newShop = Shop(nameShop!,
                               price: double.parse(price),
+                              desc: desc,
                               userid: FirebaseAuth.instance.currentUser?.uid);
                           repository.add(newShop);
-                          //Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Processing Data')));
                           Navigator.pop(context);

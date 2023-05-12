@@ -14,48 +14,32 @@ class ShopCard extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    bool description= false;
+    if(shop.desc == 'null'){
+      description = true;
+    }
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children:<Widget> [
           ListTile(
             leading: const Icon(Icons.album),
-            title: Text(shop.name),
-            subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+            title: Text(shop.name, style: const TextStyle(fontSize: 18),),
+            subtitle: description ? const Text('') : Text(shop.desc)
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('BUY TICKETS'),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('LISTEN'),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
+          
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: <Widget>[
+          //     TextButton(
+          //       child: const Text('BUY TICKETS'),
+          //       onPressed: () {/* ... */},
+          //     ),
+          //     const SizedBox(width: 8),
+          //   ],
+          // ),
         ],
       ), 
     );
-    // return Card(
-    //   elevation: 2,
-    //   child: InkWell(
-    //     child: Row(
-    //       children: <Widget>[
-    //         Expanded(
-    //           child: Padding(
-    //             padding: const EdgeInsets.symmetric(vertical: 11.0, horizontal: 16.0),
-    //             child: Text(shop.name, style: boldStyle),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //     onTap: (){}
-    //   )
-    // );
   }
 }
