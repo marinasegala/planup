@@ -148,7 +148,9 @@ class UserSearch extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     final suggestion = query.isEmpty
         ? recentUsers
-        : users.where((element) => element.name.startsWith(query)).toList();
+        : users
+            .where((element) => element.name.toLowerCase().startsWith(query))
+            .toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
           leading: const Icon(Icons.person),
