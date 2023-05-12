@@ -1,9 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/shopping.dart';
 
 import '../db/shopping_rep.dart';
+import 'customdropdown.dart';
 
 class CreateShopItem extends StatefulWidget {
   CreateShopItem({Key? key}) : super(key: key);
@@ -15,10 +17,22 @@ class CreateShopItem extends StatefulWidget {
 
 class _CreateItemState extends State<CreateShopItem>{
   final _formKey = GlobalKey<FormState>();
+  final List<String> items = [
+    'Alloggio',
+    'Alimentiri',
+    'Ristorante',
+    'Svago',
+    'Regali',
+    'Trasporti',
+    'Benzina',
+    'Altro',
+  ];
+  String? selectedValue;
 
   String? nameShop;
   String price = '';
-  String desc='';
+  String desc = '';
+  
   final DataRepository repository = DataRepository();
   
   @override
@@ -78,6 +92,52 @@ class _CreateItemState extends State<CreateShopItem>{
                   onChanged: (text) => desc = text,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 34),
+                    Container(
+                      width: 180.0,
+                      height: 40.0,
+                      child: const Center(child: Text('Seleziona la categoria della tua spesa', style: TextStyle(fontSize: 16), textAlign: TextAlign.center)),
+                    ),
+                    const SizedBox(height: 10,),
+                    CustomDropdownButton(
+                      hint: 'Seleziona la categoria della tua spesa',
+                      dropdownItems: items,
+                      value: selectedValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                    ),
+                    // DropdownButton2(
+                    //   isExpanded: true,
+                    //   hint: Text(
+                    //     'Select Item',
+                    //     style: TextStyle(
+                    //       fontSize: 14,
+                    //       color: Theme.of(context).hintColor,
+                    //     ),
+                    //   ),
+                    //   items: addDividersAfterItems(items),
+                    //   value: selectedValue,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       selectedValue = value as String;
+                    //     });
+                    //   },
+                    //   buttonStyleData: const ButtonStyleData(height: 40, width: 140),
+                    //   menuItemStyleData: MenuItemStyleData(
+                    //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    //     customHeights: getCustomItemsHeights(),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -92,6 +152,7 @@ class _CreateItemState extends State<CreateShopItem>{
                           final newShop = Shop(nameShop!,
                               price: double.parse(price),
                               desc: desc,
+                              theme: selectedValue,
                               userid: FirebaseAuth.instance.currentUser?.uid);
                           repository.add(newShop);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -111,3 +172,42 @@ class _CreateItemState extends State<CreateShopItem>{
     );
   }
 }
+
+// List<DropdownMenuItem<String>> addDividersAfterItems(List<String> items) {
+//   List<DropdownMenuItem<String>> menuItems = [];
+//   for (var item in items) {
+//     menuItems.addAll(
+//       [
+//         DropdownMenuItem<String>(
+//           value: item,
+//           child: Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//             child: Text(
+//               item,
+//               style: const TextStyle(
+//                 fontSize: 17,
+//               ),
+//             ),
+//           ),
+//         ),
+//         //If it's last item, we will not add Divider after it.
+//         if (item != items.last)
+//           const DropdownMenuItem<String>(
+//             enabled: false,
+//             child: Divider(),
+//           ),
+//       ],
+//     );
+//   }
+//   return menuItems;
+// }
+
+// List<double> getCustomItemsHeights() {
+//   List<double> itemsHeights = [];
+//   for (var i = 0; i < (items.length * 2) - 1; i++) {
+//     if (i.isEven) { itemsHeights.add(40); }
+//     //Dividers indexes will be the odd indexes
+//     if (i.isOdd) { itemsHeights.add(4); }
+//   }
+//   return itemsHeights;
+// }

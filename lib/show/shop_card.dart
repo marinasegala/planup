@@ -18,12 +18,38 @@ class ShopCard extends StatelessWidget {
     if(shop.desc == 'null'){
       description = true;
     }
+    Icon iconTheme = const Icon(Icons.info_outline);
+    switch(shop.theme){
+      case 'Alloggio':
+        iconTheme = const Icon(Icons.home_outlined);
+        break;
+      case 'Alimentari':
+        iconTheme = const Icon(Icons.fastfood_outlined);
+        break;
+      case 'Ristorante':
+        iconTheme = const Icon(Icons.restaurant_menu_outlined);  
+        break;
+      case 'Svago':
+        iconTheme = const Icon(Icons.local_activity_outlined);
+        break;
+      case 'Regali':
+        iconTheme = const Icon(Icons.shopping_bag_outlined);
+        break;
+      case 'Trasporti':
+        iconTheme = const Icon(Icons.train_outlined);
+        break;
+      case 'Benzina':
+        iconTheme = const Icon(Icons.directions_car_outlined);
+        break;
+      default: 
+    }
+    
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children:<Widget> [
           ListTile(
-            leading: const Icon(Icons.album),
+            leading: iconTheme,
             title: Text(shop.name, style: const TextStyle(fontSize: 18),),
             subtitle: description ? const Text('') : Text(shop.desc)
           ),
