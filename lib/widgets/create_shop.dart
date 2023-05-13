@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +20,7 @@ class _CreateItemState extends State<CreateShopItem>{
   final _formKey = GlobalKey<FormState>();
   final List<String> items = [
     'Alloggio',
-    'Alimentiri',
+    'Alimentari',
     'Ristorante',
     'Svago',
     'Regali',
@@ -153,8 +154,8 @@ class _CreateItemState extends State<CreateShopItem>{
                               price: double.parse(price),
                               desc: desc,
                               theme: selectedValue,
-                              userid: FirebaseAuth.instance.currentUser?.uid);
-                          repository.add(newShop);
+                              userid: FirebaseAuth.instance.currentUser?.uid);   
+                          repository.add(newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Processing Data')));
                           Navigator.pop(context);

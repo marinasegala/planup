@@ -16,6 +16,8 @@ class Shopping extends StatefulWidget{
 }
 
 class _ShoppingState extends State<Shopping> {
+  List<DocumentReference> listId = [];
+
   final DataRepository repository = DataRepository();
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
@@ -66,7 +68,7 @@ class _ShoppingState extends State<Shopping> {
     );
   }
 
-  Widget _noItem() { return const Center(child: Text('Non hai ancora acquisti')); }
+  Widget _noItem() { return const Center(child: Text('Non hai ancora acquisti', style: TextStyle(fontSize: 17),)); }
 
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {

@@ -1,8 +1,10 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:planup/travel_info.dart';
 
+import '../db/shopping_rep.dart';
 import '../model/shopping.dart';
 
 class ShopCard extends StatelessWidget {
@@ -11,9 +13,18 @@ class ShopCard extends StatelessWidget {
   const ShopCard({Key? key, required this.shop, required this.boldStyle})
       : super(key: key);
 
-  
   @override
   Widget build(BuildContext context) {
+    final DataRepository repository = DataRepository();
+    CollectionReference collection = FirebaseFirestore.instance.collection('shopping');
+
+    Future<void> deleteItem(String id) {
+      return FirebaseFirestore.instance.collection("shopping").doc(id).delete().then(
+        (doc) => print("Document deleted"),
+        onError: (e) => print("Error updating document $e"),
+      );
+    }
+  
     bool description= false;
     if(shop.desc == 'null'){
       description = true;
@@ -51,21 +62,24 @@ class ShopCard extends StatelessWidget {
           ListTile(
             leading: iconTheme,
             title: Text(shop.name, style: const TextStyle(fontSize: 18),),
-            subtitle: description ? const Text('') : Text(shop.desc)
+            subtitle: description ? const Text('') : Text(shop.desc),
+            trailing: IconButton(
+              icon: const Icon(Icons.close_outlined), 
+              onPressed: () {  
+                FirebaseFirestore.instance.collection('shopping').where("name", isEqualTo: shop.name).get().then(
+                    (querySnapshot) {
+                      for (var docSnapshot in querySnapshot.docs) {
+                        // print('${docSnapshot.id} => ${docSnapshot.data()}');
+                        deleteItem(docSnapshot.id);
+                      } 
+                    },
+                );
+                
+              },
+            ),
           ),
-          
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: <Widget>[
-          //     TextButton(
-          //       child: const Text('BUY TICKETS'),
-          //       onPressed: () {/* ... */},
-          //     ),
-          //     const SizedBox(width: 8),
-          //   ],
-          // ),
         ],
-      ), 
+      ),    
     );
   }
 }

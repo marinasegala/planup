@@ -61,7 +61,7 @@ class _HomeTravelState extends State<HomeTravel> {
   }
 
   Widget _noItem() {
-    return const Center(child: Text('Non hai viaggi'));
+    return const Center(child: Text('Non hai viaggi.\nClicca sul + per crearne di nuovi!', style: TextStyle(fontSize: 17), textAlign: TextAlign.center,));
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {

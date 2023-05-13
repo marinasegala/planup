@@ -25,7 +25,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   String part = '';
   final DataRepository repository = DataRepository();
   bool _swapDate = false;
-  String date = '';
+  String date = 'Giornata';
   final List<bool> _selectedDate = [false, false, false];
 
   XFile? image;
@@ -233,7 +233,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     var macroCharts = _buildCalendarDialogButton();
     var microCharts = Center(
         child: ToggleSwitch(
-      initialLabelIndex: _swapDate ? 0 : 1,
+      initialLabelIndex: 0,
       minWidth: 85.0,
       minHeight: 50.0,
       activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
@@ -242,9 +242,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       labels: const ['Giornata', 'Weekend', 'Settimana', 'Altro'],
       onToggle: (index) {
         switch (index) {
-          case 0:
-            date = 'Giornata';
-            break;
           case 1:
             date = 'Weekend';
             break;
