@@ -9,7 +9,8 @@ import '../show/shop_card.dart';
 import 'create_shop.dart';
 
 class Shopping extends StatefulWidget{
-  const Shopping({super.key});
+  final String trav;
+  const Shopping({Key? key, required this.trav}) : super(key: key);
 
   @override
   State<Shopping> createState() => _ShoppingState();
@@ -43,11 +44,11 @@ class _ShoppingState extends State<Shopping> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: Text("Loading..."));
             } else {
-              final hasMyOnwData = _hasMyOnwData(snapshot);
+              final hasMyOnwData = _hasMyOnwData(snapshot, widget.trav);
               if (!hasMyOnwData) {
                 return _noItem();
               } else {
-                return _buildList(context, snapshot.data!.docs);
+                return _buildList(context, snapshot.data!.docs, widget.trav);
               }
             }
           }),
@@ -56,7 +57,7 @@ class _ShoppingState extends State<Shopping> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateShopItem()),
+              MaterialPageRoute(builder: (context) => CreateShopItem(trav: widget.trav)),
             );
           },
           backgroundColor: const Color.fromARGB(255, 255, 217, 104),
@@ -71,17 +72,17 @@ class _ShoppingState extends State<Shopping> {
   Widget _noItem() { return const Center(child: Text('Non hai ancora acquisti', style: TextStyle(fontSize: 17),)); }
 
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, String name) {
     return ListView(
       padding: const EdgeInsets.only(top: 10.0),
-      children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
+      children: snapshot!.map((data) => _buildListItem(context, data, name)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, String name) {
     final shop = Shop.fromSnapshot(snapshot);
     if (FirebaseAuth.instance.currentUser != null) {
-      if (shop.userid == FirebaseAuth.instance.currentUser?.uid) {
+      if (shop.userid == FirebaseAuth.instance.currentUser?.uid && shop.trav == name) {
         return ShopCard(shop: shop, boldStyle: boldStyle);
       }
     }
@@ -89,13 +90,16 @@ class _ShoppingState extends State<Shopping> {
   }
 }
 
-bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot) {
+bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
+  bool datas = false;
   final currentUser = FirebaseAuth.instance.currentUser!;
   final shop = snapshot.data!.docs;
-  for (var i = 0; i < shop.length; i++) {
-    if (shop[i]['userid'] == currentUser.uid) {
-      return true;
+  for (var i = 0; i < shop.length; i++){
+    if(shop[i]['userid'] == currentUser.uid && shop[i]['trav'] == name){
+      datas = true;
+      return datas; 
     }
   }
-  return false;
+  return datas;
+  
 }

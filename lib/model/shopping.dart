@@ -6,6 +6,7 @@ class Shop {
   double price;
   String desc;
   String? theme;
+  String? trav;
 
   String? userid;
 
@@ -16,12 +17,13 @@ class Shop {
       required this.desc,
       required this.theme,
       required this.userid,
+      required this.trav,
       this.referenceId});
   // 5
   factory Shop.fromSnapshot(DocumentSnapshot snapshot) {
-    final newTrav = Shop.fromJson(snapshot.data() as Map<String, dynamic>);
-    newTrav.referenceId = snapshot.reference.id;
-    return newTrav;
+    final newShop = Shop.fromJson(snapshot.data() as Map<String, dynamic>);
+    newShop.referenceId = snapshot.reference.id;
+    return newShop;
   }
   // 6
   factory Shop.fromJson(Map<String, dynamic> json) => _shopFromJson(json);
@@ -39,6 +41,7 @@ Shop _shopFromJson(Map<String, dynamic> json) {
     desc: json['description'] as String,
     theme: json['theme'] as String?,
     userid: json['userid'] as String?,
+    trav: json['trav'] as String?,
   );
 }
 
@@ -48,4 +51,5 @@ Map<String, dynamic> _shopToJson(Shop instance) => <String, dynamic>{
       'description': instance.desc,
       'theme': instance.theme,
       'userid': instance.userid,
+      'trav': instance.trav,
     };

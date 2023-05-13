@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,8 @@ import '../db/shopping_rep.dart';
 import 'customdropdown.dart';
 
 class CreateShopItem extends StatefulWidget {
-  CreateShopItem({Key? key}) : super(key: key);
+  final String trav;
+  CreateShopItem({Key? key, required this.trav}) : super(key: key);
 
   @override
   State<CreateShopItem> createState() => _CreateItemState();
@@ -114,28 +114,6 @@ class _CreateItemState extends State<CreateShopItem>{
                         });
                       },
                     ),
-                    // DropdownButton2(
-                    //   isExpanded: true,
-                    //   hint: Text(
-                    //     'Select Item',
-                    //     style: TextStyle(
-                    //       fontSize: 14,
-                    //       color: Theme.of(context).hintColor,
-                    //     ),
-                    //   ),
-                    //   items: addDividersAfterItems(items),
-                    //   value: selectedValue,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       selectedValue = value as String;
-                    //     });
-                    //   },
-                    //   buttonStyleData: const ButtonStyleData(height: 40, width: 140),
-                    //   menuItemStyleData: MenuItemStyleData(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    //     customHeights: getCustomItemsHeights(),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -154,7 +132,8 @@ class _CreateItemState extends State<CreateShopItem>{
                               price: double.parse(price),
                               desc: desc,
                               theme: selectedValue,
-                              userid: FirebaseAuth.instance.currentUser?.uid);   
+                              userid: FirebaseAuth.instance.currentUser?.uid, 
+                              trav: widget.trav);   
                           repository.add(newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Processing Data')));
