@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/home_travel.dart';
-import 'package:planup/profile.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -52,5 +50,4 @@ class _NavBarState extends State<NavBar> {
       ),
     );
   }
-  
 }

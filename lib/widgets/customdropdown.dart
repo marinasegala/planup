@@ -1,5 +1,4 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropdownButton extends StatelessWidget {
@@ -80,21 +79,21 @@ class CustomDropdownButton extends StatelessWidget {
         ),
         value: value,
         items: dropdownItems
-                .map((item) => DropdownMenuItem<String>(
-          value: item,
-          child: Container(
-            alignment: valueAlignment,
-            child: Text(
-              item,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ),
-        ))
-                .toList(),
+            .map((item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Container(
+                    alignment: valueAlignment,
+                    child: Text(
+                      item,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ))
+            .toList(),
         onChanged: onChanged,
         selectedItemBuilder: selectedItemBuilder,
         buttonStyleData: ButtonStyleData(
@@ -102,12 +101,12 @@ class CustomDropdownButton extends StatelessWidget {
           width: buttonWidth ?? 140,
           padding: buttonPadding ?? const EdgeInsets.only(left: 14, right: 14),
           decoration: buttonDecoration ??
-                  BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.black45,
-                    ),
-                  ),
+              BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: Colors.black45,
+                ),
+              ),
           elevation: buttonElevation,
         ),
         iconStyleData: IconStyleData(
@@ -122,9 +121,9 @@ class CustomDropdownButton extends StatelessWidget {
           width: dropdownWidth ?? 140,
           padding: dropdownPadding,
           decoration: dropdownDecoration ??
-                  BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+              BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+              ),
           elevation: dropdownElevation ?? 8,
           //Null or Offset(0, 0) will open just under the button. You can edit as you want.
           offset: offset,
@@ -133,11 +132,11 @@ class CustomDropdownButton extends StatelessWidget {
           scrollbarTheme: ScrollbarThemeData(
             radius: scrollbarRadius ?? const Radius.circular(40),
             thickness: scrollbarThickness != null
-                    ? MaterialStateProperty.all<double>(scrollbarThickness!)
-                    : null,
+                ? MaterialStateProperty.all<double>(scrollbarThickness!)
+                : null,
             thumbVisibility: scrollbarAlwaysShow != null
-                    ? MaterialStateProperty.all<bool>(scrollbarAlwaysShow!)
-                    : null,
+                ? MaterialStateProperty.all<bool>(scrollbarAlwaysShow!)
+                : null,
           ),
         ),
         menuItemStyleData: MenuItemStyleData(

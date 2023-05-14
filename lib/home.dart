@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/friends.dart';
 import 'package:planup/home_travel.dart';
@@ -14,8 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HomeTravel(),
     ProfilePage(),
@@ -49,7 +45,6 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
-      
     );
     //return const NavBar();
   }

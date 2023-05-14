@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planup/db/friends_rep.dart';
+import 'package:planup/db/shopping_rep.dart';
+import 'package:planup/model/friend.dart';
+import 'package:planup/widgets/statistic_card.dart';
+
+import 'model/travel.dart';
 
 final List<String> images = [
   'assets/montagna.jpg',
@@ -17,15 +23,56 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late String? name;
   late String? profilePhoto;
+  int friends = 0;
+  int travels = 0;
+
+  final FriendsRepository friendRepository = FriendsRepository();
+  final DataRepository dataRepository = DataRepository();
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     if (FirebaseAuth.instance.currentUser != null) {
-      final user = FirebaseAuth.instance.currentUser;
-      for (final providerProfile in user!.providerData) {
+      for (final providerProfile in currentUser!.providerData) {
         name = providerProfile.displayName;
         profilePhoto = providerProfile.photoURL;
       }
     }
+
+    // get the number of friends of currentuser from the list of friends
+    _getLengthFriends();
+
+    // get the number of travels of currentuser from the list of travels
+    _getLengthTraverls();
+  }
+
+  void _getLengthFriends() {
+    var friendsList = FirebaseFirestore.instance.collection('friends').get();
+    friendsList.then((value) {
+      final int count = value.docs
+          .where((element) => element['userid'] == currentUser!.uid)
+          .length;
+      setState(() {
+        friends = count;
+      });
+    });
+  }
+
+  void _getLengthTraverls() async {
+    var travelsList =
+        await FirebaseFirestore.instance.collection('travel').get();
+    final int count = travelsList.docs
+        .where((element) => element['userid'] == currentUser!.uid)
+        .length;
+    setState(() {
+      travels = count;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Il mio profilo"),
@@ -58,19 +105,29 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
             const SizedBox(height: 15),
             Text(name as String, style: const TextStyle(fontSize: 22)),
-            //const Text("mario_rossi", style: TextStyle(fontSize: 15)),
-            const Divider(
-              color: Colors.white,
-              height: 20,
-            ),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
-                enlargeStrategy: CenterPageEnlargeStrategy.height,
-              ),
-              items: imageSliders,
+            const SizedBox(height: 15),
+            const Text("Le tue statistiche",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.blueGrey,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StatisticCard(
+                  statisticTitle: "Amici",
+                  statisticValue: friends,
+                ),
+                StatisticCard(
+                  statisticTitle: "Viaggi",
+                  statisticValue: travels,
+                ),
+                const StatisticCard(
+                  statisticTitle: "Posti",
+                  statisticValue: 0,
+                ),
+              ],
             ),
           ],
         ),

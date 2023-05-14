@@ -50,8 +50,11 @@ class LoginButton extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         var user = await AuthenticationServices().signInWithGoogle();
+        // ignore: use_build_context_synchronously
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => const HomePage()));
         await repository.addUser(user);
       },
       child: Container(

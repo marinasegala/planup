@@ -1,10 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:planup/travel_info.dart';
-
-import '../db/shopping_rep.dart';
 import '../model/shopping.dart';
 
 class ShopCard extends StatelessWidget {
@@ -15,22 +11,23 @@ class ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DataRepository repository = DataRepository();
-    CollectionReference collection = FirebaseFirestore.instance.collection('shopping');
-
     Future<void> deleteItem(String id) {
-      return FirebaseFirestore.instance.collection("shopping").doc(id).delete().then(
-        (doc) => print("Document deleted"),
-        onError: (e) => print("Error updating document $e"),
-      );
+      return FirebaseFirestore.instance
+          .collection("shopping")
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
     }
-  
-    bool description= false;
-    if(shop.desc == 'null'){
+
+    bool description = false;
+    if (shop.desc == 'null') {
       description = true;
     }
     Icon iconTheme = const Icon(Icons.info_outline);
-    switch(shop.theme){
+    switch (shop.theme) {
       case 'Alloggio':
         iconTheme = const Icon(Icons.home_outlined);
         break;
@@ -38,7 +35,7 @@ class ShopCard extends StatelessWidget {
         iconTheme = const Icon(Icons.fastfood_outlined);
         break;
       case 'Ristorante':
-        iconTheme = const Icon(Icons.restaurant_menu_outlined);  
+        iconTheme = const Icon(Icons.restaurant_menu_outlined);
         break;
       case 'Svago':
         iconTheme = const Icon(Icons.local_activity_outlined);
@@ -52,34 +49,40 @@ class ShopCard extends StatelessWidget {
       case 'Benzina':
         iconTheme = const Icon(Icons.directions_car_outlined);
         break;
-      default: 
+      default:
     }
-    
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children:<Widget> [
+        children: <Widget>[
           ListTile(
             leading: iconTheme,
-            title: Text(shop.name, style: const TextStyle(fontSize: 18),),
+            title: Text(
+              shop.name,
+              style: const TextStyle(fontSize: 18),
+            ),
             subtitle: description ? const Text('') : Text(shop.desc),
             trailing: IconButton(
-              icon: const Icon(Icons.close_outlined), 
-              onPressed: () {  
-                FirebaseFirestore.instance.collection('shopping').where("name", isEqualTo: shop.name).get().then(
-                    (querySnapshot) {
-                      for (var docSnapshot in querySnapshot.docs) {
-                        // print('${docSnapshot.id} => ${docSnapshot.data()}');
-                        deleteItem(docSnapshot.id);
-                      } 
-                    },
+              icon: const Icon(Icons.close_outlined),
+              onPressed: () {
+                FirebaseFirestore.instance
+                    .collection('shopping')
+                    .where("name", isEqualTo: shop.name)
+                    .get()
+                    .then(
+                  (querySnapshot) {
+                    for (var docSnapshot in querySnapshot.docs) {
+                      // print('${docSnapshot.id} => ${docSnapshot.data()}');
+                      deleteItem(docSnapshot.id);
+                    }
+                  },
                 );
-                
               },
             ),
           ),
         ],
-      ),    
+      ),
     );
   }
 }

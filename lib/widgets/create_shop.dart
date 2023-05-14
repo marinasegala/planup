@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/shopping.dart';
 
@@ -9,14 +7,13 @@ import 'customdropdown.dart';
 
 class CreateShopItem extends StatefulWidget {
   final String trav;
-  CreateShopItem({Key? key, required this.trav}) : super(key: key);
+  const CreateShopItem({Key? key, required this.trav}) : super(key: key);
 
   @override
   State<CreateShopItem> createState() => _CreateItemState();
 }
 
-
-class _CreateItemState extends State<CreateShopItem>{
+class _CreateItemState extends State<CreateShopItem> {
   final _formKey = GlobalKey<FormState>();
   final List<String> items = [
     'Alloggio',
@@ -33,123 +30,136 @@ class _CreateItemState extends State<CreateShopItem>{
   String? nameShop;
   String price = '';
   String desc = '';
-  
+
   final DataRepository repository = DataRepository();
-  
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Nuovo acquisto'),
-      ),
-      body: Column(children: [
-        const SizedBox(height: 30,),
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.shopping_bag_outlined),
-                      hintText: 'Inserire il nome della nuova spesa *'),
-                  onChanged: (text) => nameShop = text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obbligatorio';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.euro_outlined),
-                      hintText: 'Prezzo *'),
-                  onChanged: (text) => price = text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obbligatorio';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  maxLength: 30,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.description_outlined),
-                      hintText: 'Descrizione'),
-                  onChanged: (text) => desc = text,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 34),
-                    Container(
-                      width: 180.0,
-                      height: 40.0,
-                      child: const Center(child: Text('Seleziona la categoria della tua spesa', style: TextStyle(fontSize: 16), textAlign: TextAlign.center)),
-                    ),
-                    const SizedBox(height: 10,),
-                    CustomDropdownButton(
-                      hint: 'Seleziona la categoria della tua spesa',
-                      dropdownItems: items,
-                      value: selectedValue,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedValue = value;
-                        });
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text('Nuovo acquisto'),
+        ),
+        body: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.shopping_bag_outlined),
+                          hintText: 'Inserire il nome della nuova spesa *'),
+                      onChanged: (text) => nameShop = text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obbligatorio';
+                        }
+                        return null;
                       },
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (FirebaseAuth.instance.currentUser != null) {
-                        if (_formKey.currentState!.validate()) {
-                          if(desc==''){
-                            desc='null';
-                          }
-                          final newShop = Shop(nameShop!,
-                              price: double.parse(price),
-                              desc: desc,
-                              theme: selectedValue,
-                              userid: FirebaseAuth.instance.currentUser?.uid, 
-                              trav: widget.trav);   
-                          repository.add(newShop); //.then((DocumentReference doc) => this.listId.add(doc));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')));
-                          Navigator.pop(context);
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.euro_outlined),
+                          hintText: 'Prezzo *'),
+                      onChanged: (text) => price = text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obbligatorio';
                         }
-                      }
-                    },
-                    child: const Text('Invia', style: TextStyle(fontSize: 16)),
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      maxLength: 30,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.description_outlined),
+                          hintText: 'Descrizione'),
+                      onChanged: (text) => desc = text,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 34),
+                        const SizedBox(
+                          width: 180.0,
+                          height: 40.0,
+                          child: Center(
+                              child: Text(
+                                  'Seleziona la categoria della tua spesa',
+                                  style: TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center)),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomDropdownButton(
+                          hint: 'Seleziona la categoria della tua spesa',
+                          dropdownItems: items,
+                          value: selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (FirebaseAuth.instance.currentUser != null) {
+                            if (_formKey.currentState!.validate()) {
+                              if (desc == '') {
+                                desc = 'null';
+                              }
+                              final newShop = Shop(nameShop!,
+                                  price: double.parse(price),
+                                  desc: desc,
+                                  theme: selectedValue,
+                                  userid:
+                                      FirebaseAuth.instance.currentUser?.uid,
+                                  trav: widget.trav);
+                              repository.add(
+                                  newShop); //.then((DocumentReference doc) => this.listId.add(doc));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Processing Data')));
+                              Navigator.pop(context);
+                            }
+                          }
+                        },
+                        child:
+                            const Text('Invia', style: TextStyle(fontSize: 16)),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-      ],)
-    );
+            ),
+          ],
+        ));
   }
 }
 
