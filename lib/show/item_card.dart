@@ -15,12 +15,14 @@ class ItemWidget extends StatelessWidget {
   String name = '';
   IconData icon;
   int index;
+  String trav = '';
 
   ItemWidget({
     Key? key,
     required this.name,
     required this.icon,
     required this.index,
+    required this.trav,
   }) : super(key: key);
 
   @override
@@ -31,7 +33,7 @@ class ItemWidget extends StatelessWidget {
             case 3:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Shopping()),
+                MaterialPageRoute(builder: (context) => Shopping(trav: trav)),
               );
               break;
 

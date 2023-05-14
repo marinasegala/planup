@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planup/model/shopping.dart';
 
-import 'package:planup/model/travel.dart';
-
 class DataRepository {
   // 1
   final CollectionReference collection =

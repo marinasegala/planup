@@ -4,21 +4,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Shop {
   String name;
   double price;
-  // String description;
+  String desc;
+  String? theme;
+  String? trav;
+
   String? userid;
 
   String? referenceId;
   // 4
   Shop(this.name,
       {required this.price,
-      // required this.description,
+      required this.desc,
+      required this.theme,
       required this.userid,
+      required this.trav,
       this.referenceId});
   // 5
   factory Shop.fromSnapshot(DocumentSnapshot snapshot) {
-    final newTrav = Shop.fromJson(snapshot.data() as Map<String, dynamic>);
-    newTrav.referenceId = snapshot.reference.id;
-    return newTrav;
+    final newShop = Shop.fromJson(snapshot.data() as Map<String, dynamic>);
+    newShop.referenceId = snapshot.reference.id;
+    return newShop;
   }
   // 6
   factory Shop.fromJson(Map<String, dynamic> json) => _shopFromJson(json);
@@ -33,14 +38,18 @@ Shop _shopFromJson(Map<String, dynamic> json) {
   return Shop(
     json['name'] as String,
     price: json['price'] as double,
-    // description: json['description'] as String,
+    desc: json['description'] as String,
+    theme: json['theme'] as String?,
     userid: json['userid'] as String?,
+    trav: json['trav'] as String?,
   );
 }
 
 Map<String, dynamic> _shopToJson(Shop instance) => <String, dynamic>{
       'name': instance.name,
       'price': instance.price,
-      // 'description': instance.description,
+      'description': instance.desc,
+      'theme': instance.theme,
       'userid': instance.userid,
+      'trav': instance.trav,
     };

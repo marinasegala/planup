@@ -23,12 +23,6 @@ class _HomeTravelState extends State<HomeTravel> {
 
   @override
   Widget build(BuildContext context) {
-    // final trav = Travel.fromSnapshot(snapshot);
-    // if (FirebaseAuth.instance.currentUser != null) {
-    //   if (trav.userid == FirebaseAuth.instance.currentUser?.uid){
-    //     return TravCard(trav: trav, boldStyle: boldStyle );
-    //   }
-    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text('I tuoi viaggi'),
@@ -67,8 +61,7 @@ class _HomeTravelState extends State<HomeTravel> {
   }
 
   Widget _noItem() {
-    //TODO: sistemare perche non va
-    return const Center(child: Text('Non hai viaggi'));
+    return const Center(child: Text('Non hai viaggi.\nClicca sul + per crearne di nuovi!', style: TextStyle(fontSize: 17), textAlign: TextAlign.center,));
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {

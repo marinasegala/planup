@@ -47,7 +47,7 @@ dependencies:
   calendar_date_picker2: ^0.5.2
   flutter_localizations:
     sdk: flutter
-  googleapis: ^11.0.0
+  dropdown_button2: ^2.1.2
 
 dependency_overrides:
   intl: any

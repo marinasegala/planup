@@ -25,7 +25,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   String part = '';
   final DataRepository repository = DataRepository();
   bool _swapDate = false;
-  String date = '';
+  String date = 'Giornata';
   final List<bool> _selectedDate = [false, false, false];
 
   XFile? image;
@@ -233,7 +233,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     var macroCharts = _buildCalendarDialogButton();
     var microCharts = Center(
         child: ToggleSwitch(
-      initialLabelIndex: _swapDate ? 0 : 1,
+      initialLabelIndex: 0,
       minWidth: 85.0,
       minHeight: 50.0,
       activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
@@ -242,9 +242,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       labels: const ['Giornata', 'Weekend', 'Settimana', 'Altro'],
       onToggle: (index) {
         switch (index) {
-          case 0:
-            date = 'Giornata';
-            break;
           case 1:
             date = 'Weekend';
             break;
@@ -359,53 +356,41 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
                       autofocus: true,
                       decoration: const InputDecoration(
                           icon: Icon(Icons.pin_drop_outlined),
                           border: OutlineInputBorder(),
-                          hintText: 'Inserire il nome del viaggio'),
+                          hintText: 'Inserire il nome del viaggio *'),
                       onChanged: (text) => nameTrav = text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obbligatorio';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
                       autofocus: true,
                       decoration: const InputDecoration(
                           icon: Icon(Icons.groups_outlined),
                           border: OutlineInputBorder(),
-                          hintText: 'Numero di partecipanti'),
+                          hintText: 'Numero di partecipanti *'),
                       onChanged: (text) => part = text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obbligatorio';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Column(children: [
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (FirebaseAuth.instance.currentUser != null) {
-                              if (nameTrav != null && part.isNotEmpty) {
-                                final newTrav = Travel(nameTrav!,
-                                    partecipant: part,
-                                    userid:
-                                        FirebaseAuth.instance.currentUser?.uid,
-                                    date: date);
-                                repository.add(newTrav);
-                                //Navigator.of(context).pop();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Processing Data')));
-                                Navigator.pop(context);
-                              }
-                            }
-                          },
-                          child: const Text('Invia',
-                              style: TextStyle(fontSize: 16)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox.shrink(),
+                    const SizedBox(height: 30,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -447,14 +432,13 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       ElevatedButton(
                         onPressed: () {
                           if (FirebaseAuth.instance.currentUser != null) {
-                            if (nameTrav != null && part.isNotEmpty) {
+                            if (_formKey.currentState!.validate()) {
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
                                   date: date);
                               repository.add(newTrav);
-                              //Navigator.of(context).pop();
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
