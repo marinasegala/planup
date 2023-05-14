@@ -27,12 +27,10 @@ UserAccount _userFromJson(Map<String, dynamic> json) {
   return UserAccount(
     json['name'] as String,
     json['email'] as String,
-    userid: json['userid'] as String?,
   );
 }
 
 Map<String, dynamic> _userToJson(UserAccount instance) => <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
-      'userid': instance.userid,
     };

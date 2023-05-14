@@ -20,9 +20,14 @@ class AuthenticationServices {
       );
       final user = await FirebaseAuth.instance.signInWithCredential(credential);
       // let sign in
-      return user;
+      return user.user;
     } on FirebaseAuthException catch (e) {
       log(e.message!);
     }
+  }
+
+  signOut() async {
+    await GoogleSignIn().signOut();
+    await FirebaseAuth.instance.signOut();
   }
 }

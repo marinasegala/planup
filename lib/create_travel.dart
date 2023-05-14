@@ -390,7 +390,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     ),
                   ),
                   Column(children: [
-                    const SizedBox(height: 30,),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

@@ -27,9 +27,12 @@ class MyApp extends StatelessWidget {
         Locale('ko', ''),
         Locale('hi', ''),
       ],
-
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blueGrey, fontFamily: 'Arial'),
+      theme: ThemeData(
+          primarySwatch: Colors.blueGrey,
+          fontFamily: 'Arial',
+          secondaryHeaderColor: Colors.amberAccent,
+          hintColor: Colors.blueGrey),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {

@@ -48,6 +48,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   dropdown_button2: ^2.1.2
+  google_nav_bar: ^5.0.6
 
 dependency_overrides:
   intl: any

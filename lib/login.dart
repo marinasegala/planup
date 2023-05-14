@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/home.dart';
+import 'package:planup/model/userAccount.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -47,31 +49,28 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        var user = await AuthenticationServices().signInWithGoogle();
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => const HomePage()));
-        await repository.addUser(user);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(25),
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        decoration: BoxDecoration(
-          color: Colors.blueGrey,
-          borderRadius: BorderRadius.circular(10),
+    return Center(
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
         ),
-        child: const Center(
-          child: Text("Sign In",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              )),
-        ),
+        onPressed: () async {
+          User user = await AuthenticationServices().signInWithGoogle();
+          final userExists = repository.userExists(user.email!);
+          if (userExists == false) {
+            await repository.addUser(
+                UserAccount(user.displayName!, user.email!, userid: user.uid));
+          }
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const HomePage()));
+        },
+        child: const Text('Sign in with Google'),
       ),
     );
   }

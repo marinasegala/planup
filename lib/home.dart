@@ -46,6 +46,5 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
       ),
     );
-    //return const NavBar();
   }
 }

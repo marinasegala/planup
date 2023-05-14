@@ -84,14 +84,17 @@ class _FriendProfileState extends State<FriendProfile> {
                     ),
                   ),
             const SizedBox(height: 15),
-            Text(widget.friend.name, style: const TextStyle(fontSize: 22)),
+            Text(widget.friend.name,
+                style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 20),
-            Text("Le statistiche di ${widget.friend.name}",
-                style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 15),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child:
+                    Text("Le sue statistiche", style: TextStyle(fontSize: 12)),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
