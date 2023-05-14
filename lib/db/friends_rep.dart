@@ -9,7 +9,8 @@ class FriendsRepository {
     return collectionReference.snapshots();
   }
 
-  Future<DocumentReference> addFriend(Friend friend) async {
+  Future<DocumentReference> addFriend(String userid, String friendid) async {
+    final friend = Friend(userid: userid, userIdFriend: friendid);
     return await collectionReference.add(friend.toJson());
   }
 
@@ -17,7 +18,7 @@ class FriendsRepository {
     await collectionReference.doc(friend.userid).update(friend.toJson());
   }
 
-  void deleteFriend(Friend friend) async {
-    await collectionReference.doc(friend.userid).delete();
+  void deleteFriend(String id) async {
+    await collectionReference.doc(id).delete();
   }
 }

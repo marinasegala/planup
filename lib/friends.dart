@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/users_rep.dart';
+import 'package:planup/friend_profile.dart';
 import 'package:planup/model/friend.dart';
 import 'package:planup/model/userAccount.dart';
 
@@ -23,27 +24,42 @@ class _FriendPageState extends State<FriendPage> {
 
   List<UserAccount> users = [];
 
-  Future getUsers() async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('name', isNotEqualTo: currentUser.displayName)
-        .get()
-        .then((snapshot) => snapshot.docs.forEach((doc) {
-              users.add(UserAccount.fromSnapshot(doc));
-            }));
+  void getUsers() {
+    UsersRepository().getStream().listen((event) {
+      users = event.docs.map((e) => UserAccount.fromSnapshot(e)).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsers();
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final friends = Friend.fromSnapshot(snapshot);
-    print(friends);
+    UserAccount user;
     if (FirebaseAuth.instance.currentUser != null) {
       if (friends.userid == currentUser.uid) {
         // get the friend name from the list of users
-        final user = users
-            .firstWhere((element) => element.userid == friends.userIdFriend);
+        getUsers();
+        user = users.firstWhere(
+          (element) => element.userid == friends.userIdFriend,
+          orElse: () => UserAccount('Not found', 'Not found'),
+        );
         return ListTile(
             leading: const Icon(Icons.person),
-            title: Text(user.name),
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                onPressed: () {
+                  _navigateToFriendPage(user);
+                },
+                child: Text(
+                  user.name,
+                ),
+              ),
+            ),
             trailing:
                 TextButton(onPressed: () {}, child: const Text('Rimuovi')));
       }
@@ -67,8 +83,7 @@ class _FriendPageState extends State<FriendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Cerca amici"), actions: <Widget>[
-        FutureBuilder(
-          future: getUsers(),
+        StreamBuilder(
           builder: (context, snapshot) {
             return IconButton(
                 icon: const Icon(Icons.search),
@@ -90,9 +105,15 @@ class _FriendPageState extends State<FriendPage> {
                 return _noItem();
               }
             }
-            return _buildList(context, snapshot.data?.docs ?? []);
+            return _buildList(context, snapshot.data!.docs);
           }),
     );
+  }
+
+  void _navigateToFriendPage(UserAccount friend) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return FriendProfile(friend: friend);
+    }));
   }
 }
 
@@ -171,19 +192,14 @@ Future addFriend(String userIdFriend) async {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final FriendsRepository friendRepository = FriendsRepository();
 
-  print(currentUser.uid);
-  print(userIdFriend);
-
-  final friend = Friend(userid: currentUser.uid, userIdFriend: userIdFriend);
-
-  return await friendRepository.addFriend(friend);
+  return await friendRepository.addFriend(currentUser.uid, userIdFriend);
 }
 
 // function to check if the user has friends
-bool _hasFriends(AsyncSnapshot snapshot) {
+bool _hasFriends(AsyncSnapshot<QuerySnapshot> snapshot) {
   final currentUser = FirebaseAuth.instance.currentUser!;
-  final friends = snapshot.data?.docs;
-  for (var friend in friends!) {
+  final friends = snapshot.data!.docs;
+  for (var friend in friends) {
     if (friend['userid'] == currentUser.uid) {
       return true;
     }
