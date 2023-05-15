@@ -23,7 +23,6 @@ class _FriendPageState extends State<FriendPage> {
   List<UserAccount> users = [];
 
   void getUsers() {
-    print(currentUser.uid);
     UsersRepository().getStream().listen((event) {
       users = event.docs
           .map((e) => UserAccount.fromSnapshot(e))
@@ -91,7 +90,6 @@ class _FriendPageState extends State<FriendPage> {
             return IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
-                  print(users);
                   showSearch(
                       context: context, delegate: UserSearch(users: users));
                 });
