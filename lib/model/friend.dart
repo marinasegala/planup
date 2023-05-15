@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Friend {
-  String? id;
-  String? userid;
-  String? userIdFriend;
+  final String? userid;
+  final String? userIdFriend;
 
   Friend({this.userid, this.userIdFriend});
 
   factory Friend.fromSnapshot(DocumentSnapshot snapshot) {
     final newFriend = Friend.fromJson(snapshot.data() as Map<String, dynamic>);
-    newFriend.id = snapshot.reference.id;
     return newFriend;
   }
 
