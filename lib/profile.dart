@@ -39,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
       for (final providerProfile in currentUser!.providerData) {
         name = providerProfile.displayName;
         profilePhoto = providerProfile.photoURL;
+        print(profilePhoto);
       }
     }
 

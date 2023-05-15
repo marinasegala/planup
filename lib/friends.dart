@@ -46,7 +46,8 @@ class _FriendPageState extends State<FriendPage> {
         getUsers();
         user = users.firstWhere(
           (element) => element.userid == friends.userIdFriend,
-          orElse: () => UserAccount('Not found', 'Not found', 'Not found'),
+          orElse: () =>
+              UserAccount('Not found', 'Not found', 'Not found', 'Not found'),
         );
         return ListTile(
             leading: const Icon(Icons.person),
