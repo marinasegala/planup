@@ -99,16 +99,16 @@ class _CreateItemState extends State<CreateShopItem> {
                       children: [
                         const SizedBox(width: 34),
                         const SizedBox(
-                          width: 180.0,
-                          height: 40.0,
+                          // width: 180.0,
+                          // height: 40.0,
                           child: Center(
                               child: Text(
-                                  'Seleziona la categoria della tua spesa',
-                                  style: TextStyle(fontSize: 16),
+                                  'Categoria della spesa',
+                                  style: TextStyle(fontSize: 15),
                                   textAlign: TextAlign.center)),
                         ),
                         const SizedBox(
-                          height: 10,
+                          width: 20,
                         ),
                         CustomDropdownButton(
                           hint: 'Seleziona la categoria della tua spesa',

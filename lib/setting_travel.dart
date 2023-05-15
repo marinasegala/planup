@@ -24,7 +24,6 @@ class Setting extends StatelessWidget {
             
           ),
           
-          //body: const Center(child: Text('TODO: add widget')),
           body: Column(
             children: [
               const SizedBox(height: 10,),

@@ -39,10 +39,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     image = await picker.pickImage(source: ImageSource.camera);
   }
 
-  List<DateTime?> _dialogCalendarPickerValue = [
-    DateTime(2021, 8, 10),
-    DateTime(2021, 8, 13),
-  ];
+  List<DateTime?> _dialogCalendarPickerValue = [];
 
   String _getValueText(
     CalendarDatePicker2Type datePickerType,
@@ -208,7 +205,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 config: config,
                 dialogSize: const Size(325, 400),
                 borderRadius: BorderRadius.circular(15),
-                value: _dialogCalendarPickerValue,
                 dialogBackgroundColor: Colors.white,
               );
               if (values != null) {
@@ -435,10 +431,12 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         onPressed: () {
                           if (FirebaseAuth.instance.currentUser != null) {
                             if (_formKey.currentState!.validate()) {
+                              if(date.contains('null')){
+                                date = date.substring(0,10);
+                              }
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
-                                  userid:
-                                      FirebaseAuth.instance.currentUser?.uid,
+                                  userid: FirebaseAuth.instance.currentUser?.uid,
                                   date: date);
                               repository.add(newTrav);
                               ScaffoldMessenger.of(context).showSnackBar(
