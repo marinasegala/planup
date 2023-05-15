@@ -23,8 +23,12 @@ class _FriendPageState extends State<FriendPage> {
   List<UserAccount> users = [];
 
   void getUsers() {
+    print(currentUser.uid);
     UsersRepository().getStream().listen((event) {
-      users = event.docs.map((e) => UserAccount.fromSnapshot(e)).toList();
+      users = event.docs
+          .map((e) => UserAccount.fromSnapshot(e))
+          .where((element) => element.userid != currentUser.uid)
+          .toList();
     });
   }
 
@@ -43,7 +47,7 @@ class _FriendPageState extends State<FriendPage> {
         getUsers();
         user = users.firstWhere(
           (element) => element.userid == friends.userIdFriend,
-          orElse: () => UserAccount('Not found', 'Not found'),
+          orElse: () => UserAccount('Not found', 'Not found', 'Not found'),
         );
         return ListTile(
             leading: const Icon(Icons.person),
@@ -55,6 +59,7 @@ class _FriendPageState extends State<FriendPage> {
                 },
                 child: Text(
                   user.name,
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
             ),
@@ -86,6 +91,7 @@ class _FriendPageState extends State<FriendPage> {
             return IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
+                  print(users);
                   showSearch(
                       context: context, delegate: UserSearch(users: users));
                 });
@@ -168,13 +174,15 @@ class UserSearch extends SearchDelegate<String> {
     final suggestion = query.isEmpty
         ? recentUsers
         : users
-            .where((element) => element.name.toLowerCase().startsWith(query))
+            .where((element) =>
+                element.userid != FirebaseAuth.instance.currentUser!.uid &&
+                element.name.toLowerCase().startsWith(query))
             .toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
           leading: const Icon(Icons.person),
           title: Text(suggestion[index].name,
-              style: const TextStyle(color: Colors.black, fontSize: 16)),
+              style: Theme.of(context).textTheme.labelSmall),
           trailing: TextButton(
             onPressed: () {
               addFriend(suggestion[index].userid);

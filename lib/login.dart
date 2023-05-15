@@ -61,8 +61,8 @@ class LoginButton extends StatelessWidget {
           User user = await AuthenticationServices().signInWithGoogle();
           final userExists = repository.userExists(user.email!);
           if (userExists == false) {
-            await repository.addUser(
-                UserAccount(user.displayName!, user.email!, userid: user.uid));
+            await repository
+                .addUser(UserAccount(user.displayName!, user.email!, user.uid));
           }
           // ignore: use_build_context_synchronously
           Navigator.push(

@@ -32,7 +32,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blueGrey,
           fontFamily: 'Arial',
           secondaryHeaderColor: Colors.amberAccent,
-          hintColor: Colors.blueGrey),
+          textTheme: const TextTheme(
+              labelSmall: TextStyle(
+            color: Colors.black,
+            fontSize: 14,
+          ))),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
