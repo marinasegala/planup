@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:date_format_field/date_format_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -74,7 +75,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   @override
   Widget build(BuildContext context) {
-    _buildCalendarDialogButton() {
+    buildCalendarDialogButton() {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
       final weekendTextStyle =
@@ -225,8 +226,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         ]),
       );
     }
-
-    var macroCharts = _buildCalendarDialogButton();
+   
+    var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
         child: ToggleSwitch(
       initialLabelIndex: 0,
