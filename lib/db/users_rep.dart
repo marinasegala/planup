@@ -21,16 +21,18 @@ class UsersRepository {
     await collectionReference.doc(user.userid).delete();
   }
 
-  bool? userExists(String email) {
-    collectionReference
+  Future<bool> userExists(String email) async {
+    bool exists = false;
+    await collectionReference
         .where('email', isEqualTo: email)
         .get()
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
-        return true;
+        exists = true;
       } else {
-        return false;
+        exists = false;
       }
     });
+    return exists;
   }
 }

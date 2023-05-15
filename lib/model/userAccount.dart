@@ -4,8 +4,9 @@ class UserAccount {
   String name;
   String email;
   final String? userid;
+  String? photoUrl;
 
-  UserAccount(this.name, this.email, this.userid);
+  UserAccount(this.name, this.email, this.userid, this.photoUrl);
 
   factory UserAccount.fromSnapshot(DocumentSnapshot snapshot) {
     final newFriend =
@@ -27,6 +28,7 @@ UserAccount _userFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['email'] as String,
     json['userid'] as String?,
+    json['photoUrl'] as String?,
   );
 }
 
@@ -34,4 +36,5 @@ Map<String, dynamic> _userToJson(UserAccount instance) => <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
       'userid': instance.userid,
+      'photoUrl': instance.photoUrl,
     };

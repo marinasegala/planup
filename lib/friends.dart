@@ -46,7 +46,8 @@ class _FriendPageState extends State<FriendPage> {
         getUsers();
         user = users.firstWhere(
           (element) => element.userid == friends.userIdFriend,
-          orElse: () => UserAccount('Not found', 'Not found', 'Not found'),
+          orElse: () =>
+              UserAccount('Not found', 'Not found', 'Not found', 'Not found'),
         );
         return ListTile(
             leading: const Icon(Icons.person),
@@ -62,8 +63,11 @@ class _FriendPageState extends State<FriendPage> {
                 ),
               ),
             ),
-            trailing:
-                TextButton(onPressed: () {}, child: const Text('Rimuovi')));
+            trailing: TextButton(
+                onPressed: () {
+                  removeFriend(user.userid!);
+                },
+                child: const Text('Rimuovi')));
       }
     }
     return const SizedBox.shrink();
@@ -184,6 +188,7 @@ class UserSearch extends SearchDelegate<String> {
           trailing: TextButton(
             onPressed: () {
               addFriend(suggestion[index].userid);
+              close(context, '');
             },
             child: const Text('Aggiungi'),
           )),
@@ -197,6 +202,13 @@ Future addFriend(String userIdFriend) async {
   final FriendsRepository friendRepository = FriendsRepository();
 
   return await friendRepository.addFriend(currentUser.uid, userIdFriend);
+}
+
+Future removeFriend(String userIdFriend) async {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final FriendsRepository friendRepository = FriendsRepository();
+
+  friendRepository.deleteFriend(currentUser.uid, userIdFriend);
 }
 
 // function to check if the user has friends
