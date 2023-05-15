@@ -23,8 +23,17 @@ class FriendsRepository {
     await collectionReference.doc(friend.userid).update(friend.toJson());
   }
 
-  void deleteFriend(String id) async {
-    await collectionReference.doc(id).delete();
+  void deleteFriend(String userid, String friendid) async {
+    await FirebaseFirestore.instance
+        .collection('friends')
+        .where('userid', isEqualTo: userid)
+        .where('userIdFriend', isEqualTo: friendid)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
   }
 
   Future<bool> isAlreadyFriend(String userid, String friendid) async {
