@@ -434,6 +434,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               if(date.contains('null')){
                                 date = date.substring(0,10);
                               }
+                              
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
                                   userid: FirebaseAuth.instance.currentUser?.uid,
