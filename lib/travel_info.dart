@@ -27,7 +27,7 @@ class TravInfo extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Setting(trav: trav)),
+                        builder: (context) => SettingsTrav(trav: trav)),
                   );
                 },
                 icon: const Icon(Icons.settings)),
