@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planup/setting_travel.dart';
+import 'package:planup/settings_travel.dart';
 import 'package:planup/show/item_card.dart';
 
 import 'model/travel.dart';
@@ -27,7 +27,7 @@ class TravInfo extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SettingsTrav(trav: trav)),
+                        builder: (context) => SettingTravel(travel: trav)),
                   );
                 },
                 icon: const Icon(Icons.settings)),
