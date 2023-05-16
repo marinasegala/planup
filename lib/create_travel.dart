@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:date_format_field/date_format_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planup/model/travel.dart';
@@ -12,7 +13,7 @@ import 'db/travel_rep.dart';
 //TODO: far partire il calendario da 'oggi'
 
 class CreateTravelPage extends StatefulWidget {
-  CreateTravelPage({Key? key}) : super(key: key);
+  const CreateTravelPage({Key? key}) : super(key: key);
 
   @override
   State<CreateTravelPage> createState() => _CreateTravelFormState();
@@ -27,25 +28,53 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   final DataRepository repository = DataRepository();
   bool _swapDate = false;
   String date = 'Giornata';
-  final List<bool> _selectedDate = [false, false, false];
 
   XFile? image;
   File? file;
+  String imageUrl = '';
+
   final ImagePicker picker = ImagePicker();
+
   Future getImageFromGallery() async {
     image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    uploadFile();
   }
 
   Future<void> getImageFromCamera() async {
     image = await picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+    uploadFile();
+  }
+
+  void uploadFile() async {
+    // get a reference to storage root
+    Reference storageReference = FirebaseStorage.instance.ref();
+    Reference referenceDirImage = storageReference.child('images');
+
+    // create a reference for the image to be stored
+    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference imageReference = referenceDirImage.child(uniqueFileName);
+
+    // handle errors/success
+    try {
+      // store the image
+      await imageReference.putFile(File(image!.path));
+
+      // success: get the download url
+      imageUrl = await imageReference.getDownloadURL();
+
+      // update the UI
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
   }
 
   List<DateTime?> _dialogCalendarPickerValue = [];
 
   String _getValueText(
-    CalendarDatePicker2Type datePickerType,
-    List<DateTime?> values,
-  ) {
+      CalendarDatePicker2Type datePickerType, List<DateTime?> values) {
     values =
         values.map((e) => e != null ? DateUtils.dateOnly(e) : null).toList();
     var valueText = (values.isNotEmpty ? values[0] : null)
@@ -75,6 +104,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   @override
   Widget build(BuildContext context) {
+    // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
@@ -226,7 +256,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         ]),
       );
     }
-   
+
     var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
         child: ToggleSwitch(
@@ -261,15 +291,16 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       child: (_swapDate) ? macroCharts : microCharts,
     );
 
-    void myAlert() {
+    // select the photo for the travel
+    void choosePhoto() {
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              title: const Text('Please choose media to select'),
-              content: Container(
+              title: const Text('Seleziona il metodo di caricamento'),
+              content: SizedBox(
                 height: MediaQuery.of(context).size.height / 6,
                 child: Column(
                   children: [
@@ -282,7 +313,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       child: const Row(
                         children: [
                           Icon(Icons.image),
-                          Text('From Gallery'),
+                          Text('Galleria'),
                         ],
                       ),
                     ),
@@ -295,7 +326,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       child: const Row(
                         children: [
                           Icon(Icons.camera),
-                          Text('From Camera'),
+                          Text('Camera'),
                         ],
                       ),
                     ),
@@ -318,34 +349,43 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         title: const Text('Crea il tuo viaggio'),
       ),
       body: Align(
-        alignment: Alignment.topCenter, //aligns to topCenter
+        alignment: Alignment.topCenter,
         child: Column(
           children: [
-            //Container(
-            //padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+            const SizedBox(height: 10),
+            Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  ),
+                ),
+                child: image != null
+                    ? ClipOval(
+                        child: Image.file(
+                          //to show image, you type like this.
+                          File(image!.path),
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
+                      )
+                    : const ClipOval(
+                        child: Icon(
+                          Icons.add_a_photo,
+                          size: 50,
+                        ),
+                      )),
             ElevatedButton(
               onPressed: () {
-                myAlert();
+                choosePhoto();
+                // reload the page
               },
               child: const Text('Upload Photo'),
             ),
-            const SizedBox(height: 10),
-            image != null
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        //to show image, you type like this.
-                        File(image!.path),
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                        height: 300,
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-
             Form(
               key: _formKey,
               child: Column(
@@ -432,13 +472,14 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         onPressed: () {
                           if (FirebaseAuth.instance.currentUser != null) {
                             if (_formKey.currentState!.validate()) {
-                              if(date.contains('null')){
-                                date = date.substring(0,10);
+                              if (date.contains('null')) {
+                                date = date.substring(0, 10);
                               }
-                              
+
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
-                                  userid: FirebaseAuth.instance.currentUser?.uid,
+                                  userid:
+                                      FirebaseAuth.instance.currentUser?.uid,
                                   date: date);
                               repository.add(newTrav);
                               ScaffoldMessenger.of(context).showSnackBar(
