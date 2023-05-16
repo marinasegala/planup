@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/travel_info.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'db/shopping_rep.dart';
 import 'model/travel.dart';
 
 class SettingsTrav extends StatefulWidget {
@@ -17,8 +18,11 @@ class SettingsTrav extends StatefulWidget {
 }
 
 class _SettingTravState extends State<SettingsTrav> {
+  final _formKey = GlobalKey<FormState>();
+  final DataRepository repository = DataRepository();
   bool _swapDate = false;
-  String date = 'Giornata';
+  final List<bool> _selectedDate = [false, false, false];
+
   List<DateTime?> _dialogCalendarPickerValue = [];
 
   String _getValueText(
@@ -52,22 +56,13 @@ class _SettingTravState extends State<SettingsTrav> {
     return valueText;
   }
 
+
   @override
   Widget build(BuildContext context) {
+    String? updateDate = widget.trav.date;
     String updateName = widget.trav.name;
     String updatePart = widget.trav.partecipant;
-    String? updateDate = widget.trav.date;
 
-    Future<void> updateTravel(String id, String field, String newField) async {
-      return FirebaseFirestore.instance
-          .collection("travel")
-          .doc(id)
-          .update({field: newField})
-          .then(
-            (value) => print("DocumentSnapshot successfully updated!"),
-            onError: (e) => print("Error updating document $e")
-          );
-    }
     buildCalendarDialogButton() {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
@@ -203,8 +198,8 @@ class _SettingTravState extends State<SettingsTrav> {
               );
               if (values != null) {
                 // ignore: avoid_print
-                date = _getValueText(config.calendarType, values);
-                print(date);
+                updateDate = _getValueText(config.calendarType, values);
+                print(updateDate);
                 setState(() {
                   _dialogCalendarPickerValue = values;
                 });
@@ -219,7 +214,6 @@ class _SettingTravState extends State<SettingsTrav> {
         ]),
       );
     }
-    
    
     var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
@@ -235,20 +229,15 @@ class _SettingTravState extends State<SettingsTrav> {
           onToggle: (index) {
             switch (index) {
               case 1:
-                date = 'Weekend';
+                updateDate = 'Weekend';
                 break;
               case 2:
-                date = 'Settimana';
+                updateDate = 'Settimana';
                 break;
               case 3:
-                date = 'Altro';
+                updateDate = 'Altro';
                 break;
             }
-
-            // setState(() {
-            //   _swapDate = !_swapDate;
-            // });
-            print('switched to $index -- $date');
           },
     ));
 
@@ -256,89 +245,44 @@ class _SettingTravState extends State<SettingsTrav> {
       child: (_swapDate) ? macroCharts : microCharts,
     );
     
+    
 
-    Future<void> _changedata() async {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog( // <-- SEE HERE
-            title: const Text('Cambio date'),
-            actions: <Widget>[
-              ToggleSwitch(
-                initialLabelIndex: _swapDate ? 0 : 1,
-                minWidth: 50.0,
-                minHeight: 27.0,
-                activeBgColor: const [
-                  Color.fromARGB(255, 59, 94, 115)
-                ],
-                inactiveBgColor:
-                    const Color.fromARGB(255, 223, 227, 229),
-                totalSwitches: 2,
-                fontSize: 16,
-                labels: const ['Si', 'No'],
-                onToggle: (index) {
-                  setState(() {
-                    _swapDate = !_swapDate;
-                  });
-                },
-              ),
-              swapTile,
-              
-              TextButton(
-                child: const Text('Salva', style: TextStyle(fontSize: 15),),
-                onPressed: () {
-
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+    Future<void> updateTravel(String id, String field, String newField) async {
+      return FirebaseFirestore.instance
+          .collection("travel")
+          .doc(id)
+          .update({field: newField})
+          .then(
+            (value) => print("DocumentSnapshot successfully updated!"),
+            onError: (e) => print("Error updating document $e")
           );
-        },
-      );
     }
-
-    Future<void> _showAlertDialog() async {
-      return showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog( // <-- SEE HERE
-            title: const Text('Vuoi modificare la data del viaggio?'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('No', style: TextStyle(fontSize: 20),),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('Si', style: TextStyle(fontSize: 20),),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _changedata();
-                },
-              ),
-            ],
+    Future<void> updateTravel2(String id, String field, String? newField) async {
+      return FirebaseFirestore.instance
+          .collection("travel")
+          .doc(id)
+          .update({field: newField})
+          .then(
+            (value) => print("DocumentSnapshot successfully updated!"),
+            onError: (e) => print("Error updating document $e")
           );
-        },
-      );
     }
-
-    return SafeArea(
-        top: false,
-        bottom: false,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Impostazioni'),
-            leading: IconButton(
+    
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text('Impostazioni'),
+        leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            
-          ),
-          
-          body: Column(
+      ),
+      body: Align(
+        alignment: Alignment.topCenter, //aligns to topCenter
+        child: Column(
+          children: [
+            Column(
             children: [
               const SizedBox(height: 10,),
               Padding(
@@ -367,62 +311,101 @@ class _SettingTravState extends State<SettingsTrav> {
                   onChanged: (text) => updatePart = text,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  onPressed: () { _showAlertDialog(); }, 
-                  child: Container(
-                    child: Row( children: [
-                      const Icon(Icons.date_range_outlined, color: Color.fromARGB(255, 135, 132, 125),),
-                      const SizedBox(width: 16,),
-                      Text('Data:  ${widget.trav.date}', style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 93, 91, 87)),),
-                    ],),
-                  ),
-                ),),
-                // TextField(
-                //   autofocus: false,
-                  
-                //   decoration: InputDecoration(
-                //       icon: const Icon(Icons.date_range_outlined),
-                //       hintText: 'Data:  ${trav.date}',
-                //       counterText: 'Modifica data/durata del viaggio',
-                //       ),
-                      
-                //   onChanged: (text) => updatePart = text,
-                // ),
-              
-              SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (FirebaseAuth.instance.currentUser != null) {
-                        FirebaseFirestore.instance
-                          .collection('travel')
-                          .where("name", isEqualTo: widget.trav.name)
-                          .where('partecipant', isEqualTo: widget.trav.partecipant)
-                          .get()
-                          .then( (querySnapshot) {
-                            for (var docSnapshot in querySnapshot.docs) {
-                              if(updateName != widget.trav.name) updateTravel(docSnapshot.id, 'name', updateName);
-                              if(updatePart != widget.trav.partecipant) updateTravel(docSnapshot.id, 'partecipant', updatePart);
-                              
-                            }
-                          },);
-                        
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')));
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text('Invia', style: TextStyle(fontSize: 16)),
+            //Container(
+            //padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                  children: [
+                    const Icon(Icons.date_range_outlined, color: Color.fromARGB(255, 135, 132, 125)),
+                    const SizedBox(width: 15,),
+                    Text('Data:  ${widget.trav.date}', style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 93, 91, 87)),),
+                  ],
+                ),
+            ),
+            // Form(
+            //   key: _formKey,
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Column(children: [
+            //         const SizedBox(
+            //           height: 30,
+            //         ),
+            //         Row(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             const Text(
+            //               'So già le date del mio viaggio',
+            //               style: TextStyle(fontSize: 16),
+            //             ),
+            //             const SizedBox(
+            //               width: 25,
+            //             ),
+            //             ToggleSwitch(
+            //               initialLabelIndex: _swapDate ? 0 : 1,
+            //               minWidth: 45.0,
+            //               minHeight: 27.0,
+            //               activeBgColor: const [
+            //                 Color.fromARGB(255, 59, 94, 115)
+            //               ],
+            //               inactiveBgColor:
+            //                   const Color.fromARGB(255, 223, 227, 229),
+            //               totalSwitches: 2,
+            //               fontSize: 16,
+            //               labels: const ['Si', 'No'],
+            //               onToggle: (index) {
+            //                 setState(() {
+            //                   _swapDate = !_swapDate;
+            //                 });
+            //                 print('switched to $index $_swapDate');
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //         const SizedBox(height: 20),
+            //         swapTile,
+            //       ]),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        child: const Text('Invia', style: TextStyle(fontSize: 16)),
+                        onPressed: () {
+                          print('${widget.trav.name}');
+                          FirebaseFirestore.instance
+                              .collection('travel')
+                              .where("name", isEqualTo: widget.trav.name)
+                              .where("partecipant", isEqualTo: widget.trav.partecipant)
+                              .get()
+                              .then((querySnapshot) {
+                              for (var docSnapshot in querySnapshot.docs) {
+                                if(updateName != widget.trav.name) updateTravel(docSnapshot.id, 'name', updateName);
+                                if(updatePart != widget.trav.partecipant) updateTravel(docSnapshot.id, 'partecipant', updatePart);
+                                // print('prima ${widget.trav.date} - dopo ${updateDate}');
+                                // if(updateDate != widget.trav.date) {
+                                //   if(updateDate!.contains('null')){
+                                //     updateDate = updateDate!.substring(0,10);
+                                //   }
+                                //   updateTravel2(docSnapshot.id, 'exaclty date', updateDate);
+                                // }
+                                // print('${docSnapshot.id} => ${docSnapshot.data()}');
+                                // deleteItem(docSnapshot.id);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
-          ),
-        ),
-    );
+              ),],),),);
+    //         ),
+    //       ],),
+    //     ], ),
+    //   ),
+    // );
   }
 }

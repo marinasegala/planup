@@ -10,8 +10,6 @@ import 'package:planup/model/travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/travel_rep.dart';
 
-//TODO: far partire il calendario da 'oggi'
-
 class CreateTravelPage extends StatefulWidget {
   const CreateTravelPage({Key? key}) : super(key: key);
 
@@ -259,7 +257,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
     var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
-        child: ToggleSwitch(
+      child: ToggleSwitch(
       initialLabelIndex: 0,
       minWidth: 85.0,
       minHeight: 50.0,
