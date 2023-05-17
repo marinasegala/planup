@@ -16,7 +16,7 @@ class TravInfo extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(trav.name),
-          leading: IconButton(
+          leading: IconButton( 
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);

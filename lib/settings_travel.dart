@@ -14,6 +14,7 @@ class SettingTravel extends StatefulWidget {
   State<SettingTravel> createState() => _SettingTravelState();
 }
 
+enum Shown { si, no }
 
 class _SettingTravelState extends State<SettingTravel> {
   final _formKey = GlobalKey<FormState>();
@@ -25,6 +26,9 @@ class _SettingTravelState extends State<SettingTravel> {
     String? updateDate = widget.travel.date;
     bool _canupdateDate = false;
     bool check = false;
+    Shown? _answer = Shown.no;
+
+
 
     Future<void> updateItem(String id, String field, String newField){
       return FirebaseFirestore.instance.collection('travel')
@@ -42,9 +46,7 @@ class _SettingTravelState extends State<SettingTravel> {
           icon: const Icon(Icons.arrow_back)
         ),
       ),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: Column(
+      body: Column(
           children: [
             const SizedBox(height: 10,),
             Padding(
@@ -84,8 +86,7 @@ class _SettingTravelState extends State<SettingTravel> {
                       'Se si sanno le date del viaggio inserire una delle due opzioni: '
                       '\n\n       yyyy-mm-dd to yyyy-mm-dd  \n                  yyyy-mm-dd \n '
                       '\nSe non si conoscono ancora scrivere una delle seguenti scelte: \n\n                   Giornata \n                   Weekend \n                  Settimana \n                      Altro'
-                    , textAlign: TextAlign.justify,),
-                  
+                    , textAlign: TextAlign.justify,),     
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -111,7 +112,45 @@ class _SettingTravelState extends State<SettingTravel> {
               ),
             ),
             
-            
+            // Padding(
+            //   padding: EdgeInsets.all(8.0),
+            //   child: Column(children: [
+            //     Row( children: [
+            //       const Icon(Icons.date_range_outlined, color: Color.fromARGB(255, 124, 120, 109),),
+            //       const SizedBox(width: 15,),
+            //       Text('Data: ${widget.travel.date}', style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 104, 101, 93),) ),
+            //       IconButton(
+            //         color: const Color.fromARGB(255, 124, 120, 109),
+            //         onPressed: () {
+            //           showDialog<void>(
+            //             context: context,
+            //             builder: (BuildContext context) {
+            //               return AlertDialog(
+            //                 title: const Text('Come cambiare le date'),
+            //                 content: const Text(
+            //                   'Se si conosce il periodo di tempo, premere il bottone Periodi\n\n'
+            //                   'Se si conoscono le date, premere il bottone Date\n'
+            //                   ,
+            //                 ),
+            //                 actions: <Widget>[
+            //                   TextButton(
+            //                     style: TextButton.styleFrom(
+            //                       textStyle: Theme.of(context).textTheme.labelLarge,
+            //                     ),
+            //                     child: const Text('OK', style: TextStyle(fontSize: 17),),
+            //                     onPressed: () {
+            //                       Navigator.of(context).pop();
+            //                     },
+            //                   ),
+            //                 ],
+            //               );
+            //             },
+            //           );
+            //         }, 
+            //         icon: Icon(Icons.help_outline_outlined))
+            //     ],),
+                
+            // ],),),    
             
             const SizedBox(height: 10,),
             ElevatedButton(
@@ -158,7 +197,6 @@ class _SettingTravelState extends State<SettingTravel> {
               child: const Text('Invia', style: TextStyle(fontSize: 16),)
             ),
           ],
-        ),
       ),
     );
   }
