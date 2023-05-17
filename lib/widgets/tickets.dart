@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:planup/create_travel.dart';
 
 class Tickets extends StatefulWidget{
-  const Tickets({super.key});
+  final String trav;
+  const Tickets({Key? key, required this.trav}) : super(key: key);
 
   @override
   State<Tickets> createState() => _TicketState();

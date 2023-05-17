@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:planup/widgets/shopping.dart';
 import 'package:planup/widgets/tickets.dart';
 
-class ItemWidget extends StatelessWidget {
+import '../widgets/notes.dart';
+
+class ItemWidget extends StatefulWidget {
   String name = '';
   IconData icon;
   int index;
   String trav = '';
 
-  ItemWidget({
-    Key? key,
+  ItemWidget({Key? key,
     required this.name,
     required this.icon,
     required this.index,
@@ -17,21 +18,34 @@ class ItemWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ItemWidget> createState() => _ItemWidgetState();
+}
+
+class _ItemWidgetState extends State<ItemWidget> {
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          switch (index) {
+          switch (widget.index) {
             case 3:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Shopping(trav: trav)),
+                MaterialPageRoute(builder: (context) => Shopping(trav: widget.trav)),
+              );
+              break;
+            
+            case 5:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Notes(trav: widget.trav)),
               );
               break;
 
             default:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Tickets()),
+                MaterialPageRoute(builder: (context) => Tickets(trav: widget.trav)),
               );
           }
         },
@@ -43,9 +57,9 @@ class ItemWidget extends StatelessWidget {
               child: Row(
                 children: [
                   const SizedBox(width: 15),
-                  Icon(icon),
+                  Icon(widget.icon),
                   const SizedBox(width: 10),
-                  Text(name,
+                  Text(widget.name,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold)),
                 ],
@@ -53,3 +67,4 @@ class ItemWidget extends StatelessWidget {
         ));
   }
 }
+
