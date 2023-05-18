@@ -14,8 +14,6 @@ class SettingTravel extends StatefulWidget {
   State<SettingTravel> createState() => _SettingTravelState();
 }
 
-enum Shown { si, no }
-
 class _SettingTravelState extends State<SettingTravel> {
   final _formKey = GlobalKey<FormState>();
 
@@ -26,9 +24,7 @@ class _SettingTravelState extends State<SettingTravel> {
     String? updateDate = widget.travel.date;
     bool _canupdateDate = false;
     bool check = false;
-    Shown? _answer = Shown.no;
-
-
+    
 
     Future<void> updateItem(String id, String field, String newField){
       return FirebaseFirestore.instance.collection('travel')
@@ -163,6 +159,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     _canupdateDate = true;
                   } 
                 }
+                
                 FirebaseFirestore.instance.collection('travel')
                     .where('name', isEqualTo: widget.travel.name)
                     .where('partecipant', isEqualTo: widget.travel.partecipant)

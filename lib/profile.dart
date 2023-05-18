@@ -5,7 +5,7 @@ import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/model/friend.dart';
 import 'package:planup/setting_profile.dart';
-import 'package:planup/widgets/statistic_card.dart';
+import 'package:planup/show/statistic_card.dart';
 
 import 'model/travel.dart';
 

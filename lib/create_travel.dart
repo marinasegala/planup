@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planup/model/travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'db/friends_rep.dart';
 import 'db/travel_rep.dart';
+import 'model/friend.dart';
 
 class CreateTravelPage extends StatefulWidget {
   const CreateTravelPage({Key? key}) : super(key: key);
@@ -16,10 +19,14 @@ class CreateTravelPage extends StatefulWidget {
   State<CreateTravelPage> createState() => _CreateTravelFormState();
 }
 
-//TODO - capire perche il codice image non funziona
 class _CreateTravelFormState extends State<CreateTravelPage> {
   final _formKey = GlobalKey<FormState>();
 
+  final currentUser = FirebaseAuth.instance.currentUser!;
+
+  final FriendsRepository friendRepository = FriendsRepository();
+  List<String> friends = [];
+  
   String? nameTrav;
   String part = '';
   final DataRepository repository = DataRepository();
@@ -98,9 +105,25 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
     return valueText;
   }
+  
+  addtoFriend(String name){
+    print(name);
+    friends.add(name);
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    FirebaseFirestore.instance.collection('friends')
+      .where('userid', isEqualTo: currentUser.uid)
+      .get()
+      .then((querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          addtoFriend(docSnapshot.get('userIdFriend'));
+        }
+      },onError: (e) => print("Error completing: $e"),
+      );
+    print('friends: $friends');
     // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
@@ -339,7 +362,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             );
           });
     }
-
+       
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

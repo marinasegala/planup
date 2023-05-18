@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/userAccount.dart';
-import 'package:planup/widgets/statistic_card.dart';
+import 'package:planup/show/statistic_card.dart';
 
 class FriendProfile extends StatefulWidget {
   const FriendProfile({super.key, required this.friend});

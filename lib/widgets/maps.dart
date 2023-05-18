@@ -48,7 +48,7 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Maps'),
+        title: const Text('Mappa'),
       ),
       body: OSMFlutter(
         controller: _mapController,

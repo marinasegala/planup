@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planup/maps.dart';
+import 'package:planup/widgets/maps.dart';
 import 'package:planup/widgets/shopping.dart';
 import 'package:planup/widgets/tickets.dart';
 
