@@ -6,7 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/model/userAccount.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/friends_rep.dart';
 import 'db/travel_rep.dart';
@@ -38,6 +40,25 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   String imageUrl = '';
 
   final ImagePicker picker = ImagePicker();
+
+  late List<UserAccount> users = [];
+  final UsersRepository usersRepository = UsersRepository();
+  final User currentUser = FirebaseAuth.instance.currentUser!;
+
+  void getUsers() {
+    usersRepository.getStream().listen((event) {
+      users = event.docs
+          .map((e) => UserAccount.fromSnapshot(e))
+          .where((element) => element.userid != currentUser.uid)
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsers();
+  }
 
   Future getImageFromGallery() async {
     image = await picker.pickImage(source: ImageSource.gallery);
@@ -75,6 +96,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     }
   }
 
+  // ignore: unused_field
   List<DateTime?> _dialogCalendarPickerValue = [];
 
   String _getValueText(
@@ -279,7 +301,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
     var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
-      child: ToggleSwitch(
+        child: ToggleSwitch(
       initialLabelIndex: 0,
       minWidth: 85.0,
       minHeight: 50.0,

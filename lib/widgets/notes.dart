@@ -8,7 +8,7 @@ import '../db/notes_rep.dart';
 import '../show/note_card.dart';
 import 'create_note.dart';
 
-class Notes extends StatefulWidget{
+class Notes extends StatefulWidget {
   final String trav;
   const Notes({Key? key, required this.trav}) : super(key: key);
 
@@ -18,19 +18,20 @@ class Notes extends StatefulWidget{
 
 class _NotesState extends State<Notes> {
   late TextEditingController controller;
-  
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     controller = TextEditingController();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     controller.dispose();
     super.dispose();
   }
 
+  // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
 
   final DataRepository repository = DataRepository();
@@ -106,17 +107,21 @@ class _NotesState extends State<Notes> {
       BuildContext context, DocumentSnapshot snapshot, String name) {
     final note = Note.fromSnapshot(snapshot);
     if (FirebaseAuth.instance.currentUser != null) {
-      if (note.userid == FirebaseAuth.instance.currentUser?.uid && note.trav == name) {
-        FirebaseFirestore.instance.collection('users')
-          .where('userid', isEqualTo: note.userid)
-          .get()
-          .then((querySnapshot) {
+      if (note.userid == FirebaseAuth.instance.currentUser?.uid &&
+          note.trav == name) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .where('userid', isEqualTo: note.userid)
+            .get()
+            .then(
+          (querySnapshot) {
             print("Successfully completed");
             for (var docSnapshot in querySnapshot.docs) {
               author = docSnapshot.get('name');
-            }},
-            onError: (e) => print("Error completing: $e"),
-          );
+            }
+          },
+          onError: (e) => print("Error completing: $e"),
+        );
         return NoteCard(note: note, boldStyle: boldStyle, author: author);
       }
     }

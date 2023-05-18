@@ -15,6 +15,9 @@ class _MapsPageState extends State<MapsPage> {
   @override
   void initState() {
     super.initState();
+    const Color amber900 = Color(0xFFFF8F00);
+    const pinColor = amber900;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mapController.listenerMapLongTapping.addListener(() async {
         // when tap on map we will add new marker
@@ -25,7 +28,7 @@ class _MapsPageState extends State<MapsPage> {
             markerIcon: const MarkerIcon(
               icon: Icon(
                 Icons.location_on,
-                color: Colors.amberAccent,
+                color: pinColor,
                 size: 100,
               ),
             ),
@@ -63,7 +66,7 @@ class _MapsPageState extends State<MapsPage> {
         userLocationMarker: UserLocationMaker(
           personMarker: const MarkerIcon(
             icon: Icon(
-              Icons.person,
+              Icons.location_on,
               color: Colors.blueGrey,
               size: 100,
             ),

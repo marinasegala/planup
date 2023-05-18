@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:planup/create_travel.dart';
 
-class Tickets extends StatefulWidget{
+class Tickets extends StatefulWidget {
   final String trav;
   const Tickets({Key? key, required this.trav}) : super(key: key);
 
@@ -14,7 +13,6 @@ class Tickets extends StatefulWidget{
 }
 
 class _TicketState extends State<Tickets> {
-
   XFile? image;
   File? file;
   String imageUrl = '';
@@ -59,54 +57,54 @@ class _TicketState extends State<Tickets> {
 
   void choosePhoto() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)),
-          title: const Text('Seleziona il metodo di caricamento'),
-          content: SizedBox(
-            height: MediaQuery.of(context).size.height / 6,
-            child: Column(
-              children: [
-                ElevatedButton(
-                  //if user click this button, user can upload image from gallery
-                  onPressed: () {
-                    Navigator.pop(context);
-                    getImageFromGallery();
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.image),
-                      Text('Galleria'),
-                    ],
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: const Text('Seleziona il metodo di caricamento'),
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    //if user click this button, user can upload image from gallery
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImageFromGallery();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.image),
+                        Text('Galleria'),
+                      ],
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  //if user click this button. user can upload image from camera
-                  onPressed: () {
-                    Navigator.pop(context);
-                    getImageFromCamera();
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.camera),
-                      Text('Camera'),
-                    ],
+                  ElevatedButton(
+                    //if user click this button. user can upload image from camera
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImageFromCamera();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.camera),
+                        Text('Camera'),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => Navigator.pop(context, true), // passing true
-              icon: const Icon(Icons.clear),
-            ),
-          ],
-        );
-      });
-    }
+            actions: [
+              IconButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                icon: const Icon(Icons.clear),
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,19 +120,16 @@ class _TicketState extends State<Tickets> {
                 Navigator.pop(context);
               }),
         ),
-        
         body: const Center(child: Text('TODO: add widget')),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
+          onPressed: () {
             choosePhoto();
           },
           backgroundColor: const Color.fromARGB(255, 255, 217, 104),
           foregroundColor: Colors.black,
           child: const Icon(Icons.add),
         ),
-      
       ),
     );
   }
-
 }

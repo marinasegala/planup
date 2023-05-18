@@ -23,7 +23,7 @@ class _FriendPageState extends State<FriendPage> {
   List<UserAccount> users = [];
 
   void getUsers() {
-    UsersRepository().getStream().listen((event) {
+    userRepository.getStream().listen((event) {
       users = event.docs
           .map((e) => UserAccount.fromSnapshot(e))
           .where((element) => element.userid != currentUser.uid)
@@ -94,6 +94,7 @@ class _FriendPageState extends State<FriendPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Cerca amici"), actions: <Widget>[
         StreamBuilder(
+          stream: userRepository.getStream(),
           builder: (context, snapshot) {
             return IconButton(
                 icon: const Icon(Icons.search),

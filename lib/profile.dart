@@ -3,16 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
-import 'package:planup/model/friend.dart';
 import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
-
-import 'model/travel.dart';
-
-final List<String> images = [
-  'assets/montagna.jpg',
-  'assets/vienna.jpg',
-];
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -39,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
       for (final providerProfile in currentUser!.providerData) {
         name = providerProfile.displayName;
         profilePhoto = providerProfile.photoURL;
-        print(profilePhoto);
       }
     }
 
@@ -145,43 +136,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-final List<Widget> imageSliders = images
-    .map((item) => Container(
-          margin: const EdgeInsets.all(5.0),
-          child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-              child: Stack(
-                children: <Widget>[
-                  Image.asset(item, fit: BoxFit.cover, width: 1000.0),
-                  Positioned(
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(200, 0, 0, 0),
-                            Color.fromARGB(0, 0, 0, 0)
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Text(
-                        'No. ${images.indexOf(item)} image',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        ))
-    .toList();
