@@ -47,7 +47,14 @@ class _FriendPageState extends State<FriendPage> {
               UserAccount('Not found', 'Not found', 'Not found', 'Not found'),
         );
         return ListTile(
-            leading: const Icon(Icons.person),
+            leading: user.photoUrl != null
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(user.photoUrl!),
+                    radius: 18,
+                  )
+                : const CircleAvatar(
+                    child: Icon(Icons.person),
+                  ),
             title: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
@@ -179,7 +186,14 @@ class UserSearch extends SearchDelegate<String> {
             .toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-          leading: const Icon(Icons.person),
+          leading: suggestion[index].photoUrl != null
+              ? CircleAvatar(
+                  backgroundImage: NetworkImage(suggestion[index].photoUrl!),
+                  radius: 18,
+                )
+              : const CircleAvatar(
+                  child: Icon(Icons.person),
+                ),
           title: Text(suggestion[index].name,
               style: Theme.of(context).textTheme.labelSmall),
           trailing: TextButton(
