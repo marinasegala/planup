@@ -39,12 +39,9 @@ class _FriendPageState extends State<FriendPage> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final friends = Friend.fromSnapshot(snapshot);
-    UserAccount user;
     if (FirebaseAuth.instance.currentUser != null) {
       if (friends.userid == currentUser.uid) {
-        // get the friend name from the list of users
-        getUsers();
-        user = users.firstWhere(
+        final user = users.firstWhere(
           (element) => element.userid == friends.userIdFriend,
           orElse: () =>
               UserAccount('Not found', 'Not found', 'Not found', 'Not found'),

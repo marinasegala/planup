@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/userAccount.dart';
 import 'package:planup/widgets/statistic_card.dart';
 
@@ -13,9 +15,11 @@ class FriendProfile extends StatefulWidget {
 }
 
 class _FriendProfileState extends State<FriendProfile> {
-  late UserAccount friendUser;
   String? name;
   String? profilePhoto;
+
+  UsersRepository usersRepository = UsersRepository();
+  User currentUser = FirebaseAuth.instance.currentUser!;
 
   int friends = 0;
   int travels = 0;
@@ -23,6 +27,9 @@ class _FriendProfileState extends State<FriendProfile> {
   @override
   void initState() {
     super.initState();
+
+    name = widget.friend.name;
+    profilePhoto = widget.friend.photoUrl;
 
     _getLengthFriends();
     _getLengthTraverls();
