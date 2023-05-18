@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planup/model/userAccount.dart';
 
@@ -34,5 +36,16 @@ class UsersRepository {
       }
     });
     return exists;
+  }
+
+  Future<List<UserAccount>> getUsers() async {
+    List<UserAccount> users = [];
+    await collectionReference.get().then((QuerySnapshot querySnapshot) {
+      for (var element in querySnapshot.docs) {
+        users.add(UserAccount(element['name'], element['email'],
+            element['userid'], element['photoUrl']));
+      }
+    });
+    return users;
   }
 }

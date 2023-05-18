@@ -12,7 +12,6 @@ import 'package:planup/model/userAccount.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/friends_rep.dart';
 import 'db/travel_rep.dart';
-import 'model/friend.dart';
 
 class CreateTravelPage extends StatefulWidget {
   const CreateTravelPage({Key? key}) : super(key: key);
@@ -28,7 +27,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   final FriendsRepository friendRepository = FriendsRepository();
   List<String> friends = [];
-  
+
   String? nameTrav;
   String part = '';
   final DataRepository repository = DataRepository();
@@ -43,14 +42,13 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
-  final User currentUser = FirebaseAuth.instance.currentUser!;
 
   void getUsers() {
-    usersRepository.getStream().listen((event) {
-      users = event.docs
-          .map((e) => UserAccount.fromSnapshot(e))
-          .where((element) => element.userid != currentUser.uid)
-          .toList();
+    // obtain users from the repository and add to the list
+    usersRepository.getUsers().then((usersList) {
+      setState(() {
+        users = usersList;
+      });
     });
   }
 
@@ -127,24 +125,28 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
     return valueText;
   }
-  
-  addtoFriend(String name){
+
+  addtoFriend(String name) {
     print(name);
     friends.add(name);
   }
 
   @override
-  Widget build(BuildContext context) { 
-    FirebaseFirestore.instance.collection('friends')
-      .where('userid', isEqualTo: currentUser.uid)
-      .get()
-      .then((querySnapshot) {
+  Widget build(BuildContext context) {
+    print('users: $users');
+    FirebaseFirestore.instance
+        .collection('friends')
+        .where('userid', isEqualTo: currentUser.uid)
+        .get()
+        .then(
+      (querySnapshot) {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           addtoFriend(docSnapshot.get('userIdFriend'));
         }
-      },onError: (e) => print("Error completing: $e"),
-      );
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
     print('friends: $friends');
     // calendar
     buildCalendarDialogButton() {
@@ -384,7 +386,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             );
           });
     }
-       
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
