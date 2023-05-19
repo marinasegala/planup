@@ -55,6 +55,7 @@ dependencies:
 
   # maps
   flutter_osm_plugin: ^0.53.4+1
+  multiselect: ^0.1.0
 
 dependency_overrides:
   intl: any
