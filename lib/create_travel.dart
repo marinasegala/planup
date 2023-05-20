@@ -34,10 +34,16 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   List<String> listid = [];
   List<String> finalFriend= [];
   List<String> selectedFriends = [];
+  String namefriend = '';
+  Map<String, dynamic> toMap() {
+    return {
+      'name': namefriend,
+    };
+  }
 
   String? nameTrav;
   String part = '';
-  final DataRepository repository = DataRepository();
+  final TravelRepository repository = TravelRepository();
   bool _swapDate = false;
   String date = 'Giornata';
 
@@ -133,10 +139,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     return valueText;
   }
 
-  // addtoFriend(String name) {
-  //   friends.add(name);
-  // }
-
   get(String where, String add){
     
     FirebaseFirestore.instance
@@ -164,24 +166,42 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     for (var id in friends){
       if(asFriend.contains(id) && !listid.contains(id)){
         listid.add(id);
+        FirebaseFirestore.instance.collection('users')
+          .where('userid', isEqualTo: id)
+          .get()
+          .then((querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              setState(() {
+                finalFriend.add(docSnapshot.get('name'));
+              });
+        }}, onError: (e) => print("Error completing: $e"), );
       }
       i++;
     }
     for(; i<asFriend.length; i++){
       if(friends.contains(asFriend[i]) && !listid.contains(asFriend[i])){
         listid.add(asFriend[i]);
+        FirebaseFirestore.instance.collection('users')
+          .where('userid', isEqualTo: asFriend[i])
+          .get()
+          .then((querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              setState(() {
+                finalFriend.add(docSnapshot.get('name'));
+              });
+        }}, onError: (e) => print("Error completing: $e"), );
       }
     }
+    
   }
 
   @override
   Widget build(BuildContext context) {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
-
+    
     getfinal();
     
-    print(finalFriend);
     // print('friends: $friends');
     // print('asfriend: $asFriend');
     // calendar
@@ -559,6 +579,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         whenEmpty: 'Aggiungi amici',
                       ),
                     ),
+                    
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -570,12 +591,13 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               if (date.contains('null')) {
                                 date = date.substring(0, 10);
                               }
-
+                              print(selectedFriends);
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
-                                  date: date);
+                                  date: date,
+                                  listPart: selectedFriends);
                               repository.add(newTrav);
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

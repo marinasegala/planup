@@ -16,7 +16,7 @@ class HomeTravel extends StatefulWidget {
 }
 
 class _HomeTravelState extends State<HomeTravel> {
-  final DataRepository repository = DataRepository();
+  final TravelRepository repository = TravelRepository();
 
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planup/model/notes.dart';
 
-class DataRepository {
+class NoteRepository {
   // 1
   final CollectionReference collection =
       FirebaseFirestore.instance.collection('note');

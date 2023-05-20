@@ -34,7 +34,7 @@ class _NotesState extends State<Notes> {
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
 
-  final DataRepository repository = DataRepository();
+  final NoteRepository repository = NoteRepository();
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 

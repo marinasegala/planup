@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planup/model/shopping.dart';
 
-class DataRepository {
+class ShopRepository {
   // 1
   final CollectionReference collection =
       FirebaseFirestore.instance.collection('shopping');

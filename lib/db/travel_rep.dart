@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:planup/model/travel.dart';
 
-class DataRepository {
+class TravelRepository {
   // 1
   final CollectionReference collection =
       FirebaseFirestore.instance.collection('travel');
