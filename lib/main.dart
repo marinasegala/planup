@@ -20,12 +20,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('en', ''),
-        Locale('zh', ''),
-        Locale('he', ''),
-        Locale('es', ''),
-        Locale('ru', ''),
-        Locale('ko', ''),
-        Locale('hi', ''),
+        Locale('it', ''),
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
