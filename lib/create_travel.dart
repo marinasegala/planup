@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'package:planup/model/userAccount.dart';
@@ -24,9 +26,14 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   final _formKey = GlobalKey<FormState>();
 
   final currentUser = FirebaseAuth.instance.currentUser!;
+  
 
   final FriendsRepository friendRepository = FriendsRepository();
   List<String> friends = [];
+  List<String> asFriend = [];
+  List<String> listid = [];
+  List<String> finalFriend= [];
+  List<String> selectedFriends = [];
 
   String? nameTrav;
   String part = '';
@@ -126,28 +133,57 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     return valueText;
   }
 
-  addtoFriend(String name) {
-    print(name);
-    friends.add(name);
-  }
+  // addtoFriend(String name) {
+  //   friends.add(name);
+  // }
 
-  @override
-  Widget build(BuildContext context) {
-    print('users: $users');
+  get(String where, String add){
+    
     FirebaseFirestore.instance
         .collection('friends')
-        .where('userid', isEqualTo: currentUser.uid)
+        .where(where, isEqualTo: currentUser.uid)
         .get()
-        .then(
-      (querySnapshot) {
-        print("Successfully completed");
+        .then((querySnapshot) {
+        // print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
-          addtoFriend(docSnapshot.get('userIdFriend'));
+          if(where == 'userid'){
+            friends.add(docSnapshot.get(add));
+          } else{
+            asFriend.add(docSnapshot.get(add));
+          }
+          
+          // addtoFriend(docSnapshot.get('userIdFriend'));
         }
       },
       onError: (e) => print("Error completing: $e"),
     );
-    print('friends: $friends');
+  }
+
+  getfinal(){
+    int i=0;
+    for (var id in friends){
+      if(asFriend.contains(id) && !listid.contains(id)){
+        listid.add(id);
+      }
+      i++;
+    }
+    for(; i<asFriend.length; i++){
+      if(friends.contains(asFriend[i]) && !listid.contains(asFriend[i])){
+        listid.add(asFriend[i]);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    get('userid', 'userIdFriend');
+    get('userIdFriend', 'userid');
+
+    getfinal();
+    
+    print(finalFriend);
+    // print('friends: $friends');
+    // print('asfriend: $asFriend');
     // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
@@ -472,7 +508,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                   ),
                   Column(children: [
                     const SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -508,7 +544,22 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     const SizedBox(height: 20),
                     swapTile,
                   ]),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: DropDownMultiSelect(
+                        onChanged: (List<String> x) {
+                          setState(() {
+                            selectedFriends =x;
+                          });
+                        },
+                        options: finalFriend,
+                        selectedValues: selectedFriends,
+                        whenEmpty: 'Aggiungi amici',
+                      ),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
