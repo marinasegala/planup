@@ -20,7 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int travels = 0;
 
   final FriendsRepository friendRepository = FriendsRepository();
-  final DataRepository dataRepository = DataRepository();
+  final ShopRepository dataRepository = ShopRepository();
   final currentUser = FirebaseAuth.instance.currentUser;
 
   @override

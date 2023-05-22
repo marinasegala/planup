@@ -15,7 +15,7 @@ class CreateNote extends StatefulWidget {
 class _CreateNoteState extends State<CreateNote> {
   final _formKey = GlobalKey<FormState>();
 
-  final DataRepository repository = DataRepository();
+  final NoteRepository repository = NoteRepository();
   String name = '';
   String desc = '';
 

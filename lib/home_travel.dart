@@ -16,7 +16,7 @@ class HomeTravel extends StatefulWidget {
 }
 
 class _HomeTravelState extends State<HomeTravel> {
-  final DataRepository repository = DataRepository();
+  final TravelRepository repository = TravelRepository();
 
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
@@ -73,10 +73,19 @@ class _HomeTravelState extends State<HomeTravel> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trav = Travel.fromSnapshot(snapshot);
-    if (FirebaseAuth.instance.currentUser != null) {
-      if (trav.userid == FirebaseAuth.instance.currentUser?.uid) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    
+    if (currentUser != null) {
+      // print(trav.listPart);
+      if (trav.userid == currentUser.uid) {
         return TravCard(trav: trav, boldStyle: boldStyle);
       }
+      // final lenght = trav.listPart?.length;
+      // for (int x = 0; x < lenght!; x++){
+      //   if(trav.listPart![x] == currentUser.email){
+      //     return TravCard(trav: trav, boldStyle: boldStyle);
+      //   }
+      // }
     }
     return const SizedBox.shrink();
   }
@@ -89,6 +98,11 @@ bool _hasMyOnwTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
   for (var i = 0; i < trav.length; i++) {
     if (trav[i]['userid'] == currentUser.uid) {
       return true;
+    }
+    for (var x = 0; x < trav[i]['list part'].length; x++){
+      if (trav[i]['list part'][x] == currentUser.email){
+        return true;
+      }
     }
   }
   return false;

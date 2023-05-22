@@ -18,7 +18,7 @@ class Shopping extends StatefulWidget {
 class _ShoppingState extends State<Shopping> {
   List<DocumentReference> listId = [];
 
-  final DataRepository repository = DataRepository();
+  final ShopRepository repository = ShopRepository();
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 

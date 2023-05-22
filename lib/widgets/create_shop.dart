@@ -31,7 +31,7 @@ class _CreateItemState extends State<CreateShopItem> {
   String price = '';
   String desc = '';
 
-  final DataRepository repository = DataRepository();
+  final ShopRepository repository = ShopRepository();
 
   @override
   Widget build(BuildContext context) {
