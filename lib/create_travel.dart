@@ -33,7 +33,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   List<String> asFriend = [];
   List<String> listid = [];
   List<String> finalFriend= [];
+  List<String> finalFriendMail= [];
   List<String> selectedFriends = [];
+  List<String> selectedFriendsMail = [];
   String namefriend = '';
   Map<String, dynamic> toMap() {
     return {
@@ -173,6 +175,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             for (var docSnapshot in querySnapshot.docs) {
               setState(() {
                 finalFriend.add(docSnapshot.get('name'));
+                finalFriendMail.add(docSnapshot.get('email'));
+                finalFriendMail.add(docSnapshot.get('name'));
               });
         }}, onError: (e) => print("Error completing: $e"), );
       }
@@ -188,22 +192,21 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             for (var docSnapshot in querySnapshot.docs) {
               setState(() {
                 finalFriend.add(docSnapshot.get('name'));
+                finalFriendMail.add(docSnapshot.get('email'));
+                finalFriendMail.add(docSnapshot.get('name'));
               });
         }}, onError: (e) => print("Error completing: $e"), );
       }
     }
-    
   }
 
   @override
   Widget build(BuildContext context) {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
-    
     getfinal();
-    
-    // print('friends: $friends');
-    // print('asfriend: $asFriend');
+    print('name: $finalFriend');
+    print('mail: $finalFriendMail');
     // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
@@ -571,15 +574,15 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       child: DropDownMultiSelect(
                         onChanged: (List<String> x) {
                           setState(() {
-                            selectedFriends =x;
+                            selectedFriends = x;
                           });
                         },
                         options: finalFriend,
                         selectedValues: selectedFriends,
                         whenEmpty: 'Aggiungi amici',
+                        icon: const Icon(Icons.person_add_alt_1_outlined),
                       ),
                     ),
-                    
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -591,14 +594,22 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               if (date.contains('null')) {
                                 date = date.substring(0, 10);
                               }
-                              print(selectedFriends);
+                              for (var x in selectedFriends){
+                                for(var i = 0; i<finalFriendMail.length; i++){
+                                  if(x == finalFriendMail[i]){
+                                    selectedFriendsMail.add(finalFriendMail[i-1]);
+                                  }
+                                }
+                              }
+                              
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
                                   date: date,
-                                  listPart: selectedFriends);
+                                  listPart: selectedFriendsMail);
                               repository.add(newTrav);
+                              
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
