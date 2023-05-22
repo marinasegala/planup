@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
 
@@ -13,7 +12,7 @@ class CreateNote extends StatefulWidget {
   State<CreateNote> createState() => _CreateNoteState();
 }
 
-class _CreateNoteState extends State<CreateNote>{
+class _CreateNoteState extends State<CreateNote> {
   final _formKey = GlobalKey<FormState>();
 
   final DataRepository repository = DataRepository();
@@ -64,7 +63,6 @@ class _CreateNoteState extends State<CreateNote>{
                       onChanged: (text) => desc = text,
                     ),
                   ),
-                  
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -76,12 +74,12 @@ class _CreateNoteState extends State<CreateNote>{
                               if (desc == '') {
                                 desc = 'null';
                               }
-                              final newShop = Note(name,
-                                  trav: widget.trav,
-                                  desc: desc,
-                                  userid:
-                                      FirebaseAuth.instance.currentUser?.uid,
-                                  );
+                              final newShop = Note(
+                                name,
+                                trav: widget.trav,
+                                desc: desc,
+                                userid: FirebaseAuth.instance.currentUser?.uid,
+                              );
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -91,7 +89,8 @@ class _CreateNoteState extends State<CreateNote>{
                             }
                           }
                         },
-                        child: const Text('Invia', style: TextStyle(fontSize: 16)),
+                        child:
+                            const Text('Invia', style: TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),
@@ -99,7 +98,6 @@ class _CreateNoteState extends State<CreateNote>{
               ),
             ),
           ],
-    ));
+        ));
   }
-
 }

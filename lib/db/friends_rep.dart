@@ -20,7 +20,7 @@ class FriendsRepository {
   }
 
   void updateFriend(Friend friend) async {
-    await collectionReference.doc(friend.userid).update(friend.toJson());
+    await collectionReference.doc(friend.referenceId).update(friend.toJson());
   }
 
   void deleteFriend(String userid, String friendid) async {

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +25,12 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   final _formKey = GlobalKey<FormState>();
 
   final currentUser = FirebaseAuth.instance.currentUser!;
-  
 
   final FriendsRepository friendRepository = FriendsRepository();
   List<String> friends = [];
   List<String> asFriend = [];
   List<String> listid = [];
-  List<String> finalFriend= [];
+  List<String> finalFriend = [];
   List<String> selectedFriends = [];
 
   String? nameTrav;
@@ -137,21 +135,21 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   //   friends.add(name);
   // }
 
-  get(String where, String add){
-    
+  get(String where, String add) {
     FirebaseFirestore.instance
         .collection('friends')
         .where(where, isEqualTo: currentUser.uid)
         .get()
-        .then((querySnapshot) {
+        .then(
+      (querySnapshot) {
         // print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
-          if(where == 'userid'){
+          if (where == 'userid') {
             friends.add(docSnapshot.get(add));
-          } else{
+          } else {
             asFriend.add(docSnapshot.get(add));
           }
-          
+
           // addtoFriend(docSnapshot.get('userIdFriend'));
         }
       },
@@ -159,16 +157,16 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     );
   }
 
-  getfinal(){
-    int i=0;
-    for (var id in friends){
-      if(asFriend.contains(id) && !listid.contains(id)){
+  getfinal() {
+    int i = 0;
+    for (var id in friends) {
+      if (asFriend.contains(id) && !listid.contains(id)) {
         listid.add(id);
       }
       i++;
     }
-    for(; i<asFriend.length; i++){
-      if(friends.contains(asFriend[i]) && !listid.contains(asFriend[i])){
+    for (; i < asFriend.length; i++) {
+      if (friends.contains(asFriend[i]) && !listid.contains(asFriend[i])) {
         listid.add(asFriend[i]);
       }
     }
@@ -180,7 +178,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     get('userIdFriend', 'userid');
 
     getfinal();
-    
+
     print(finalFriend);
     // print('friends: $friends');
     // print('asfriend: $asFriend');
@@ -551,7 +549,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       child: DropDownMultiSelect(
                         onChanged: (List<String> x) {
                           setState(() {
-                            selectedFriends =x;
+                            selectedFriends = x;
                           });
                         },
                         options: finalFriend,
