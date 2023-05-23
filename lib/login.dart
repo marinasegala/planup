@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/home.dart';
-import 'package:planup/model/userAccount.dart';
+import 'package:planup/model/user_account.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

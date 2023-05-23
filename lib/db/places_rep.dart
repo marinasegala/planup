@@ -20,4 +20,20 @@ class PlacesRepository {
   void deletePlace(Place place) async {
     await collection.doc(place.referenceId).delete();
   }
+
+  Future<List<Place>> getPlaces() async {
+    List<Place> users = [];
+    await collection.get().then((QuerySnapshot querySnapshot) {
+      for (var element in querySnapshot.docs) {
+        users.add(Place(
+            lat: element['lat'],
+            long: element['long'],
+            name: element['name'],
+            description: element['description'],
+            userid: element['userid'],
+            travelid: element['travelid']));
+      }
+    });
+    return users;
+  }
 }

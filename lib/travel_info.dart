@@ -16,7 +16,7 @@ class TravInfo extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(trav.name),
-          leading: IconButton( 
+          leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
@@ -40,35 +40,35 @@ class TravInfo extends StatelessWidget {
               name: 'Biglietti',
               icon: Icons.airplane_ticket,
               index: 1,
-              trav: trav.name,
+              trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
               name: 'Mappa',
               icon: Icons.map,
               index: 2,
-              trav: trav.name,
+              trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
               name: 'Acquisti personali',
               icon: Icons.euro_symbol,
               index: 3,
-              trav: trav.name,
+              trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
               name: 'Cosa portare',
               icon: Icons.shopping_cart,
               index: 4,
-              trav: trav.name,
+              trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
               name: 'Note',
               icon: Icons.note,
               index: 5,
-              trav: trav.name,
+              trav: trav,
             ),
           ]),
         ),

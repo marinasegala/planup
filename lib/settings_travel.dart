@@ -19,7 +19,7 @@ class _SettingTravelState extends State<SettingTravel> {
     String updateName = widget.travel.name;
     String updatePart = widget.travel.partecipant;
     String? updateDate = widget.travel.date;
-    bool _canupdateDate = false;
+    bool canupdateDate = false;
     bool check = false;
 
     Future<void> updateItem(String id, String field, String newField) {
@@ -162,10 +162,10 @@ class _SettingTravelState extends State<SettingTravel> {
                       updateDate?.toLowerCase() == 'settimana' ||
                       updateDate?.toLowerCase() == 'weekend' ||
                       updateDate?.toLowerCase() == 'altro') {
-                    _canupdateDate = true;
+                    canupdateDate = true;
                   }
                   if (updateDate?.length == 24 || updateDate?.length == 10) {
-                    _canupdateDate = true;
+                    canupdateDate = true;
                   }
                 }
                 FirebaseFirestore.instance
@@ -181,7 +181,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     if (updatePart != widget.travel.partecipant) {
                       updateItem(docSnapshot.id, 'partecipant', updatePart);
                     }
-                    if (_canupdateDate) {
+                    if (canupdateDate) {
                       if (updateDate != widget.travel.date) {
                         FirebaseFirestore.instance
                             .collection('travel')

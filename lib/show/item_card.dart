@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planup/model/travel.dart';
 import 'package:planup/widgets/maps.dart';
 import 'package:planup/widgets/shopping.dart';
 import 'package:planup/widgets/tickets.dart';
@@ -9,7 +10,7 @@ class ItemWidget extends StatefulWidget {
   String name = '';
   IconData icon;
   int index;
-  String trav = '';
+  Travel trav;
 
   ItemWidget({
     Key? key,
@@ -29,23 +30,37 @@ class _ItemWidgetState extends State<ItemWidget> {
     return GestureDetector(
         onTap: () {
           switch (widget.index) {
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Tickets(trav: widget.trav.name)));
+              break;
             case 2:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MapsPage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MapsPage(trav: widget.trav)));
               break;
             case 3:
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Shopping(trav: widget.trav)),
+                    builder: (context) => Shopping(trav: widget.trav.name)),
               );
               break;
-
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Tickets(trav: widget.trav.name)),
+              );
+              break;
             case 5:
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Notes(trav: widget.trav)),
+                    builder: (context) => Notes(trav: widget.trav.name)),
               );
               break;
 
@@ -53,7 +68,7 @@ class _ItemWidgetState extends State<ItemWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Tickets(trav: widget.trav)),
+                    builder: (context) => Tickets(trav: widget.trav.name)),
               );
           }
         },

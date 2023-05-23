@@ -15,8 +15,8 @@ class _StatisticCardState extends State<StatisticCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 110,
-      height: 110,
+      width: MediaQuery.of(context).size.width / 3.3,
+      height: MediaQuery.of(context).size.width / 3.3,
       child: Card(
         color: Colors.blueGrey[100],
         child: Column(

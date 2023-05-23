@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/users_rep.dart';
-import 'package:planup/model/userAccount.dart';
+import 'package:planup/model/user_account.dart';
 import 'package:planup/show/statistic_card.dart';
 
 class FriendProfile extends StatefulWidget {
@@ -23,6 +23,7 @@ class _FriendProfileState extends State<FriendProfile> {
 
   int friends = 0;
   int travels = 0;
+  int places = 0;
 
   @override
   void initState() {
@@ -32,7 +33,8 @@ class _FriendProfileState extends State<FriendProfile> {
     profilePhoto = widget.friend.photoUrl;
 
     _getLengthFriends();
-    _getLengthTraverls();
+    _getLengthTravels();
+    _getLengthPlaces();
   }
 
   void _getLengthFriends() {
@@ -47,7 +49,7 @@ class _FriendProfileState extends State<FriendProfile> {
     });
   }
 
-  void _getLengthTraverls() async {
+  void _getLengthTravels() async {
     var travelsList =
         await FirebaseFirestore.instance.collection('travel').get();
     final int count = travelsList.docs
@@ -55,6 +57,17 @@ class _FriendProfileState extends State<FriendProfile> {
         .length;
     setState(() {
       travels = count;
+    });
+  }
+
+  void _getLengthPlaces() async {
+    var placesList =
+        await FirebaseFirestore.instance.collection('places').get();
+    final int count = placesList.docs
+        .where((element) => element['userid'] == widget.friend.userid)
+        .length;
+    setState(() {
+      places = count;
     });
   }
 

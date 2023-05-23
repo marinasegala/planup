@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/travel.dart';
-import 'package:planup/model/userAccount.dart';
+import 'package:planup/model/user_account.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/friends_rep.dart';
 import 'db/travel_rep.dart';
