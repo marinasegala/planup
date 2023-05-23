@@ -30,6 +30,12 @@ class _ItemWidgetState extends State<ItemWidget> {
     return GestureDetector(
         onTap: () {
           switch (widget.index) {
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Tickets(trav: widget.trav.name)));
+              break;
             case 2:
               Navigator.push(
                   context,
@@ -43,7 +49,13 @@ class _ItemWidgetState extends State<ItemWidget> {
                     builder: (context) => Shopping(trav: widget.trav.name)),
               );
               break;
-
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Tickets(trav: widget.trav.name)),
+              );
+              break;
             case 5:
               Navigator.push(
                 context,
