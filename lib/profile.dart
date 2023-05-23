@@ -18,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late String? profilePhoto;
   int friends = 0;
   int travels = 0;
+  int places = 0;
 
   final FriendsRepository friendRepository = FriendsRepository();
   final ShopRepository dataRepository = ShopRepository();
@@ -38,7 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
     _getLengthFriends();
 
     // get the number of travels of currentuser from the list of travels
-    _getLengthTraverls();
+    _getLengthTravels();
+
+    // get the number of places of currentuser from the list of places
+    _getLengthPlaces();
   }
 
   void _getLengthFriends() {
@@ -53,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _getLengthTraverls() async {
+  void _getLengthTravels() async {
     var travelsList =
         await FirebaseFirestore.instance.collection('travel').get();
     final int count = travelsList.docs
@@ -61,6 +65,17 @@ class _ProfilePageState extends State<ProfilePage> {
         .length;
     setState(() {
       travels = count;
+    });
+  }
+
+  void _getLengthPlaces() async {
+    var placesList =
+        await FirebaseFirestore.instance.collection('places').get();
+    final int count = placesList.docs
+        .where((element) => element['userid'] == currentUser!.uid)
+        .length;
+    setState(() {
+      places = count;
     });
   }
 
@@ -125,9 +140,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 statisticTitle: "Viaggi",
                 statisticValue: travels,
               ),
-              const StatisticCard(
+              StatisticCard(
                 statisticTitle: "Posti",
-                statisticValue: 0,
+                statisticValue: places,
               ),
             ],
           ),
