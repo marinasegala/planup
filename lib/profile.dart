@@ -5,6 +5,8 @@ import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
+import 'package:timeline_list/timeline.dart';
+import 'package:timeline_list/timeline_model.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -146,8 +148,61 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: Text("I tuoi viaggi", style: TextStyle(fontSize: 12))),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: const TravelTimeline()),
+          ),
         ],
       ),
     );
+  }
+}
+
+class TravelTimeline extends StatelessWidget {
+  const TravelTimeline({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Timeline(
+        position: TimelinePosition.Left,
+        iconSize: 20,
+        children: <TimelineModel>[
+          TimelineModel(
+            const SizedBox(
+              height: 100,
+              child: Center(
+                child: Text("Timeline"),
+              ),
+            ),
+            icon: const Icon(Icons.timeline),
+          ),
+          TimelineModel(
+            const SizedBox(
+              height: 100,
+              child: Center(
+                child: Text("Timeline"),
+              ),
+            ),
+            icon: const Icon(Icons.timeline),
+          ),
+          TimelineModel(
+            const SizedBox(
+              height: 100,
+              child: Center(
+                child: Text("Timeline"),
+              ),
+            ),
+            icon: const Icon(Icons.timeline),
+          )
+        ]);
   }
 }
