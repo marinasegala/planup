@@ -30,9 +30,9 @@ class FriendsRepository {
         .where('userIdFriend', isEqualTo: friendid)
         .get()
         .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         doc.reference.delete();
-      });
+      }
     });
   }
 

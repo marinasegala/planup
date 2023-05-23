@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:planup/model/userAccount.dart';
+import 'package:planup/model/user_account.dart';
 
 class UsersRepository {
   final CollectionReference collectionReference =

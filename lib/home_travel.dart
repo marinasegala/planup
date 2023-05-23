@@ -50,7 +50,7 @@ class _HomeTravelState extends State<HomeTravel> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateTravelPage()),
+            MaterialPageRoute(builder: (context) => const CreateTravelPage()),
           );
         },
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
@@ -61,7 +61,12 @@ class _HomeTravelState extends State<HomeTravel> {
   }
 
   Widget _noItem() {
-    return const Center(child: Text('Non hai viaggi.\nClicca sul + per crearne di nuovi!', style: TextStyle(fontSize: 17), textAlign: TextAlign.center,));
+    return const Center(
+        child: Text(
+      'Non hai viaggi.\nClicca sul + per crearne di nuovi!',
+      style: TextStyle(fontSize: 17),
+      textAlign: TextAlign.center,
+    ));
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
@@ -74,7 +79,7 @@ class _HomeTravelState extends State<HomeTravel> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
-    
+
     if (currentUser != null) {
       // print(trav.listPart);
       if (trav.userid == currentUser.uid) {
@@ -99,8 +104,8 @@ bool _hasMyOnwTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
     if (trav[i]['userid'] == currentUser.uid) {
       return true;
     }
-    for (var x = 0; x < trav[i]['list part'].length; x++){
-      if (trav[i]['list part'][x] == currentUser.email){
+    for (var x = 0; x < trav[i]['list part'].length; x++) {
+      if (trav[i]['list part'][x] == currentUser.email) {
         return true;
       }
     }

@@ -5,7 +5,7 @@ import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/friend_profile.dart';
 import 'package:planup/model/friend.dart';
-import 'package:planup/model/userAccount.dart';
+import 'package:planup/model/user_account.dart';
 
 class FriendPage extends StatefulWidget {
   const FriendPage({super.key});
