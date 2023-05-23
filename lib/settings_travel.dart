@@ -1,5 +1,11 @@
+
+
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'model/travel.dart';
 
 class SettingTravel extends StatefulWidget {
@@ -13,6 +19,37 @@ class SettingTravel extends StatefulWidget {
 class _SettingTravelState extends State<SettingTravel> {
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
+  XFile? image;
+  File? file;
+  String imageUrl = '';
+  String uniqueFileName = '';
+  final ImagePicker picker = ImagePicker();
+
+  // void uploadFile() async {
+  //   // get a reference to storage root
+  //   Reference storageReference = FirebaseStorage.instance.ref();
+  //   Reference referenceDirImage = storageReference.child('images');
+    
+  //   // create a reference for the image to be stored
+  //   uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+  //   Reference imageReference = referenceDirImage.child(uniqueFileName);
+
+  //   // handle errors/success
+  //   try {
+  //     // store the image
+  //     await imageReference.putFile(File(image!.path));
+  //     imageReference.
+  //     // await imageReference.putFile(File(image!.path));
+
+  //     // success: get the download url
+  //     imageUrl = await imageReference.getDownloadURL();
+
+  //     // update the UI
+  //     setState(() {});
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +57,68 @@ class _SettingTravelState extends State<SettingTravel> {
     String updatePart = widget.travel.partecipant;
     String? updateDate = widget.travel.date;
     bool canupdateDate = false;
-    bool check = false;
-
-    Future<void> updateItem(String id, String field, String newField) {
+    var id = widget.travel.referenceId;
+    final isimageRef = FirebaseStorage.instance.ref().child("images/${widget.travel.photo}") ;
+    
+    void choosePhoto() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              title: const Text('Seleziona il metodo di caricamento'),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height / 6,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      //if user click this button, user can upload image from gallery
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // getImageFromGallery();
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.image),
+                          Text('Galleria'),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      //if user click this button. user can upload image from camera
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // getImageFromCamera();
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.camera),
+                          Text('Camera'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context, true), // passing true
+                  icon: const Icon(Icons.clear),
+                ),
+              ],
+            );
+          });
+    }
+    
+    Future<void> updateItem( String field, String newField) {
       return FirebaseFirestore.instance
           .collection('travel')
           .doc(id)
           .update({field: newField}).then(
-              (value) => {print("Update"), check = true},
+              (value) => {
+                print("Update"),
+              },
               onError: (e) => print("Error updating doc: $e"));
     }
 
@@ -45,6 +136,39 @@ class _SettingTravelState extends State<SettingTravel> {
           const SizedBox(
             height: 10,
           ),
+          // Container(
+          //       width: 100,
+          //       height: 100,
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         border: Border.all(
+          //           color: Colors.grey[300]!,
+          //           width: 1,
+          //         ),
+          //       ),
+          //       child: widget.travel.photo != null
+          //           ? ClipOval(
+          //               child: Image.file(
+          //                 //to show image, you type like this.
+          //                 File(isimageRef.toString()),
+          //                 fit: BoxFit.cover,
+          //                 width: 100,
+          //                 height: 100,
+          //               ),
+          //             )
+          //           : const ClipOval(
+          //               child: Icon(
+          //                 Icons.add_a_photo,
+          //                 size: 50,
+          //               ),
+          //             )),
+          //   ElevatedButton(
+          //     onPressed: () {
+          //       choosePhoto();
+          //       // reload the page
+          //     },
+          //     child: const Text('Cambia Foto'),
+          //   ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
@@ -168,38 +292,37 @@ class _SettingTravelState extends State<SettingTravel> {
                     canupdateDate = true;
                   }
                 }
+                
                 FirebaseFirestore.instance
-                    .collection('travel')
-                    .where('name', isEqualTo: widget.travel.name)
-                    .where('partecipant', isEqualTo: widget.travel.partecipant)
-                    .get()
-                    .then((querySnapshot) {
-                  for (var docSnapshot in querySnapshot.docs) {
-                    if (updateName != widget.travel.name) {
-                      updateItem(docSnapshot.id, 'name', updateName);
-                    }
-                    if (updatePart != widget.travel.partecipant) {
-                      updateItem(docSnapshot.id, 'partecipant', updatePart);
-                    }
-                    if (canupdateDate) {
-                      if (updateDate != widget.travel.date) {
-                        FirebaseFirestore.instance
-                            .collection('travel')
-                            .doc(docSnapshot.id)
-                            .update({'exactly date': updateDate}).then(
-                                (value) => {print("Update"), check = true},
-                                onError: (e) =>
-                                    print("Error updating doc: $e"));
+                  .collection('travel')
+                  .doc(id)
+                  .get().then((DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists) {
+                      if (updateName != widget.travel.name) {
+                        updateItem('name', updateName);
+                      }
+                      if (updatePart != widget.travel.partecipant) {
+                        updateItem('partecipant', updatePart);
+                      }
+                      if (canupdateDate) {
+                        if (updateDate != widget.travel.date) {
+                          FirebaseFirestore.instance
+                              .collection('travel')
+                              .doc(id)
+                              .update({'exactly date': updateDate}).then(
+                                  (value) => {print("Update")},
+                                  onError: (e) =>
+                                      print("Error updating doc: $e"));
+                        }
                       }
                     }
-                  }
                 });
-                check
-                    ? ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')))
-                    : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text(
-                            'Qualcosa è andato storto! Riguarda ciò che hai scritto')));
+                // check
+                ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Processing Data')));
+                    // : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    //     content: Text(
+                    //         'Qualcosa è andato storto! Riguarda ciò che hai scritto')));
               },
               child: const Text(
                 'Invia',

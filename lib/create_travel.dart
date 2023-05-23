@@ -50,6 +50,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   XFile? image;
   File? file;
   String imageUrl = '';
+  String uniqueFileName = '';
 
   final ImagePicker picker = ImagePicker();
 
@@ -87,9 +88,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     // get a reference to storage root
     Reference storageReference = FirebaseStorage.instance.ref();
     Reference referenceDirImage = storageReference.child('images');
-
+    
     // create a reference for the image to be stored
-    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference imageReference = referenceDirImage.child(uniqueFileName);
 
     // handle errors/success
@@ -495,7 +496,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 choosePhoto();
                 // reload the page
               },
-              child: const Text('Upload Photo'),
+              child: const Text('Carica una foto'),
             ),
             Form(
               key: _formKey,
@@ -597,6 +598,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
+                          
                           if (FirebaseAuth.instance.currentUser != null) {
                             if (_formKey.currentState!.validate()) {
                               if (date.contains('null')) {
@@ -618,7 +620,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
                                   date: date,
-                                  listPart: selectedFriendsMail);
+                                  listPart: selectedFriendsMail,
+                                  photo: uniqueFileName);
                               repository.add(newTrav);
 
                               ScaffoldMessenger.of(context).showSnackBar(

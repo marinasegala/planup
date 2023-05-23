@@ -1,6 +1,9 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planup/travel_info.dart';
 import 'create_travel.dart';
 
 import 'package:planup/db/travel_rep.dart';
@@ -37,7 +40,7 @@ class _HomeTravelState extends State<HomeTravel> {
               if (!hasMyOnwTravel) {
                 return _noItem();
               } else {
-                return _buildList(context, snapshot.data!.docs);
+                return _buildList(context, snapshot.data!.docs, snapshot);
               }
             }
           }),
@@ -69,44 +72,33 @@ class _HomeTravelState extends State<HomeTravel> {
     ));
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, AsyncSnapshot<QuerySnapshot> querysnapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 10.0),
-      children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
+      children: snapshot!.map((data) => _buildListItem(context, data, querysnapshot)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+  //TODO - capire perchè il secondo return non va
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, AsyncSnapshot<QuerySnapshot> querysnapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
-
+    final travels = querysnapshot.data!.docs;
     if (currentUser != null) {
       if (trav.userid == currentUser.uid) {
         return TravCard(trav: trav, boldStyle: boldStyle);
+      } else {
+        for (var i = 0; i < travels.length; i++) {
+         for (var x = 0; x < travels[i]['list part'].length; x++) {
+            if (travels[i]['list part'][x] == currentUser.email && travels[i]['name'] == trav.name) {
+              print('${travels[i]['list part']} - ${trav.name}');
+              return TravCard(trav: trav, boldStyle: boldStyle);
+            }
+          }
+        }
       }
-      // else {
-      //   FirebaseFirestore.instance.collection("travel").where('name', isEqualTo: trav.name).get()
-      //     .then((querySnapshot) {
-      //     for (var docSnapshot in querySnapshot.docs) {
-      //       email = docSnapshot.get('list part');
-      //       print('$email, ${trav.name}');
-      //       for (var x in email){
-      //         if(x==currentUser.email){
-      //           print(trav.toJson());
-      //           return TravCard(trav: trav, boldStyle: boldStyle);
-      //         }
-      //       }
-      //     }},
-      //     onError: (e) => print("Error completing: $e"),
-      //   );
-      // }
-      // final lenght = trav.listPart?.length;
-      // for (int x = 0; x < lenght!; x++){
-      //   if(trav.listPart![x] == currentUser.email){
-      //     return TravCard(trav: trav, boldStyle: boldStyle);
-      //   }
-      // }
     }
+    
     return const SizedBox.shrink();
   }
 }

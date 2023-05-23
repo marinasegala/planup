@@ -130,10 +130,10 @@ class _NotesState extends State<Notes> {
 
 bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   bool datas = false;
-  final currentUser = FirebaseAuth.instance.currentUser!;
+  // final currentUser = FirebaseAuth.instance.currentUser!;
   final note = snapshot.data!.docs;
   for (var i = 0; i < note.length; i++) {
-    if (note[i]['userid'] == currentUser.uid && note[i]['trav'] == name) {
+    if (note[i]['trav'] == name) {
       datas = true;
       return datas;
     }
