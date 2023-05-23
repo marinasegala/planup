@@ -74,12 +74,29 @@ class _HomeTravelState extends State<HomeTravel> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
-    
+    var email;
+    print(trav.toJson());
+
     if (currentUser != null) {
-      // print(trav.listPart);
       if (trav.userid == currentUser.uid) {
         return TravCard(trav: trav, boldStyle: boldStyle);
       }
+      // else {
+      //   FirebaseFirestore.instance.collection("travel").where('name', isEqualTo: trav.name).get()
+      //     .then((querySnapshot) {
+      //     for (var docSnapshot in querySnapshot.docs) {
+      //       email = docSnapshot.get('list part');
+      //       print('$email, ${trav.name}');
+      //       for (var x in email){
+      //         if(x==currentUser.email){
+      //           print(trav.toJson());
+      //           return TravCard(trav: trav, boldStyle: boldStyle);
+      //         }
+      //       }
+      //     }},
+      //     onError: (e) => print("Error completing: $e"),
+      //   );
+      // }
       // final lenght = trav.listPart?.length;
       // for (int x = 0; x < lenght!; x++){
       //   if(trav.listPart![x] == currentUser.email){
