@@ -4,6 +4,7 @@ import 'package:planup/widgets/maps.dart';
 import 'package:planup/widgets/shopping.dart';
 import 'package:planup/widgets/tickets.dart';
 
+import '../widgets/checklist.dart';
 import '../widgets/notes.dart';
 
 class ItemWidget extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ItemWidgetState extends State<ItemWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Tickets(trav: widget.trav.name)),
+                    builder: (context) => ItemCheckList(trav: widget.trav)),
               );
               break;
             case 5:

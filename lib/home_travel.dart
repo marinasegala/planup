@@ -91,14 +91,12 @@ class _HomeTravelState extends State<HomeTravel> {
         for (var i = 0; i < travels.length; i++) {
          for (var x = 0; x < travels[i]['list part'].length; x++) {
             if (travels[i]['list part'][x] == currentUser.email && travels[i]['name'] == trav.name) {
-              print('${travels[i]['list part']} - ${trav.name}');
               return TravCard(trav: trav, boldStyle: boldStyle);
             }
           }
         }
       }
     }
-    
     return const SizedBox.shrink();
   }
 }

@@ -58,8 +58,8 @@ class _SettingTravelState extends State<SettingTravel> {
     String? updateDate = widget.travel.date;
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
-    final isimageRef = FirebaseStorage.instance.ref().child("images/${widget.travel.photo}") ;
-    
+    final isimageRef = FirebaseStorage.instance.ref().child("images").child('${widget.travel.photo}').getDownloadURL() ;
+    print('ref $isimageRef');
     void choosePhoto() {
       showDialog(
           context: context,
@@ -136,39 +136,36 @@ class _SettingTravelState extends State<SettingTravel> {
           const SizedBox(
             height: 10,
           ),
-          // Container(
-          //       width: 100,
-          //       height: 100,
-          //       decoration: BoxDecoration(
-          //         shape: BoxShape.circle,
-          //         border: Border.all(
-          //           color: Colors.grey[300]!,
-          //           width: 1,
-          //         ),
-          //       ),
-          //       child: widget.travel.photo != null
-          //           ? ClipOval(
-          //               child: Image.file(
-          //                 //to show image, you type like this.
-          //                 File(isimageRef.toString()),
-          //                 fit: BoxFit.cover,
-          //                 width: 100,
-          //                 height: 100,
-          //               ),
-          //             )
-          //           : const ClipOval(
-          //               child: Icon(
-          //                 Icons.add_a_photo,
-          //                 size: 50,
-          //               ),
-          //             )),
-          //   ElevatedButton(
-          //     onPressed: () {
-          //       choosePhoto();
-          //       // reload the page
-          //     },
-          //     child: const Text('Cambia Foto'),
-          //   ),
+          Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  ),
+                ),
+                child: widget.travel.photo != 'null'
+                    ? ClipOval(
+                        // child: FadeInImage(
+                        //   image: NetworkImage(isimageRef as String), 
+                        //   placeholder: AssetImage('assets/image'),
+                        // )
+                      )
+                    : const ClipOval(
+                        child: Icon(
+                          Icons.add_a_photo,
+                          size: 50,
+                        ),
+                      )),
+            ElevatedButton(
+              onPressed: () {
+                choosePhoto();
+                // reload the page
+              },
+              child: const Text('Cambia Foto'),
+            ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
@@ -235,47 +232,6 @@ class _SettingTravelState extends State<SettingTravel> {
               onChanged: (text) => updateDate = text,
             ),
           ),
-
-          // Padding(
-          //   padding: EdgeInsets.all(8.0),
-          //   child: Column(children: [
-          //     Row( children: [
-          //       const Icon(Icons.date_range_outlined, color: Color.fromARGB(255, 124, 120, 109),),
-          //       const SizedBox(width: 15,),
-          //       Text('Data: ${widget.travel.date}', style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 104, 101, 93),) ),
-          //       IconButton(
-          //         color: const Color.fromARGB(255, 124, 120, 109),
-          //         onPressed: () {
-          //           showDialog<void>(
-          //             context: context,
-          //             builder: (BuildContext context) {
-          //               return AlertDialog(
-          //                 title: const Text('Come cambiare le date'),
-          //                 content: const Text(
-          //                   'Se si conosce il periodo di tempo, premere il bottone Periodi\n\n'
-          //                   'Se si conoscono le date, premere il bottone Date\n'
-          //                   ,
-          //                 ),
-          //                 actions: <Widget>[
-          //                   TextButton(
-          //                     style: TextButton.styleFrom(
-          //                       textStyle: Theme.of(context).textTheme.labelLarge,
-          //                     ),
-          //                     child: const Text('OK', style: TextStyle(fontSize: 17),),
-          //                     onPressed: () {
-          //                       Navigator.of(context).pop();
-          //                     },
-          //                   ),
-          //                 ],
-          //               );
-          //             },
-          //           );
-          //         },
-          //         icon: Icon(Icons.help_outline_outlined))
-          //     ],),
-
-          // ],),),
-
           const SizedBox(
             height: 10,
           ),
