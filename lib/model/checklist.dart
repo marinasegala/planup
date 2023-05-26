@@ -1,15 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Check {
-  String name;
-  String? trav;
-  String? userid;
+  String name; //nome oggetto da portare
+  String? trav; //riferimento del viaggio
+  String? userid; //chi ha scritto
+  bool isgroup; //true - oggetto da inserire nella lista comune; false - oggetto personale 
+  bool isPublic; //true - lista personale pubblica; false - privata 
 
   String? referenceId;
  
   Check(this.name,
       {required this.trav,
       required this.userid,
+      required this.isgroup,
+      required this.isPublic,
       this.referenceId});
   // 5
   factory Check.fromSnapshot(DocumentSnapshot snapshot) {
@@ -31,6 +35,8 @@ Check _shopFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     trav: json['trav'] as String?,
     userid: json['userid'] as String?,
+    isgroup: json['isgroup'] as bool,
+    isPublic: json['isPublic'] as bool,
   );
 }
 
@@ -38,4 +44,6 @@ Map<String, dynamic> _shopToJson(Check instance) => <String, dynamic>{
       'name': instance.name,
       'trav': instance.trav,
       'userid': instance.userid,
+      'isgroup': instance.isgroup,
+      'isPublic': instance.isPublic,
     };

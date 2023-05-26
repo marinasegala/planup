@@ -24,6 +24,7 @@ class _CheckListState extends State<ItemCheckList>{
   
   late List<UserAccount> users;
   late List<String> otherPart = [];
+  bool isChecked = false;
 
   List<UserAccount> getUsers() {
     List<UserAccount> _users = [];
@@ -59,73 +60,102 @@ class _CheckListState extends State<ItemCheckList>{
       appBar: AppBar(
         title: const Text('Check List'),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 20.0),
-        height: 100.0,
-        child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              const SizedBox(width: 10,),
-              createButton('La mia lista', profilePhoto as String),
-              const SizedBox(width: 10,),
-              
-              Column(children: [
-                FloatingActionButton(
-                  elevation: 0,
-                  onPressed: () {
-                  },
-                  backgroundColor: const Color.fromARGB(255, 100, 146, 164),
-                  foregroundColor: const Color.fromARGB(255, 248, 247, 251),
-                  child: const Icon(Icons.groups_outlined, size: 30,),
-                ),
-                const SizedBox(height: 10,),
-                Text(widget.trav.name)
-              ],),
-              const SizedBox(width: 10,),
-              
-              widget.trav.userid != currentUser!.uid
-                ? StreamBuilder<QuerySnapshot>(
-                    stream: userRepository.getStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text("Loading..."));
-                      } else {
-                        return _buildList(context, snapshot.data!.docs, [''], 1);
-                      }
-                  })
-                : const SizedBox.shrink(),
-              
-              StreamBuilder<QuerySnapshot>(
-                stream: travRepository.getStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: Text("Loading..."));
-                  } else {
-                    otherPart = parts(snapshot, widget.trav.name);
-                    if (otherPart.isNotEmpty){
-                      return StreamBuilder<QuerySnapshot>(
+      body: Column(children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 20.0),
+          height: 100.0,
+          child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                const SizedBox(width: 10,),
+                createButton('La mia lista', profilePhoto as String),
+                
+                Column(children: [
+                  FloatingActionButton(
+                    elevation: 0,
+                    onPressed: () {
+                    },
+                    backgroundColor: const Color.fromARGB(255, 100, 146, 164),
+                    foregroundColor: const Color.fromARGB(255, 248, 247, 251),
+                    child: const Icon(Icons.groups_outlined, size: 30,),
+                  ),
+                  const SizedBox(height: 10,),
+                  Text(widget.trav.name)
+                ],),
+                const SizedBox(width: 10,),
+                
+                widget.trav.userid != currentUser!.uid
+                  ? StreamBuilder<QuerySnapshot>(
                         stream: userRepository.getStream(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: Text("Loading..."));
                           } else {
-                            return _buildList(context, snapshot.data!.docs, otherPart, 2);
+                            return _buildListPart(context, snapshot.data!.docs, [''], 1);
                           }
-                      });
-                      // _buildItemPart(otherPart);
+                      })
+                  : const SizedBox.shrink(),
+
+                StreamBuilder<QuerySnapshot>(
+                  stream: travRepository.getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text("Loading..."));
+                    } else {
+                      otherPart = parts(snapshot, widget.trav.name);
+                      if (otherPart.isNotEmpty){
+                        return StreamBuilder<QuerySnapshot>(
+                          stream: userRepository.getStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: Text("Loading..."));
+                            } else {
+                              return _buildListPart(context, snapshot.data!.docs, otherPart, 2);
+                            }
+                          });
+                      }
+                      return const SizedBox.shrink();
                     }
-                    return const SizedBox.shrink();
-                  }
-              }),
-              
-            ],
-          ),
-      ),);    
+                }),
+                
+              ],
+            ),
+        ),
+        
+        StreamBuilder<QuerySnapshot>(
+          stream: ListRepository().getStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: Text("Loading..."));
+            } else {
+              final hasMyOnwData = _hasMyOnwData(snapshot, widget.trav.name);
+              if (!hasMyOnwData) {
+                return _noItem();
+              } else {
+                return Text(widget.trav.name);
+                // return _buildList(context, snapshot.data!.docs, widget.trav);
+              }
+            }
+        }),
+      
+      
+      ],),
+      
+    );
+  }
+
+  Widget _noItem() {
+    return const Center(
+        child: Text(
+      'Non hai ancora inserito gli oggetti da portare',
+      style: TextStyle(fontSize: 17),
+      textAlign: TextAlign.center,
+    ));
   }
   
   Widget createButton(String name, String photo) {
-    return Column(
-      children: [
+    return Row(children: [ 
+      Column( children: [
         GestureDetector(
           onTap: (){},
           child: CircleAvatar(
@@ -138,31 +168,17 @@ class _CheckListState extends State<ItemCheckList>{
         ),
         const SizedBox(height: 10,),
         Text(name)
+      ],),
+      const SizedBox(width: 10,)
     ],);
     
   }
 
-  // Widget _buildItemPart(List<String> otherPart){
-  //   print('ciao3');
-  //   StreamBuilder<QuerySnapshot>(
-  //     stream: userRepository.getStream(),
-  //     builder: (context, snapshot) {
-  //       print('ciao2');
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return const Center(child: Text("Loading..."));
-  //       } else {
-  //         print('2 other partecipant: $otherPart -- ${otherPart.first}');
-  //         return _buildList(context, snapshot.data!.docs, otherPart, 2);
-  //       }
-  //   });
-  //   return SizedBox.shrink();
-  // }
-
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
-    return Column(children: snapshot!.map((data) => _buildListItem(context, data, part, index)).toList()); 
+  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+    return Column(children: snapshot!.map((data) => _buildListItemPart(context, data, part, index)).toList()); 
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
+  Widget _buildListItemPart(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     String name ;
@@ -174,8 +190,6 @@ class _CheckListState extends State<ItemCheckList>{
       }
     }
     if (currentUser != null && index == 2 && part.isNotEmpty) {
-      print('part1 $part');
-      print('ciao: ${part.first}');
       if(user.email == part.first){
         name = user.name;
         photo = user.photoUrl;
@@ -185,6 +199,52 @@ class _CheckListState extends State<ItemCheckList>{
     }
     return SizedBox.shrink();
   }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, Travel travel) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 10.0),
+      children:
+          snapshot!.map((data) => _buildListItem(context, data, travel)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, Travel travel) {
+    final item = Check.fromSnapshot(snapshot);
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (item.userid == FirebaseAuth.instance.currentUser?.uid && item.trav == travel.name) {
+        // return Column(children: [
+        //   Row(children: [ Checkbox(
+        //     checkColor: Colors.white,
+        //     // fillColor: MaterialStateProperty.resolveWith(getColor),
+        //     value: isChecked,
+        //     onChanged: (bool? value) {
+        //       setState(() {
+        //         isChecked = value!;
+        //       });
+        //     },),
+        //     Text(item.name),
+        //   ]),
+        //   const Divider(height: 0),
+        // ],);
+        return Text(item.name);
+      }
+    }
+    return const SizedBox.shrink();
+  }
+  
+
+}
+
+bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String? name) {
+  bool datas = false;
+  final checks = snapshot.data!.docs;
+  for (var i = 0; i < checks.length; i++) {
+    if (checks[i]['trav'] == name as String) {
+      datas = true;
+      return datas;
+    }
+  }
+  return datas;
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
