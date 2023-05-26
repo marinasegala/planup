@@ -61,6 +61,7 @@ class _SettingTravelState extends State<SettingTravel> {
         .child("images")
         .child('${widget.travel.photo}')
         .getDownloadURL();
+
     print('ref $isimageRef');
     void choosePhoto() {
       showDialog(

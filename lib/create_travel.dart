@@ -215,8 +215,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
     getfinal();
-    print('name: $finalFriend');
-    print('mail: $finalFriendMail');
+    // print('name: $finalFriend');
+    // print('mail: $finalFriendMail');
     // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
@@ -621,7 +621,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                                       FirebaseAuth.instance.currentUser?.uid,
                                   date: date,
                                   listPart: selectedFriendsMail,
-                                  photo: uniqueFileName);
+                                  photo: imageUrl);
                               repository.add(newTrav);
 
                               ScaffoldMessenger.of(context).showSnackBar(
