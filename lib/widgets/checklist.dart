@@ -164,7 +164,7 @@ class _CheckListState extends State<ItemCheckList> {
           height: 10,
         ),
         Text(name)
-    ],);
+    ],)],);
     
   }
 
