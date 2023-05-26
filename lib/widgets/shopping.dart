@@ -7,7 +7,6 @@ import 'package:planup/model/travel.dart';
 
 import '../db/shopping_rep.dart';
 import '../show/shop_card.dart';
-import 'create_shop.dart';
 
 class Shopping extends StatefulWidget {
   final Travel trav;

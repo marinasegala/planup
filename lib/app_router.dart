@@ -1,4 +1,3 @@
-import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planup/create_travel.dart';
 import 'package:planup/friend_profile.dart';
