@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
-import 'package:planup/setting_profile.dart';
+import 'package:planup/db/travel_rep.dart';
+import 'package:planup/model/travel.dart';
 import 'package:planup/show/statistic_card.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
@@ -25,7 +26,35 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final FriendsRepository friendRepository = FriendsRepository();
   final ShopRepository dataRepository = ShopRepository();
+  final TravelRepository travelRepository = TravelRepository();
   final currentUser = FirebaseAuth.instance.currentUser;
+
+  List<Travel> pastTravels = [];
+
+  // get all the past travels of currentuser
+  void getPastTravels() {
+    var currentMonth = DateTime.now().month.toString().length == 1
+        ? "0${DateTime.now().month}"
+        : DateTime.now().month;
+    var currentDate =
+        '${DateTime.now().year}-$currentMonth-${DateTime.now().day}';
+    travelRepository.getStream().listen((event) {
+      pastTravels = event.docs
+          .map((snapshot) => Travel.fromSnapshot(snapshot))
+          .where((element) =>
+              element.userid == currentUser!.uid &&
+              element.date != "Giornata" &&
+              element.date != "Weekend" &&
+              element.date != "Settimana" &&
+              element.date != "Altro" &&
+              element.date!.compareTo(currentDate) < 0)
+          .toList();
+    });
+    for (final travel in pastTravels) {
+      print(travel);
+      print("done");
+    }
+  }
 
   @override
   void initState() {
@@ -46,6 +75,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     // get the number of places of currentuser from the list of places
     _getLengthPlaces();
+
+    getPastTravels();
   }
 
   void _getLengthFriends() {
@@ -156,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: const TravelTimeline()),
+                child: TravelTimeline(pastTravels: pastTravels)),
           ),
         ],
       ),
@@ -165,41 +196,56 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 class TravelTimeline extends StatelessWidget {
-  const TravelTimeline({Key? key}) : super(key: key);
+  TravelTimeline({super.key, required this.pastTravels});
+
+  final List<Travel> pastTravels;
+
+  TravelRepository travelRepository = TravelRepository();
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
-    return Timeline(
+    return SizedBox(
+      child: Timeline.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return TimelineModel(TimelineCard(travel: pastTravels[index]),
+              icon: const Icon(Icons.flight), iconBackground: Colors.blueGrey);
+        },
+        itemCount: pastTravels.length,
+        physics: const ClampingScrollPhysics(),
         position: TimelinePosition.Left,
-        iconSize: 20,
-        children: <TimelineModel>[
-          TimelineModel(
-            const SizedBox(
-              height: 100,
-              child: Center(
-                child: Text("Timeline"),
-              ),
-            ),
-            icon: const Icon(Icons.timeline),
-          ),
-          TimelineModel(
-            const SizedBox(
-              height: 100,
-              child: Center(
-                child: Text("Timeline"),
-              ),
-            ),
-            icon: const Icon(Icons.timeline),
-          ),
-          TimelineModel(
-            const SizedBox(
-              height: 100,
-              child: Center(
-                child: Text("Timeline"),
-              ),
-            ),
-            icon: const Icon(Icons.timeline),
-          )
-        ]);
+      ),
+    );
+  }
+}
+
+class TimelineCard extends StatelessWidget {
+  const TimelineCard({super.key, required this.travel});
+
+  final Travel travel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text(travel.name, style: const TextStyle(fontSize: 16)),
+        subtitle:
+            Text(travel.date as String, style: const TextStyle(fontSize: 12)),
+        trailing: travel.photo!.isEmpty
+            ? Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
+                ),
+                child: const Icon(Icons.photo),
+              )
+            : Image.network(travel.photo!),
+      ),
+    );
   }
 }

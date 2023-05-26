@@ -61,7 +61,7 @@ class SettingsProfile extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
                 onPressed: () {
                   AuthenticationServices().signOut();

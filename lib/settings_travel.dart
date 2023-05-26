@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,7 +27,7 @@ class _SettingTravelState extends State<SettingTravel> {
   //   // get a reference to storage root
   //   Reference storageReference = FirebaseStorage.instance.ref();
   //   Reference referenceDirImage = storageReference.child('images');
-    
+
   //   // create a reference for the image to be stored
   //   uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
   //   Reference imageReference = referenceDirImage.child(uniqueFileName);
@@ -58,7 +56,11 @@ class _SettingTravelState extends State<SettingTravel> {
     String? updateDate = widget.travel.date;
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
-    final isimageRef = FirebaseStorage.instance.ref().child("images").child('${widget.travel.photo}').getDownloadURL() ;
+    final isimageRef = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child('${widget.travel.photo}')
+        .getDownloadURL();
     print('ref $isimageRef');
     void choosePhoto() {
       showDialog(
@@ -110,15 +112,12 @@ class _SettingTravelState extends State<SettingTravel> {
             );
           });
     }
-    
-    Future<void> updateItem( String field, String newField) {
+
+    Future<void> updateItem(String field, String newField) {
       return FirebaseFirestore.instance
           .collection('travel')
           .doc(id)
-          .update({field: newField}).then(
-              (value) => {
-                print("Update"),
-              },
+          .update({field: newField}).then((value) => print("Update"),
               onError: (e) => print("Error updating doc: $e"));
     }
 
@@ -137,35 +136,35 @@ class _SettingTravelState extends State<SettingTravel> {
             height: 10,
           ),
           Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.grey[300]!,
-                    width: 1,
-                  ),
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.grey[300]!,
+                  width: 1,
                 ),
-                child: widget.travel.photo != 'null'
-                    ? ClipOval(
-                        // child: FadeInImage(
-                        //   image: NetworkImage(isimageRef as String), 
-                        //   placeholder: AssetImage('assets/image'),
-                        // )
+              ),
+              child: widget.travel.photo != 'null'
+                  ? ClipOval(
+                      // child: FadeInImage(
+                      //   image: NetworkImage(isimageRef as String),
+                      //   placeholder: AssetImage('assets/image'),
+                      // )
                       )
-                    : const ClipOval(
-                        child: Icon(
-                          Icons.add_a_photo,
-                          size: 50,
-                        ),
-                      )),
-            ElevatedButton(
-              onPressed: () {
-                choosePhoto();
-                // reload the page
-              },
-              child: const Text('Cambia Foto'),
-            ),
+                  : const ClipOval(
+                      child: Icon(
+                        Icons.add_a_photo,
+                        size: 50,
+                      ),
+                    )),
+          ElevatedButton(
+            onPressed: () {
+              choosePhoto();
+              // reload the page
+            },
+            child: const Text('Cambia Foto'),
+          ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
@@ -248,37 +247,38 @@ class _SettingTravelState extends State<SettingTravel> {
                     canupdateDate = true;
                   }
                 }
-                
+
                 FirebaseFirestore.instance
-                  .collection('travel')
-                  .doc(id)
-                  .get().then((DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists) {
-                      if (updateName != widget.travel.name) {
-                        updateItem('name', updateName);
-                      }
-                      if (updatePart != widget.travel.partecipant) {
-                        updateItem('partecipant', updatePart);
-                      }
-                      if (canupdateDate) {
-                        if (updateDate != widget.travel.date) {
-                          FirebaseFirestore.instance
-                              .collection('travel')
-                              .doc(id)
-                              .update({'exactly date': updateDate}).then(
-                                  (value) => {print("Update")},
-                                  onError: (e) =>
-                                      print("Error updating doc: $e"));
-                        }
+                    .collection('travel')
+                    .doc(id)
+                    .get()
+                    .then((DocumentSnapshot documentSnapshot) {
+                  if (documentSnapshot.exists) {
+                    if (updateName != widget.travel.name) {
+                      updateItem('name', updateName);
+                    }
+                    if (updatePart != widget.travel.partecipant) {
+                      updateItem('partecipant', updatePart);
+                    }
+                    if (canupdateDate) {
+                      if (updateDate != widget.travel.date) {
+                        FirebaseFirestore.instance
+                            .collection('travel')
+                            .doc(id)
+                            .update({'exactly date': updateDate}).then(
+                                (value) => {print("Update")},
+                                onError: (e) =>
+                                    print("Error updating doc: $e"));
                       }
                     }
+                  }
                 });
                 // check
                 ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')));
-                    // : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    //     content: Text(
-                    //         'Qualcosa è andato storto! Riguarda ciò che hai scritto')));
+                    const SnackBar(content: Text('Processing Data')));
+                // : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                //     content: Text(
+                //         'Qualcosa è andato storto! Riguarda ciò che hai scritto')));
               },
               child: const Text(
                 'Invia',

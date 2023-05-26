@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planup/model/travel.dart';
-import 'package:planup/widgets/maps.dart';
-import 'package:planup/widgets/shopping.dart';
-import 'package:planup/widgets/tickets.dart';
-
-import '../widgets/checklist.dart';
-import '../widgets/notes.dart';
 
 // ignore: must_be_immutable
 class ItemWidget extends StatefulWidget {
