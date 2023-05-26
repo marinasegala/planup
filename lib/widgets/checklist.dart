@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/travel_rep.dart';
+import '../db/checklist_rep.dart';
 import '../db/users_rep.dart';
+import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
 
@@ -152,20 +154,20 @@ class _CheckListState extends State<ItemCheckList> {
     return Row(children: [ 
       Column( children: [
         GestureDetector(
-          onTap: () {},
+          onTap: (){},
           child: CircleAvatar(
               radius: 28,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.network(photo, fit: BoxFit.fitHeight),
-              )),
+                borderRadius: BorderRadius.circular(50), 
+                child: Image.network( photo, fit: BoxFit.fitHeight),
+              )
+            ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10,),
         Text(name)
-    ],)],);
-    
+      ],),
+      const SizedBox(width: 10,)
+    ],);
   }
 
   // Widget _buildItemPart(List<String> otherPart){
@@ -184,11 +186,11 @@ class _CheckListState extends State<ItemCheckList> {
   //   return SizedBox.shrink();
   // }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
-    return Column(children: snapshot!.map((data) => _buildListItem(context, data, part, index)).toList()); 
+   Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+    return Column(children: snapshot!.map((data) => _buildListItemPart(context, data, part, index)).toList()); 
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
+  Widget _buildListItemPart(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     String name;
@@ -200,8 +202,6 @@ class _CheckListState extends State<ItemCheckList> {
       }
     }
     if (currentUser != null && index == 2 && part.isNotEmpty) {
-      print('part1 $part');
-      print('ciao: ${part.first}');
       if(user.email == part.first){
         name = user.name;
         photo = user.photoUrl;
@@ -274,3 +274,4 @@ List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   }
   return emails;
 }
+
