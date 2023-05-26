@@ -33,19 +33,14 @@ class _HomeTravelState extends State<HomeTravel> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: Text("Loading..."));
             } else {
-              final hasMyOnwTravel = _hasMyOnwTravel(snapshot);
-              if (!hasMyOnwTravel) {
+              final hasMyOwnTravel = _hasMyOwnTravel(snapshot);
+              if (!hasMyOwnTravel) {
                 return _noItem();
               } else {
                 return _buildList(context, snapshot.data!.docs, snapshot);
               }
             }
-          }),
-
-      // // An example of the floating action button.
-      // //
-      // // https://m3.material.io/components/floating-action-button/specs
-
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.pushNamed('create_travel');
@@ -100,7 +95,7 @@ class _HomeTravelState extends State<HomeTravel> {
 }
 
 // function that return if there is a travel created by the user
-bool _hasMyOnwTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
+bool _hasMyOwnTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final trav = snapshot.data!.docs;
   for (var i = 0; i < trav.length; i++) {

@@ -23,7 +23,10 @@ class _CheckListState extends State<ItemCheckList> {
 
   late List<UserAccount> users;
   late List<String> otherPart = [];
-  bool isChecked = false;
+
+  bool checkboxValue1 = false;
+  bool checkboxValue2 = false;
+  bool checkboxValue3 = false;
 
   List<UserAccount> getUsers() {
     List<UserAccount> _users = [];
@@ -50,8 +53,19 @@ class _CheckListState extends State<ItemCheckList> {
     users = getUsers();
   }
 
+  Future<void> updateItem( String field, bool newField, String id) {
+    return FirebaseFirestore.instance
+        .collection('check')
+        .doc(id)
+        .update({field: newField}).then(
+            (value) => {
+              print("Update"),
+            },
+            onError: (e) => print("Error updating doc: $e"));
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -118,25 +132,55 @@ class _CheckListState extends State<ItemCheckList> {
               ],
             ),
         ),
-        
+
         StreamBuilder<QuerySnapshot>(
           stream: ListRepository().getStream(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text("Loading..."));
+          builder:(context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return const Center(child: Text('Loading...'));
             } else {
-              final hasMyOnwData = _hasMyOnwData(snapshot, widget.trav.name);
-              if (!hasMyOnwData) {
-                return _noItem();
-              } else {
-                return Text(widget.trav.name);
-                // return _buildList(context, snapshot.data!.docs, widget.trav);
-              }
+              return _hasData(snapshot);
+              // final hasMyOwnData = _hasData(snapshot, widget.trav.referenceId);
+              // if (!hasMyOwnData){
+              //   return _noItem();
+              // } else {
+              //   return _buildListCheck(context, snapshot.data!.docs);
+              // }
             }
-        }),
-      
-      
+          },
+        )
+
+        // Column(
+        // children: <Widget>[
+        //   CheckboxListTile(
+        //     value: checkboxValue1,
+        //     onChanged: (bool? value) {
+        //       setState(() {
+        //         checkboxValue1 = value!;
+        //       });
+        //     },
+        //     title: const Text('Headline'),
+        //   ),
+        //   const Divider(height: 0),
+          
+        // ],),
+        // Expanded(
+        //   child: Align(
+        //     alignment: Alignment.bottomRight,
+        //     child: Ink(
+        //         decoration: const ShapeDecoration(
+        //           color: Color.fromARGB(255, 255, 217, 104),
+        //           shape: CircleBorder(),
+        //         ),
+        //         child: IconButton(
+        //           icon: const Icon(Icons.add_outlined),
+        //           color: Colors.black,
+        //           onPressed: () {},
+        //         ),
+        //       ),
+        // )),
       ],),
+      
       
     );
   }
@@ -170,23 +214,7 @@ class _CheckListState extends State<ItemCheckList> {
     ],);
   }
 
-  // Widget _buildItemPart(List<String> otherPart){
-  //   print('ciao3');
-  //   StreamBuilder<QuerySnapshot>(
-  //     stream: userRepository.getStream(),
-  //     builder: (context, snapshot) {
-  //       print('ciao2');
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return const Center(child: Text("Loading..."));
-  //       } else {
-  //         print('2 other partecipant: $otherPart -- ${otherPart.first}');
-  //         return _buildList(context, snapshot.data!.docs, otherPart, 2);
-  //       }
-  //   });
-  //   return SizedBox.shrink();
-  // }
-
-   Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
     return Column(children: snapshot!.map((data) => _buildListItemPart(context, data, part, index)).toList()); 
   }
 
@@ -212,51 +240,57 @@ class _CheckListState extends State<ItemCheckList> {
     return SizedBox.shrink();
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, Travel travel) {
+  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot){
     return ListView(
-      padding: const EdgeInsets.only(top: 10.0),
-      children:
-          snapshot!.map((data) => _buildListItem(context, data, travel)).toList(),
+      padding: const EdgeInsets.all(8),
+      children: snapshot!.map((data) => _buildListCheckItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, Travel travel) {
-    final item = Check.fromSnapshot(snapshot);
-    if (FirebaseAuth.instance.currentUser != null) {
-      if (item.userid == FirebaseAuth.instance.currentUser?.uid && item.trav == travel.name) {
-        // return Column(children: [
-        //   Row(children: [ Checkbox(
-        //     checkColor: Colors.white,
-        //     // fillColor: MaterialStateProperty.resolveWith(getColor),
-        //     value: isChecked,
-        //     onChanged: (bool? value) {
-        //       setState(() {
-        //         isChecked = value!;
-        //       });
-        //     },),
-        //     Text(item.name),
-        //   ]),
-        //   const Divider(height: 0),
-        // ],);
-        return Text(item.name);
+  Widget _buildListCheckItem(BuildContext context, DocumentSnapshot snapshot){
+    final list = Check.fromSnapshot(snapshot);
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if(list.userid == currentUser?.uid && !list.isgroup){
+      return Column(children: [
+        CheckboxListTile(
+          value: checkboxValue1,
+          onChanged: (bool? value) {
+            setState(() {
+              checkboxValue1 = value!;
+            });
+          },
+          title: Text(list.name),
+        ),
+        const Divider(height: 0),
+        ],
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _hasData(AsyncSnapshot<QuerySnapshot> snapshot) {
+    final checks = snapshot.data!.docs;
+    final currentUser = FirebaseAuth.instance.currentUser;
+    for (var i = 0; i < checks.length; i++) {
+      if (checks[i]['trav'] == widget.trav.referenceId as String) {
+        if(checks[i]['userid'] == currentUser?.uid && !checks[i]['isgroup']){
+          return Column(children: [
+            CheckboxListTile(
+              value: checks[i]['isChecked'],
+              onChanged: (bool? value) {
+                updateItem('isChecked', value!, checks[i].id);
+              },
+              title: Text(checks[i]['name']),
+            ),
+            const Divider(height: 0),
+            ],
+          );
+        }
       }
     }
     return const SizedBox.shrink();
   }
-  
 
-}
-
-bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String? name) {
-  bool datas = false;
-  final checks = snapshot.data!.docs;
-  for (var i = 0; i < checks.length; i++) {
-    if (checks[i]['trav'] == name as String) {
-      datas = true;
-      return datas;
-    }
-  }
-  return datas;
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {

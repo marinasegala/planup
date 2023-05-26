@@ -59,6 +59,8 @@ class _SettingTravelState extends State<SettingTravel> {
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
     final isimageRef = FirebaseStorage.instance.ref().child("images").child('${widget.travel.photo}').getDownloadURL() ;
+    
+
     print('ref $isimageRef');
     void choosePhoto() {
       showDialog(
@@ -146,19 +148,20 @@ class _SettingTravelState extends State<SettingTravel> {
                     width: 1,
                   ),
                 ),
-                child: widget.travel.photo != 'null'
-                    ? ClipOval(
-                        // child: FadeInImage(
-                        //   image: NetworkImage(isimageRef as String), 
-                        //   placeholder: AssetImage('assets/image'),
-                        // )
+                child: widget.travel.photo != ''
+                    ? const ClipOval(
+                        child: Icon(
+                          Icons.add,
+                          size: 50,
+                        ),
                       )
                     : const ClipOval(
                         child: Icon(
                           Icons.add_a_photo,
                           size: 50,
                         ),
-                      )),
+                      )
+          ),
             ElevatedButton(
               onPressed: () {
                 choosePhoto();

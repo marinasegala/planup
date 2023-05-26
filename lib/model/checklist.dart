@@ -6,6 +6,7 @@ class Check {
   String? userid; //chi ha scritto
   bool isgroup; //true - oggetto da inserire nella lista comune; false - oggetto personale 
   bool isPublic; //true - lista personale pubblica; false - privata 
+  bool isChecked;
 
   String? referenceId;
  
@@ -14,6 +15,7 @@ class Check {
       required this.userid,
       required this.isgroup,
       required this.isPublic,
+      required this.isChecked,
       this.referenceId});
   // 5
   factory Check.fromSnapshot(DocumentSnapshot snapshot) {
@@ -37,6 +39,7 @@ Check _shopFromJson(Map<String, dynamic> json) {
     userid: json['userid'] as String?,
     isgroup: json['isgroup'] as bool,
     isPublic: json['isPublic'] as bool,
+    isChecked: json['isChecked'] as bool,
   );
 }
 
@@ -46,4 +49,5 @@ Map<String, dynamic> _shopToJson(Check instance) => <String, dynamic>{
       'userid': instance.userid,
       'isgroup': instance.isgroup,
       'isPublic': instance.isPublic,
+      'isChecked': instance.isChecked,
     };
