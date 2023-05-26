@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/travel_rep.dart';
 import '../db/checklist_rep.dart';
@@ -17,6 +18,8 @@ class ItemCheckList extends StatefulWidget {
   State<ItemCheckList> createState() => _CheckListState();
 }
 
+enum StateList { privata, pubblica }
+
 class _CheckListState extends State<ItemCheckList> {
   final UsersRepository userRepository = UsersRepository();
   final TravelRepository travRepository = TravelRepository();
@@ -27,7 +30,8 @@ class _CheckListState extends State<ItemCheckList> {
   bool checkboxValue1 = false;
   bool checkboxValue2 = false;
   bool checkboxValue3 = false;
-
+  StateList? _statelist = StateList.privata;
+  
   List<UserAccount> getUsers() {
     List<UserAccount> _users = [];
     userRepository.getStream().listen((event) {
@@ -63,9 +67,9 @@ class _CheckListState extends State<ItemCheckList> {
             },
             onError: (e) => print("Error updating doc: $e"));
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -132,7 +136,34 @@ class _CheckListState extends State<ItemCheckList> {
               ],
             ),
         ),
-
+        Align(
+          alignment: Alignment.center,
+          child: Row(children: [
+            const SizedBox(width: 10,),
+            Radio<StateList>(
+                value: StateList.pubblica,
+                groupValue: _statelist,
+                onChanged: (StateList? value) {
+                  setState(() {
+                    _statelist = value;
+                  });
+                },
+            ),
+            const Text('Pubblica', style: TextStyle(fontSize: 17)),
+            Radio<StateList>(
+                value: StateList.privata,
+                groupValue: _statelist,
+                onChanged: (StateList? value) {
+                  setState(() {
+                    _statelist = value;
+                  });
+                },
+            ),
+            const Text('Privata', style: TextStyle(fontSize: 17)),
+        ],),
+        
+        ),
+        const Text('Se la lista è pubblica, i tuoi compagni di viaggio la possono vedere', textAlign: TextAlign.center, style: TextStyle(fontSize: 16),),
         StreamBuilder<QuerySnapshot>(
           stream: ListRepository().getStream(),
           builder:(context, snapshot) {
@@ -198,7 +229,9 @@ class _CheckListState extends State<ItemCheckList> {
     return Row(children: [ 
       Column( children: [
         GestureDetector(
-          onTap: (){},
+          onTap: (){
+            
+          },
           child: CircleAvatar(
               radius: 28,
               child: ClipRRect(
@@ -213,6 +246,8 @@ class _CheckListState extends State<ItemCheckList> {
       const SizedBox(width: 10,)
     ],);
   }
+
+  
 
   Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
     return Column(children: snapshot!.map((data) => _buildListItemPart(context, data, part, index)).toList()); 
