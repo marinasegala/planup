@@ -79,7 +79,6 @@ class _HomeTravelState extends State<HomeTravel> {
     );
   }
 
-  //TODO - capire perchè il secondo return non va
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, AsyncSnapshot<QuerySnapshot> querysnapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;

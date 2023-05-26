@@ -64,7 +64,7 @@ class LoginButton extends StatelessWidget {
             await repository.addUser(UserAccount(
                 user.displayName!, user.email!, user.uid, user.photoURL!));
           }
-          // ignore: use_build_context_synchronously
+          // ignore: use_build_context_synchronously,
           Navigator.push(
               context,
               MaterialPageRoute(
