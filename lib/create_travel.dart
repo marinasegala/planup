@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/users_rep.dart';
@@ -88,7 +89,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     // get a reference to storage root
     Reference storageReference = FirebaseStorage.instance.ref();
     Reference referenceDirImage = storageReference.child('images');
-    
+
     // create a reference for the image to be stored
     uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference imageReference = referenceDirImage.child(uniqueFileName);
@@ -447,7 +448,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () => Navigator.pop(context, true), // passing true
+                  onPressed: () => context.pop(), // passing true
                   icon: const Icon(Icons.clear),
                 ),
               ],
@@ -598,7 +599,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          
                           if (FirebaseAuth.instance.currentUser != null) {
                             if (_formKey.currentState!.validate()) {
                               if (date.contains('null')) {
@@ -627,7 +627,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              Navigator.pop(context);
+                              context.pop();
                             }
                           }
                         },

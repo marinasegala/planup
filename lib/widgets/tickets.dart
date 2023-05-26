@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:planup/model/travel.dart';
 
 class Tickets extends StatefulWidget {
-  final String trav;
+  final Travel trav;
   const Tickets({Key? key, required this.trav}) : super(key: key);
 
   @override

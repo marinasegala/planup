@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/db/authentication_service.dart';
-import 'package:planup/login.dart';
 
 class SettingsProfile extends StatelessWidget {
   const SettingsProfile({super.key});
@@ -65,11 +65,7 @@ class SettingsProfile extends StatelessWidget {
                 ),
                 onPressed: () {
                   AuthenticationServices().signOut();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const LoginPage()));
+                  context.go('/login');
                 },
                 child: const Text(
                   "SIGN OUT",
