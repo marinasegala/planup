@@ -1,10 +1,7 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:planup/travel_info.dart';
-import 'create_travel.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
@@ -51,10 +48,7 @@ class _HomeTravelState extends State<HomeTravel> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateTravelPage()),
-          );
+          context.pushNamed('create_travel');
         },
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
         foregroundColor: Colors.black,
@@ -72,14 +66,18 @@ class _HomeTravelState extends State<HomeTravel> {
     ));
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, AsyncSnapshot<QuerySnapshot> querysnapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot,
+      AsyncSnapshot<QuerySnapshot> querysnapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 10.0),
-      children: snapshot!.map((data) => _buildListItem(context, data, querysnapshot)).toList(),
+      children: snapshot!
+          .map((data) => _buildListItem(context, data, querysnapshot))
+          .toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, AsyncSnapshot<QuerySnapshot> querysnapshot) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot,
+      AsyncSnapshot<QuerySnapshot> querysnapshot) {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     final travels = querysnapshot.data!.docs;
@@ -88,8 +86,9 @@ class _HomeTravelState extends State<HomeTravel> {
         return TravCard(trav: trav, boldStyle: boldStyle);
       } else {
         for (var i = 0; i < travels.length; i++) {
-         for (var x = 0; x < travels[i]['list part'].length; x++) {
-            if (travels[i]['list part'][x] == currentUser.email && travels[i]['name'] == trav.name) {
+          for (var x = 0; x < travels[i]['list part'].length; x++) {
+            if (travels[i]['list part'][x] == currentUser.email &&
+                travels[i]['name'] == trav.name) {
               return TravCard(trav: trav, boldStyle: boldStyle);
             }
           }

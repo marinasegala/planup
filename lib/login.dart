@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/db/users_rep.dart';
-import 'package:planup/home.dart';
 import 'package:planup/model/user_account.dart';
 
 class LoginPage extends StatelessWidget {
@@ -52,6 +52,7 @@ class LoginButton extends StatelessWidget {
     return Center(
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
+          shadowColor: Colors.black,
           padding: const EdgeInsets.symmetric(horizontal: 40),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -64,11 +65,8 @@ class LoginButton extends StatelessWidget {
             await repository.addUser(UserAccount(
                 user.displayName!, user.email!, user.uid, user.photoURL!));
           }
-          // ignore: use_build_context_synchronously,
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => const HomePage()));
+          // ignore: use_build_context_synchronously
+          context.go('/');
         },
         child: const Text('Sign in with Google'),
       ),

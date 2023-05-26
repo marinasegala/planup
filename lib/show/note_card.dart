@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../model/notes.dart';
 
+// ignore: must_be_immutable
 class NoteCard extends StatelessWidget {
   final Note note;
   final TextStyle boldStyle;

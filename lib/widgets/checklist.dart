@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/travel_rep.dart';
-import 'package:planup/model/checklist.dart';
-
-import '../db/checklist_rep.dart';
 import '../db/users_rep.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
 
+// ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
   Travel trav;
   ItemCheckList({Key? key, required this.trav}) : super(key: key);
@@ -18,10 +15,10 @@ class ItemCheckList extends StatefulWidget {
   State<ItemCheckList> createState() => _CheckListState();
 }
 
-class _CheckListState extends State<ItemCheckList>{
+class _CheckListState extends State<ItemCheckList> {
   final UsersRepository userRepository = UsersRepository();
   final TravelRepository travRepository = TravelRepository();
-  
+
   late List<UserAccount> users;
   late List<String> otherPart = [];
   bool isChecked = false;
@@ -29,7 +26,7 @@ class _CheckListState extends State<ItemCheckList>{
   List<UserAccount> getUsers() {
     List<UserAccount> _users = [];
     userRepository.getStream().listen((event) {
-       _users = event.docs
+      _users = event.docs
           .map((e) => UserAccount.fromSnapshot(e))
           .where((element) => element.userid != currentUser?.uid)
           .toList();
@@ -39,7 +36,6 @@ class _CheckListState extends State<ItemCheckList>{
 
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
-  
 
   @override
   void initState() {
@@ -51,10 +47,9 @@ class _CheckListState extends State<ItemCheckList>{
     }
     users = getUsers();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -152,44 +147,61 @@ class _CheckListState extends State<ItemCheckList>{
       textAlign: TextAlign.center,
     ));
   }
-  
+
   Widget createButton(String name, String photo) {
     return Row(children: [ 
       Column( children: [
         GestureDetector(
-          onTap: (){},
+          onTap: () {},
           child: CircleAvatar(
               radius: 28,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(50), 
-                child: Image.network( photo, fit: BoxFit.fitHeight),
-              )
-            ),
+                borderRadius: BorderRadius.circular(50),
+                child: Image.network(photo, fit: BoxFit.fitHeight),
+              )),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         Text(name)
-      ],),
-      const SizedBox(width: 10,)
     ],);
     
   }
 
-  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
-    return Column(children: snapshot!.map((data) => _buildListItemPart(context, data, part, index)).toList()); 
+  // Widget _buildItemPart(List<String> otherPart){
+  //   print('ciao3');
+  //   StreamBuilder<QuerySnapshot>(
+  //     stream: userRepository.getStream(),
+  //     builder: (context, snapshot) {
+  //       print('ciao2');
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return const Center(child: Text("Loading..."));
+  //       } else {
+  //         print('2 other partecipant: $otherPart -- ${otherPart.first}');
+  //         return _buildList(context, snapshot.data!.docs, otherPart, 2);
+  //       }
+  //   });
+  //   return SizedBox.shrink();
+  // }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+    return Column(children: snapshot!.map((data) => _buildListItem(context, data, part, index)).toList()); 
   }
 
-  Widget _buildListItemPart(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot, List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
-    String name ;
+    String name;
     String? photo;
-    
+
     if (currentUser != null && index == 1) {
       if (user.userid == widget.trav.userid) {
         return createButton(user.name, user.photoUrl as String);
       }
     }
     if (currentUser != null && index == 2 && part.isNotEmpty) {
+      print('part1 $part');
+      print('ciao: ${part.first}');
       if(user.email == part.first){
         name = user.name;
         photo = user.photoUrl;
@@ -252,7 +264,7 @@ List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   final travel = snapshot.data!.docs;
   List<String> emails = [];
   for (var i = 0; i < travel.length; i++) {
-    if(travel[i]['name'] == name){
+    if (travel[i]['name'] == name) {
       for (var x = 0; x < travel[i]['list part'].length; x++) {
         if (travel[i]['list part'][x] != currentUser.email) {
           emails.add(travel[i]['list part'][x]);

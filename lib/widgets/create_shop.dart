@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/model/shopping.dart';
 
 import '../db/shopping_rep.dart';
 import 'customdropdown.dart';
 
 class CreateShopItem extends StatefulWidget {
-  final String trav;
-  const CreateShopItem({Key? key, required this.trav}) : super(key: key);
+  final String travel;
+  const CreateShopItem({Key? key, required this.travel}) : super(key: key);
 
   @override
   State<CreateShopItem> createState() => _CreateItemState();
@@ -102,8 +103,7 @@ class _CreateItemState extends State<CreateShopItem> {
                           // width: 180.0,
                           // height: 40.0,
                           child: Center(
-                              child: Text(
-                                  'Categoria della spesa',
+                              child: Text('Categoria della spesa',
                                   style: TextStyle(fontSize: 15),
                                   textAlign: TextAlign.center)),
                         ),
@@ -140,13 +140,13 @@ class _CreateItemState extends State<CreateShopItem> {
                                   theme: selectedValue,
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
-                                  trav: widget.trav);
+                                  trav: widget.travel);
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              Navigator.pop(context);
+                              context.pop();
                             }
                           }
                         },

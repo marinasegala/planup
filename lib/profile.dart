@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/setting_profile.dart';
@@ -89,11 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsProfile()),
-                );
+                context.pushNamed('setting_profile');
               },
               icon: const Icon(Icons.settings)),
         ],

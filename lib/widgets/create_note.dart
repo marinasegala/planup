@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/model/notes.dart';
 
 import '../db/notes_rep.dart';
 
 class CreateNote extends StatefulWidget {
-  final String trav;
-  const CreateNote({Key? key, required this.trav}) : super(key: key);
+  final String travel;
+  const CreateNote({Key? key, required this.travel}) : super(key: key);
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -76,7 +77,7 @@ class _CreateNoteState extends State<CreateNote> {
                               }
                               final newShop = Note(
                                 name,
-                                trav: widget.trav,
+                                trav: widget.travel,
                                 desc: desc,
                                 userid: FirebaseAuth.instance.currentUser?.uid,
                               );
@@ -85,7 +86,7 @@ class _CreateNoteState extends State<CreateNote> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              Navigator.pop(context);
+                              context.pop();
                             }
                           }
                         },

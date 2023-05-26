@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/users_rep.dart';
-import 'package:planup/friend_profile.dart';
 import 'package:planup/model/friend.dart';
 import 'package:planup/model/user_account.dart';
 
@@ -59,7 +59,11 @@ class _FriendPageState extends State<FriendPage> {
               alignment: Alignment.centerLeft,
               child: TextButton(
                 onPressed: () {
-                  _navigateToFriendPage(user);
+                  // we push the page using the name and we pass the user as extra argument
+                  context.pushNamed(
+                    'friend_profile',
+                    extra: user,
+                  );
                 },
                 child: Text(
                   user.name,
@@ -119,12 +123,6 @@ class _FriendPageState extends State<FriendPage> {
             return _buildList(context, snapshot.data!.docs);
           }),
     );
-  }
-
-  void _navigateToFriendPage(UserAccount friend) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return FriendProfile(friend: friend);
-    }));
   }
 }
 

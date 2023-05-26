@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:planup/model/shopping.dart';
+import 'package:planup/model/travel.dart';
 
 import '../db/shopping_rep.dart';
 import '../show/shop_card.dart';
-import 'create_shop.dart';
 
 class Shopping extends StatefulWidget {
-  final String trav;
+  final Travel trav;
   const Shopping({Key? key, required this.trav}) : super(key: key);
 
   @override
@@ -42,21 +43,20 @@ class _ShoppingState extends State<Shopping> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: Text("Loading..."));
               } else {
-                final hasMyOnwData = _hasMyOnwData(snapshot, widget.trav);
+                final hasMyOnwData =
+                    _hasMyOnwData(snapshot, widget.trav.referenceId!);
                 if (!hasMyOnwData) {
                   return _noItem();
                 } else {
-                  return _buildList(context, snapshot.data!.docs, widget.trav);
+                  return _buildList(
+                      context, snapshot.data!.docs, widget.trav.referenceId!);
                 }
               }
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CreateShopItem(trav: widget.trav)),
-            );
+            context.pushNamed('create_shopping',
+                extra: widget.trav.referenceId);
           },
           backgroundColor: const Color.fromARGB(255, 255, 217, 104),
           foregroundColor: Colors.black,
@@ -75,20 +75,20 @@ class _ShoppingState extends State<Shopping> {
   }
 
   Widget _buildList(
-      BuildContext context, List<DocumentSnapshot>? snapshot, String name) {
+      BuildContext context, List<DocumentSnapshot>? snapshot, String id) {
     return ListView(
       padding: const EdgeInsets.only(top: 10.0),
       children:
-          snapshot!.map((data) => _buildListItem(context, data, name)).toList(),
+          snapshot!.map((data) => _buildListItem(context, data, id)).toList(),
     );
   }
 
   Widget _buildListItem(
-      BuildContext context, DocumentSnapshot snapshot, String name) {
+      BuildContext context, DocumentSnapshot snapshot, String id) {
     final shop = Shop.fromSnapshot(snapshot);
     if (FirebaseAuth.instance.currentUser != null) {
       if (shop.userid == FirebaseAuth.instance.currentUser?.uid &&
-          shop.trav == name) {
+          shop.trav == id) {
         return ShopCard(shop: shop, boldStyle: boldStyle);
       }
     }
@@ -96,12 +96,12 @@ class _ShoppingState extends State<Shopping> {
   }
 }
 
-bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
+bool _hasMyOnwData(AsyncSnapshot<QuerySnapshot> snapshot, String id) {
   bool datas = false;
   final currentUser = FirebaseAuth.instance.currentUser!;
   final shop = snapshot.data!.docs;
   for (var i = 0; i < shop.length; i++) {
-    if (shop[i]['userid'] == currentUser.uid && shop[i]['trav'] == name) {
+    if (shop[i]['userid'] == currentUser.uid && shop[i]['trav'] == id) {
       datas = true;
       return datas;
     }
