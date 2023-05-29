@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:planup/model/notes.dart';
 import 'package:planup/model/travel.dart';
 
@@ -54,7 +53,7 @@ class _NotesState extends State<Notes> {
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                context.pop();
+                Navigator.pop(context);
               }),
         ),
         body: StreamBuilder<QuerySnapshot>(

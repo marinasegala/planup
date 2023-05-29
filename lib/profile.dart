@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
-import 'package:timeline_list/timeline.dart';
-import 'package:timeline_list/timeline_model.dart';
+import 'package:planup/show/timeline_card.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -121,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
               onPressed: () {
-                context.pushNamed('setting_profile');
+                Navigator.push(context, MaterialPageRoute(builder: (builder) => const SettingsProfile()));
               },
               icon: const Icon(Icons.settings)),
         ],
@@ -183,6 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.topLeft,
                 child: Text("I tuoi viaggi", style: TextStyle(fontSize: 12))),
           ),
+          const SizedBox(height: 15),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
@@ -190,61 +190,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TravelTimeline(pastTravels: pastTravels)),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class TravelTimeline extends StatelessWidget {
-  TravelTimeline({super.key, required this.pastTravels});
-
-  final List<Travel> pastTravels;
-
-  TravelRepository travelRepository = TravelRepository();
-  final currentUser = FirebaseAuth.instance.currentUser;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: Timeline.builder(
-        itemBuilder: (BuildContext context, int index) {
-          return TimelineModel(TimelineCard(travel: pastTravels[index]),
-              icon: const Icon(Icons.flight), iconBackground: Colors.blueGrey);
-        },
-        itemCount: pastTravels.length,
-        physics: const ClampingScrollPhysics(),
-        position: TimelinePosition.Left,
-      ),
-    );
-  }
-}
-
-class TimelineCard extends StatelessWidget {
-  const TimelineCard({super.key, required this.travel});
-
-  final Travel travel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(travel.name, style: const TextStyle(fontSize: 16)),
-        subtitle:
-            Text(travel.date as String, style: const TextStyle(fontSize: 12)),
-        trailing: travel.photo!.isEmpty
-            ? Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1,
-                  ),
-                ),
-                child: const Icon(Icons.photo),
-              )
-            : Image.network(travel.photo!),
       ),
     );
   }

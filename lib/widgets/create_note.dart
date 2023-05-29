@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:planup/model/notes.dart';
 
 import '../db/notes_rep.dart';
@@ -86,7 +85,7 @@ class _CreateNoteState extends State<CreateNote> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              context.pop();
+                              Navigator.pop(context);
                             }
                           }
                         },

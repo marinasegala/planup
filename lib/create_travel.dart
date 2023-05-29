@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/users_rep.dart';
@@ -448,7 +447,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () => context.pop(), // passing true
+                  onPressed: () => Navigator.pop(context, true),
                   icon: const Icon(Icons.clear),
                 ),
               ],
@@ -627,7 +626,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              context.pop();
+                              Navigator.pop(context);
                             }
                           }
                         },

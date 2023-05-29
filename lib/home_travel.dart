@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
+import 'package:planup/create_travel.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
-
 import 'show/trav_card.dart';
 
 class HomeTravel extends StatefulWidget {
@@ -40,10 +38,13 @@ class _HomeTravelState extends State<HomeTravel> {
                 return _buildList(context, snapshot.data!.docs, snapshot);
               }
             }
-      }),
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.pushNamed('create_travel');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CreateTravelPage()));
         },
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
         foregroundColor: Colors.black,
