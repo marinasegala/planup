@@ -7,7 +7,7 @@ class Note {
   String? userid;
 
   String? referenceId;
- 
+
   Note(this.name,
       {required this.trav,
       required this.desc,

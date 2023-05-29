@@ -13,11 +13,11 @@ class UsersRepository {
     return collectionReference.add(user.toJson());
   }
 
-  void updateFriend(UserAccount user) async {
+  void updateUser(UserAccount user) async {
     await collectionReference.doc(user.userid).update(user.toJson());
   }
 
-  void deleteFriend(UserAccount user) async {
+  void deleteUser(UserAccount user) async {
     await collectionReference.doc(user.userid).delete();
   }
 
@@ -45,5 +45,9 @@ class UsersRepository {
       }
     });
     return users;
+  }
+
+  void updateUserLocation(UserAccount user, String location) {
+    collectionReference.doc(user.userid).update({'position': location});
   }
 }

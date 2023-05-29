@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planup/db/travel_rep.dart';
 import 'package:planup/db/users_rep.dart';
+import 'package:planup/model/travel.dart';
 import 'package:planup/model/user_account.dart';
 import 'package:planup/show/statistic_card.dart';
+import 'package:planup/show/timeline_card.dart';
 
 class FriendProfile extends StatefulWidget {
   const FriendProfile({super.key, required this.friend});
@@ -20,10 +23,34 @@ class _FriendProfileState extends State<FriendProfile> {
 
   UsersRepository usersRepository = UsersRepository();
   User currentUser = FirebaseAuth.instance.currentUser!;
+  TravelRepository travelRepository = TravelRepository();
 
   int friends = 0;
   int travels = 0;
   int places = 0;
+
+  List<Travel> pastTravels = [];
+
+  // get all the past travels of currentuser
+  void getPastTravels() {
+    var currentMonth = DateTime.now().month.toString().length == 1
+        ? "0${DateTime.now().month}"
+        : DateTime.now().month;
+    var currentDate =
+        '${DateTime.now().year}-$currentMonth-${DateTime.now().day}';
+    travelRepository.getStream().listen((event) {
+      pastTravels = event.docs
+          .map((snapshot) => Travel.fromSnapshot(snapshot))
+          .where((element) =>
+              element.userid == widget.friend.userid &&
+              element.date != "Giornata" &&
+              element.date != "Weekend" &&
+              element.date != "Settimana" &&
+              element.date != "Altro" &&
+              element.date!.compareTo(currentDate) < 0)
+          .toList();
+    });
+  }
 
   @override
   void initState() {
@@ -132,6 +159,22 @@ class _FriendProfileState extends State<FriendProfile> {
                 ),
               ],
             ),
+            const SizedBox(height: 15),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text("I suoi viaggi", style: TextStyle(fontSize: 12)),
+              ),
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: TravelTimeline(pastTravels: pastTravels),
+              ),
+            )
           ],
         ),
       ),

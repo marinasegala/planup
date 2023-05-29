@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:planup/model/shopping.dart';
 
 import '../db/shopping_rep.dart';
@@ -146,7 +145,7 @@ class _CreateItemState extends State<CreateShopItem> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Data')));
-                              context.pop();
+                              Navigator.pop(context);
                             }
                           }
                         },

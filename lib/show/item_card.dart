@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:planup/home.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/widgets/checklist.dart';
+import 'package:planup/widgets/maps.dart';
+import 'package:planup/widgets/notes.dart';
+import 'package:planup/widgets/shopping.dart';
+import 'package:planup/widgets/tickets.dart';
 
 // ignore: must_be_immutable
 class ItemWidget extends StatefulWidget {
@@ -28,23 +33,39 @@ class _ItemWidgetState extends State<ItemWidget> {
         onTap: () {
           switch (widget.index) {
             case 1:
-              context.pushNamed('tickets', extra: widget.trav);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Tickets(trav: widget.trav)));
               break;
             case 2:
-              context.pushNamed('map', extra: widget.trav);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => MapsPage(trav: widget.trav)));
               break;
             case 3:
-              context.pushNamed('shopping', extra: widget.trav);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Shopping(trav: widget.trav)));
               break;
             case 4:
-              context.pushNamed('checklist', extra: widget.trav);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => ItemCheckList(trav: widget.trav)));
               break;
             case 5:
-              context.pushNamed('notes', extra: widget.trav);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => Notes(trav: widget.trav)));
               break;
 
             default:
-              context.pushNamed('home');
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (builder) => const HomePage()));
           }
         },
         child: Card(

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:planup/model/shopping.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/widgets/create_shop.dart';
 
 import '../db/shopping_rep.dart';
 import '../show/shop_card.dart';
@@ -55,8 +55,11 @@ class _ShoppingState extends State<Shopping> {
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            context.pushNamed('create_shopping',
-                extra: widget.trav.referenceId);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (builder) =>
+                        CreateShopItem(travel: widget.trav.referenceId!)));
           },
           backgroundColor: const Color.fromARGB(255, 255, 217, 104),
           foregroundColor: Colors.black,

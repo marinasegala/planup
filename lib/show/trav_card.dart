@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:planup/model/travel.dart';
+import 'package:planup/travel_info.dart';
 
 class TravCard extends StatelessWidget {
   final Travel trav;
@@ -25,6 +24,11 @@ class TravCard extends StatelessWidget {
                 ),
               ],
             ),
-            onTap: () => context.pushNamed('home_travel', extra: trav)));
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => TravInfo(trav: trav)));
+            }));
   }
 }
