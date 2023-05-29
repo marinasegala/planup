@@ -91,13 +91,18 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _getLengthTravels() async {
-    var travelsList =
-        await FirebaseFirestore.instance.collection('travel').get();
-    final int count = travelsList.docs
-        .where((element) => element['userid'] == currentUser!.uid)
-        .length;
-    setState(() {
-      travels = count;
+    // get the number of travels in which the currentuser has participated
+    var travelsList = FirebaseFirestore.instance.collection('travel').get();
+    travelsList.then((value) {
+      for (var element in value.docs) {
+        for (var partecipant in element['list part']) {
+          if (partecipant == currentUser!.email) {
+            setState(() {
+              travels++;
+            });
+          }
+        }
+      }
     });
   }
 
@@ -120,7 +125,10 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (builder) => const SettingsProfile()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => const SettingsProfile()));
               },
               icon: const Icon(Icons.settings)),
         ],

@@ -5,25 +5,31 @@ import 'package:planup/model/travel.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
 
-class TravelTimeline extends StatelessWidget {
+// ignore: must_be_immutable
+class TravelTimeline extends StatefulWidget {
   TravelTimeline({super.key, required this.pastTravels});
 
   List<Travel> pastTravels;
 
+  @override
+  State<StatefulWidget> createState() => _TravelTimelineState();
+}
+
+class _TravelTimelineState extends State<TravelTimeline> {
   TravelRepository travelRepository = TravelRepository();
   final currentUser = FirebaseAuth.instance.currentUser;
 
   void sortListTravel() {
     // sort the list of travels by date
-    pastTravels.sort((a, b) => a.date!.compareTo(b.date!));
+    widget.pastTravels.sort((a, b) => a.date!.compareTo(b.date!));
     // and then reverse it
-    pastTravels = pastTravels.reversed.toList();
+    widget.pastTravels = widget.pastTravels.reversed.toList();
   }
 
   @override
   Widget build(BuildContext context) {
     sortListTravel();
-    return pastTravels.isEmpty
+    return widget.pastTravels.isEmpty
         ? const Center(
             child: Text(
               "Questo utente non ha ancora viaggiato\nDirei che è il momento di organizzarne uno insieme!",
@@ -33,11 +39,12 @@ class TravelTimeline extends StatelessWidget {
           )
         : Timeline.builder(
             itemBuilder: (BuildContext context, int index) {
-              return TimelineModel(TimelineCard(travel: pastTravels[index]),
+              return TimelineModel(
+                  TimelineCard(travel: widget.pastTravels[index]),
                   icon: const Icon(Icons.flight),
                   iconBackground: Colors.amber[200]!);
             },
-            itemCount: pastTravels.length,
+            itemCount: widget.pastTravels.length,
             physics: const ClampingScrollPhysics(),
             position: TimelinePosition.Left,
             lineWidth: 2.0,

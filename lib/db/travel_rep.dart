@@ -25,4 +25,16 @@ class TravelRepository {
   void deleteTravel(Travel trav) async {
     await collection.doc(trav.referenceId).delete();
   }
+
+  Future<List<String>> getPartecipants(String id) async {
+    List<String> partecipants = [];
+    await collection.get().then((QuerySnapshot snapshot) {
+      for (var element in snapshot.docs) {
+        if (element['referenceId'] == id) {
+          partecipants = List.from(element['list part']);
+        }
+      }
+    });
+    return partecipants;
+  }
 }
