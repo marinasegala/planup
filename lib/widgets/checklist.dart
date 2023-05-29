@@ -31,7 +31,7 @@ class _CheckListState extends State<ItemCheckList> {
   bool checkboxValue3 = false;
   StateList? _statelist = StateList.privata;
 
-  late String list = '';
+  late String list = currentUser?.uid as String;
   int count = 2;
 
   List<UserAccount> getUsers() {
@@ -81,58 +81,6 @@ class _CheckListState extends State<ItemCheckList> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10.0),
             height: 100.0,
-            // child: DefaultTabController(
-            //   length: 6, // (widget.trav.numFriend as int) + 1,
-            //   child: Column(
-            //     children: <Widget>[
-            //       ButtonsTabBar(
-            //         // backgroundColor: Colors.red,
-            //         unselectedBackgroundColor: Colors.transparent,
-            //         unselectedLabelStyle: const TextStyle(color: Colors.black),
-            //         labelStyle:
-            //             const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            //         tabs:const [
-            //           Tab(
-            //             icon: Icon(Icons.directions_car),
-            //             text: "car",
-            //           ),
-            //           Tab(
-            //             icon: Icon(Icons.directions_transit),
-            //             text: "transit",
-            //           ),
-            //           Tab(icon: Icon(Icons.directions_bike)),
-            //           Tab(icon: Icon(Icons.directions_car)),
-            //           Tab(icon: Icon(Icons.directions_transit)),
-            //           Tab(icon: Icon(Icons.directions_bike)),
-            //         ],
-            //       ),
-            //       const Expanded(
-            //         child: TabBarView(
-            //           children: <Widget>[
-            //             Center(
-            //               child: Icon(Icons.directions_car),
-            //             ),
-            //             Center(
-            //               child: Icon(Icons.directions_transit),
-            //             ),
-            //             Center(
-            //               child: Icon(Icons.directions_bike),
-            //             ),
-            //             Center(
-            //               child: Icon(Icons.directions_car),
-            //             ),
-            //             Center(
-            //               child: Icon(Icons.directions_transit),
-            //             ),
-            //             Center(
-            //               child: Icon(Icons.directions_bike),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
@@ -203,20 +151,46 @@ class _CheckListState extends State<ItemCheckList> {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16),
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: ListRepository().getStream(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text('Loading...'));
-              } else {
-                return _hasData(snapshot);
-              }
-            },
-          ),
 
+          Column(children: [
+            list == currentUser?.uid
+            ? StreamBuilder<QuerySnapshot>(
+              stream: ListRepository().getStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: Text('Loading...'));
+                } else {
+                  return _hasDataPersonal(snapshot);
+                }
+              },
+            )
+            : const SizedBox.shrink(),
+
+            list == 'group'
+            ? StreamBuilder<QuerySnapshot>(
+              stream: ListRepository().getStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: Text('Loading...'));
+                } else {
+                  return _hasDataGroup(snapshot);
+                }
+              },
+            )
+            : const SizedBox.shrink(),
+          ]),
           
         ],
       ),
+      floatingActionButton: list == 'group' || list == currentUser?.uid
+      ? FloatingActionButton(
+        onPressed: (){}, 
+        backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+        foregroundColor: Colors.black,
+        // mini: true,
+        child: const Icon(Icons.add),
+      )
+      : const SizedBox.shrink(),
     );
   }
 
@@ -283,38 +257,37 @@ class _CheckListState extends State<ItemCheckList> {
     return SizedBox.shrink();
   }
 
-  Widget _buildListCheck(
-      BuildContext context, List<DocumentSnapshot>? snapshot) {
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children:
-          snapshot!.map((data) => _buildListCheckItem(context, data)).toList(),
-    );
-  }
+  // Widget _buildListCheck(
+  //     BuildContext context, List<DocumentSnapshot>? snapshot) {
+  //   return ListView(
+  //     padding: const EdgeInsets.all(8),
+  //     children:
+  //         snapshot!.map((data) => _buildListCheckItem(context, data)).toList(),
+  //   );
+  // }
+  // Widget _buildListCheckItem(BuildContext context, DocumentSnapshot snapshot) {
+  //   final list = Check.fromSnapshot(snapshot);
+  //   final currentUser = FirebaseAuth.instance.currentUser;
+  //   if (list.userid == currentUser?.uid && !list.isgroup) {
+  //     return Column(
+  //       children: [
+  //         CheckboxListTile(
+  //           value: checkboxValue1,
+  //           onChanged: (bool? value) {
+  //             setState(() {
+  //               checkboxValue1 = value!;
+  //             });
+  //           },
+  //           title: Text(list.name),
+  //         ),
+  //         const Divider(height: 0),
+  //       ],
+  //     );
+  //   }
+  //   return const SizedBox.shrink();
+  // }
 
-  Widget _buildListCheckItem(BuildContext context, DocumentSnapshot snapshot) {
-    final list = Check.fromSnapshot(snapshot);
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (list.userid == currentUser?.uid && !list.isgroup) {
-      return Column(
-        children: [
-          CheckboxListTile(
-            value: checkboxValue1,
-            onChanged: (bool? value) {
-              setState(() {
-                checkboxValue1 = value!;
-              });
-            },
-            title: Text(list.name),
-          ),
-          const Divider(height: 0),
-        ],
-      );
-    }
-    return const SizedBox.shrink();
-  }
-
-  Widget _hasData(AsyncSnapshot<QuerySnapshot> snapshot) {
+  Widget _hasDataPersonal(AsyncSnapshot<QuerySnapshot> snapshot) {
     final checks = snapshot.data!.docs;
     final currentUser = FirebaseAuth.instance.currentUser;
     for (var i = 0; i < checks.length; i++) {
@@ -335,9 +308,33 @@ class _CheckListState extends State<ItemCheckList> {
         }
       }
     }
-    return const SizedBox.shrink();
+    return const Center(child: Text('Non sono ancora presenti oggetti nella lista'),);
+  }
+  Widget _hasDataGroup(AsyncSnapshot<QuerySnapshot> snapshot) {
+    final checks = snapshot.data!.docs;
+    // final currentUser = FirebaseAuth.instance.currentUser;
+    for (var i = 0; i < checks.length; i++) {
+      if (checks[i]['trav'] == widget.trav.referenceId as String) {
+        if (checks[i]['isgroup']) {
+          return Column(
+            children: [
+              CheckboxListTile(
+                value: checks[i]['isChecked'],
+                onChanged: (bool? value) {
+                  updateItem('isChecked', value!, checks[i].id);
+                },
+                title: Text(checks[i]['name']),
+              ),
+              const Divider(height: 0),
+            ],
+          );
+        }
+      }
+    }
+    return const Center(child: Text('Non sono ancora presenti oggetti nella lista'),);
   }
 }
+
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   final currentUser = FirebaseAuth.instance.currentUser!;
