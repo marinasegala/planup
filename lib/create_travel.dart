@@ -604,24 +604,24 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               if (date.contains('null')) {
                                 date = date.substring(0, 10);
                               }
+                              var count = 1;
+                              selectedFriendsMail.add(FirebaseAuth.instance.currentUser?.email as String);
                               for (var x in selectedFriends) {
-                                for (var i = 0;
-                                    i < finalFriendMail.length;
-                                    i++) {
+                                for (var i = 0; i < finalFriendMail.length; i++) {
                                   if (x == finalFriendMail[i]) {
-                                    selectedFriendsMail
-                                        .add(finalFriendMail[i - 1]);
+                                    selectedFriendsMail.add(finalFriendMail[i - 1]);
+                                    count ++;
                                   }
                                 }
                               }
 
                               final newTrav = Travel(nameTrav!,
                                   partecipant: part,
-                                  userid:
-                                      FirebaseAuth.instance.currentUser?.uid,
+                                  userid: FirebaseAuth.instance.currentUser?.uid,
                                   date: date,
                                   listPart: selectedFriendsMail,
-                                  photo: imageUrl);
+                                  photo: imageUrl,
+                                  numFriend: count);
                               repository.add(newTrav);
 
                               ScaffoldMessenger.of(context).showSnackBar(

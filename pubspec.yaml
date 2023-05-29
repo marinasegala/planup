@@ -53,6 +53,7 @@ dependencies:
   go_router: ^7.0.1
   firebase_storage: ^11.2.0
   path_provider: ^2.0.15
+  nil: ^1.1.1
 
   # maps
   flutter_osm_plugin: ^0.53.4+1
