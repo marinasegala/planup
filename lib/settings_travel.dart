@@ -138,7 +138,7 @@ class _SettingTravelState extends State<SettingTravel> {
                   width: 1,
                 ),
               ),
-              child: widget.travel.photo != null
+              child: widget.travel.photo!.isNotEmpty
                   ? ClipOval(
                       child: Material(
                         child: Image.network(
@@ -148,9 +148,14 @@ class _SettingTravelState extends State<SettingTravel> {
                       ),
                     )
                   : const ClipOval(
-                      child: Icon(
-                        Icons.add_a_photo,
-                        size: 50,
+                      child: Material(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 60,
+                          ),
+                        ),
                       ),
                     )),
           ElevatedButton(
@@ -196,11 +201,11 @@ class _SettingTravelState extends State<SettingTravel> {
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
                     title: const Text('Cambio data'),
-                    content: const Text(
-                      'Se si sanno le date del viaggio inserire una delle due opzioni: '
-                      '\n\n       yyyy-mm-dd to yyyy-mm-dd  \n                  yyyy-mm-dd \n '
-                      '\nSe non si conoscono ancora scrivere una delle seguenti scelte: \n\n                   Giornata \n                   Weekend \n                  Settimana \n                      Altro',
-                      textAlign: TextAlign.justify,
+                    content: const Center(
+                      child: Text(
+                        'Se si sanno le date del viaggio inserire una delle due opzioni:\nyyyy-mm-dd to yyyy-mm-dd\nyyyy-mm-dd\n\nSe non si conoscono ancora scrivere una delle seguenti scelte:\nGiornata \nWeekend\nSettimana\nAltro',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     actions: <Widget>[
                       TextButton(
