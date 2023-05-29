@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'model/travel.dart';
@@ -49,6 +47,65 @@ class _SettingTravelState extends State<SettingTravel> {
   //   }
   // }
 
+  Future<void> updateItem(String field, String newField) {
+    return FirebaseFirestore.instance
+        .collection('travel')
+        .doc(widget.travel.referenceId)
+        .update({field: newField}).then((value) => print("Update"),
+            onError: (e) => print("Error updating doc: $e"));
+  }
+
+  void choosePhoto() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: const Text('Seleziona il metodo di caricamento'),
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    //if user click this button, user can upload image from gallery
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // getImageFromGallery();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.image),
+                        Text('Galleria'),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    //if user click this button. user can upload image from camera
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // getImageFromCamera();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.camera),
+                        Text('Camera'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                icon: const Icon(Icons.clear),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     String updateName = widget.travel.name;
@@ -56,71 +113,6 @@ class _SettingTravelState extends State<SettingTravel> {
     String? updateDate = widget.travel.date;
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
-    final isimageRef = FirebaseStorage.instance
-        .ref()
-        .child("images")
-        .child('${widget.travel.photo}')
-        .getDownloadURL();
-
-    print('ref $isimageRef');
-    void choosePhoto() {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              title: const Text('Seleziona il metodo di caricamento'),
-              content: SizedBox(
-                height: MediaQuery.of(context).size.height / 6,
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      //if user click this button, user can upload image from gallery
-                      onPressed: () {
-                        Navigator.pop(context);
-                        // getImageFromGallery();
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.image),
-                          Text('Galleria'),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                      //if user click this button. user can upload image from camera
-                      onPressed: () {
-                        Navigator.pop(context);
-                        // getImageFromCamera();
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.camera),
-                          Text('Camera'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () => Navigator.pop(context, true), // passing true
-                  icon: const Icon(Icons.clear),
-                ),
-              ],
-            );
-          });
-    }
-
-    Future<void> updateItem(String field, String newField) {
-      return FirebaseFirestore.instance
-          .collection('travel')
-          .doc(id)
-          .update({field: newField}).then((value) => print("Update"),
-              onError: (e) => print("Error updating doc: $e"));
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -146,13 +138,15 @@ class _SettingTravelState extends State<SettingTravel> {
                   width: 1,
                 ),
               ),
-              child: widget.travel.photo != 'null'
+              child: widget.travel.photo != null
                   ? ClipOval(
-                      // child: FadeInImage(
-                      //   image: NetworkImage(isimageRef as String),
-                      //   placeholder: AssetImage('assets/image'),
-                      // )
-                      )
+                      child: Material(
+                        child: Image.network(
+                          widget.travel.photo!,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                    )
                   : const ClipOval(
                       child: Icon(
                         Icons.add_a_photo,
