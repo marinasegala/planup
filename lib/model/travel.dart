@@ -7,6 +7,7 @@ class Travel {
   String? date;
   List<String>? listPart;
   String? photo;
+  int? numFriend;
 
   String? referenceId;
   // 4
@@ -16,6 +17,7 @@ class Travel {
       required this.date,
       required this.listPart,
       required this.photo,
+      required this.numFriend,
       this.referenceId});
   // 5
   factory Travel.fromSnapshot(DocumentSnapshot snapshot) {
@@ -40,6 +42,7 @@ Travel _travFromJson(Map<String, dynamic> json) {
     date: json['exactly date'] as String?,
     listPart: json['lsit part'] as List<String>?,
     photo: json['photo'] as String?,
+    numFriend: json['numFriend'] as int?,
   );
 }
 
@@ -50,4 +53,5 @@ Map<String, dynamic> _travToJson(Travel instance) => <String, dynamic>{
       'exactly date': instance.date,
       'list part': instance.listPart,
       'photo': instance.photo,
+      'numFriend': instance.numFriend,
     };
