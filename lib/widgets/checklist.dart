@@ -31,6 +31,9 @@ class _CheckListState extends State<ItemCheckList> {
   bool checkboxValue3 = false;
   StateList? _statelist = StateList.privata;
 
+  late String list = '';
+  int count = 2;
+
   List<UserAccount> getUsers() {
     List<UserAccount> _users = [];
     userRepository.getStream().listen((event) {
@@ -61,10 +64,9 @@ class _CheckListState extends State<ItemCheckList> {
         .collection('check')
         .doc(id)
         .update({field: newField}).then(
-            (value) => {
-                  print("Update"),
-                },
-            onError: (e) => print("Error updating doc: $e"));
+            (value) => print("Update")
+            ,onError: (e) => print("Error updating doc: $e")
+        );
   }
 
   @override
@@ -77,73 +79,92 @@ class _CheckListState extends State<ItemCheckList> {
       body: Column(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 20.0),
+            margin: const EdgeInsets.symmetric(vertical: 10.0),
             height: 100.0,
+            // child: DefaultTabController(
+            //   length: 6, // (widget.trav.numFriend as int) + 1,
+            //   child: Column(
+            //     children: <Widget>[
+            //       ButtonsTabBar(
+            //         // backgroundColor: Colors.red,
+            //         unselectedBackgroundColor: Colors.transparent,
+            //         unselectedLabelStyle: const TextStyle(color: Colors.black),
+            //         labelStyle:
+            //             const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            //         tabs:const [
+            //           Tab(
+            //             icon: Icon(Icons.directions_car),
+            //             text: "car",
+            //           ),
+            //           Tab(
+            //             icon: Icon(Icons.directions_transit),
+            //             text: "transit",
+            //           ),
+            //           Tab(icon: Icon(Icons.directions_bike)),
+            //           Tab(icon: Icon(Icons.directions_car)),
+            //           Tab(icon: Icon(Icons.directions_transit)),
+            //           Tab(icon: Icon(Icons.directions_bike)),
+            //         ],
+            //       ),
+            //       const Expanded(
+            //         child: TabBarView(
+            //           children: <Widget>[
+            //             Center(
+            //               child: Icon(Icons.directions_car),
+            //             ),
+            //             Center(
+            //               child: Icon(Icons.directions_transit),
+            //             ),
+            //             Center(
+            //               child: Icon(Icons.directions_bike),
+            //             ),
+            //             Center(
+            //               child: Icon(Icons.directions_car),
+            //             ),
+            //             Center(
+            //               child: Icon(Icons.directions_transit),
+            //             ),
+            //             Center(
+            //               child: Icon(Icons.directions_bike),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // createButton('La mia lista', profilePhoto as String),
-                // Column(
-                //   children: [
-                //     FloatingActionButton(
-                //       elevation: 0,
-                //       onPressed: () {},
-                //       backgroundColor: const Color.fromARGB(255, 100, 146, 164),
-                //       foregroundColor: const Color.fromARGB(255, 248, 247, 251),
-                //       child: const Icon(
-                //         Icons.groups_outlined,
-                //         size: 30,
-                //       ),
-                //     ),
-                //     const SizedBox(
-                //       height: 10,
-                //     ),
-                //     Text(widget.trav.name)
-                //   ],
-                // ),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // widget.trav.userid != currentUser!.uid
-                //     ? StreamBuilder<QuerySnapshot>(
-                //         stream: userRepository.getStream(),
-                //         builder: (context, snapshot) {
-                //           if (snapshot.connectionState ==
-                //               ConnectionState.waiting) {
-                //             return const Center(child: Text("Loading..."));
-                //           } else {
-                //             return _buildListPart(
-                //                 context, snapshot.data!.docs, [''], 1);
-                //           }
-                //         })
-                //     : const SizedBox.shrink(),
-                // StreamBuilder<QuerySnapshot>(
-                //     stream: travRepository.getStream(),
-                //     builder: (context, snapshot) {
-                //       if (snapshot.connectionState == ConnectionState.waiting) {
-                //         return const Center(child: Text("Loading..."));
-                //       } else {
-                //         otherPart = parts(snapshot, widget.trav.name);
-                //         if (otherPart.isNotEmpty) {
-                //           return StreamBuilder<QuerySnapshot>(
-                //               stream: userRepository.getStream(),
-                //               builder: (context, snapshot) {
-                //                 if (snapshot.connectionState ==
-                //                     ConnectionState.waiting) {
-                //                   return const Center(
-                //                       child: Text("Loading..."));
-                //                 } else {
-                //                   return _buildListPart(context,
-                //                       snapshot.data!.docs, otherPart, 2);
-                //                 }
-                //               });
-                //         }
-                //         return const SizedBox.shrink();
-                //       }
-                //     }),
+                const SizedBox(
+                  width: 10,
+                ),
+                createButton('La mia lista', profilePhoto as String, currentUser?.uid as String),
+                createButton(widget.trav.name, '', 'group'),
+                StreamBuilder<QuerySnapshot>(
+                  stream: travRepository.getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text("Loading..."));
+                    } else {
+                      otherPart = parts(snapshot, widget.trav.name);
+                      if (otherPart.isNotEmpty) {
+                        return StreamBuilder<QuerySnapshot>(
+                            stream: userRepository.getStream(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: Text("Loading..."));
+                              } else {
+                                return _buildListPart(context,
+                                    snapshot.data!.docs, otherPart, 2);
+                              }
+                            });
+                      }
+                      return const SizedBox.shrink();
+                    }
+                }),
               ],
             ),
           ),
@@ -189,45 +210,11 @@ class _CheckListState extends State<ItemCheckList> {
                 return const Center(child: Text('Loading...'));
               } else {
                 return _hasData(snapshot);
-                // final hasMyOwnData = _hasData(snapshot, widget.trav.referenceId);
-                // if (!hasMyOwnData){
-                //   return _noItem();
-                // } else {
-                //   return _buildListCheck(context, snapshot.data!.docs);
-                // }
               }
             },
-          )
+          ),
 
-          // Column(
-          // children: <Widget>[
-          //   CheckboxListTile(
-          //     value: checkboxValue1,
-          //     onChanged: (bool? value) {
-          //       setState(() {
-          //         checkboxValue1 = value!;
-          //       });
-          //     },
-          //     title: const Text('Headline'),
-          //   ),
-          //   const Divider(height: 0),
-
-          // ],),
-          // Expanded(
-          //   child: Align(
-          //     alignment: Alignment.bottomRight,
-          //     child: Ink(
-          //         decoration: const ShapeDecoration(
-          //           color: Color.fromARGB(255, 255, 217, 104),
-          //           shape: CircleBorder(),
-          //         ),
-          //         child: IconButton(
-          //           icon: const Icon(Icons.add_outlined),
-          //           color: Colors.black,
-          //           onPressed: () {},
-          //         ),
-          //       ),
-          // )),
+          
         ],
       ),
     );
@@ -242,36 +229,35 @@ class _CheckListState extends State<ItemCheckList> {
     ));
   }
 
-  Widget createButton(String name, String photo) {
-    return Row(
-      children: [
-        Column(
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                  radius: 28,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(photo, fit: BoxFit.fitHeight),
-                  )),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(name)
-          ],
-        ),
-        const SizedBox(
-          width: 10,
+  Widget createButton(String name, String photo, String id) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      onPressed: (){
+        setState(() {
+          list = id;
+        });
+      }, 
+      child: Column(children: [
+        name == widget.trav.name
+        ? const CircleAvatar(
+          radius: 27,
+          child: Icon(Icons.group_outlined, size: 30,),
         )
-      ],
+        : CircleAvatar(
+          backgroundImage: NetworkImage(photo),
+          radius: 27,
+        ),
+        const SizedBox(height: 10),
+        Text(name, style: const TextStyle(color: Colors.black),)
+      ]),
     );
   }
 
-  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot,
-      List<String> part, int index) {
-    return Column(
+  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+    return Row(
         children: snapshot!
             .map((data) => _buildListItemPart(context, data, part, index))
             .toList());
@@ -283,18 +269,15 @@ class _CheckListState extends State<ItemCheckList> {
     final currentUser = FirebaseAuth.instance.currentUser;
     String name;
     String? photo;
+    String id;
 
-    if (currentUser != null && index == 1) {
-      if (user.userid == widget.trav.userid) {
-        return createButton(user.name, user.photoUrl as String);
-      }
-    }
     if (currentUser != null && index == 2 && part.isNotEmpty) {
       if (user.email == part.first) {
         name = user.name;
         photo = user.photoUrl;
+        id = user.userid as String;
         part.removeAt(0);
-        return createButton(name, photo as String);
+        return createButton(name, photo as String, id);
       }
     }
     return SizedBox.shrink();
