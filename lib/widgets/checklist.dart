@@ -82,68 +82,68 @@ class _CheckListState extends State<ItemCheckList> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                const SizedBox(
-                  width: 10,
-                ),
-                createButton('La mia lista', profilePhoto as String),
-                Column(
-                  children: [
-                    FloatingActionButton(
-                      elevation: 0,
-                      onPressed: () {},
-                      backgroundColor: const Color.fromARGB(255, 100, 146, 164),
-                      foregroundColor: const Color.fromARGB(255, 248, 247, 251),
-                      child: const Icon(
-                        Icons.groups_outlined,
-                        size: 30,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(widget.trav.name)
-                  ],
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                widget.trav.userid != currentUser!.uid
-                    ? StreamBuilder<QuerySnapshot>(
-                        stream: userRepository.getStream(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(child: Text("Loading..."));
-                          } else {
-                            return _buildListPart(
-                                context, snapshot.data!.docs, [''], 1);
-                          }
-                        })
-                    : const SizedBox.shrink(),
-                StreamBuilder<QuerySnapshot>(
-                    stream: travRepository.getStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text("Loading..."));
-                      } else {
-                        otherPart = parts(snapshot, widget.trav.name);
-                        if (otherPart.isNotEmpty) {
-                          return StreamBuilder<QuerySnapshot>(
-                              stream: userRepository.getStream(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: Text("Loading..."));
-                                } else {
-                                  return _buildListPart(context,
-                                      snapshot.data!.docs, otherPart, 2);
-                                }
-                              });
-                        }
-                        return const SizedBox.shrink();
-                      }
-                    }),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // createButton('La mia lista', profilePhoto as String),
+                // Column(
+                //   children: [
+                //     FloatingActionButton(
+                //       elevation: 0,
+                //       onPressed: () {},
+                //       backgroundColor: const Color.fromARGB(255, 100, 146, 164),
+                //       foregroundColor: const Color.fromARGB(255, 248, 247, 251),
+                //       child: const Icon(
+                //         Icons.groups_outlined,
+                //         size: 30,
+                //       ),
+                //     ),
+                //     const SizedBox(
+                //       height: 10,
+                //     ),
+                //     Text(widget.trav.name)
+                //   ],
+                // ),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // widget.trav.userid != currentUser!.uid
+                //     ? StreamBuilder<QuerySnapshot>(
+                //         stream: userRepository.getStream(),
+                //         builder: (context, snapshot) {
+                //           if (snapshot.connectionState ==
+                //               ConnectionState.waiting) {
+                //             return const Center(child: Text("Loading..."));
+                //           } else {
+                //             return _buildListPart(
+                //                 context, snapshot.data!.docs, [''], 1);
+                //           }
+                //         })
+                //     : const SizedBox.shrink(),
+                // StreamBuilder<QuerySnapshot>(
+                //     stream: travRepository.getStream(),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState == ConnectionState.waiting) {
+                //         return const Center(child: Text("Loading..."));
+                //       } else {
+                //         otherPart = parts(snapshot, widget.trav.name);
+                //         if (otherPart.isNotEmpty) {
+                //           return StreamBuilder<QuerySnapshot>(
+                //               stream: userRepository.getStream(),
+                //               builder: (context, snapshot) {
+                //                 if (snapshot.connectionState ==
+                //                     ConnectionState.waiting) {
+                //                   return const Center(
+                //                       child: Text("Loading..."));
+                //                 } else {
+                //                   return _buildListPart(context,
+                //                       snapshot.data!.docs, otherPart, 2);
+                //                 }
+                //               });
+                //         }
+                //         return const SizedBox.shrink();
+                //       }
+                //     }),
               ],
             ),
           ),
