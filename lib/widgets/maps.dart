@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:planup/db/location_rep.dart';
 import 'package:planup/db/places_rep.dart';
+import 'package:planup/db/users_rep.dart';
+import 'package:planup/model/location.dart';
 import 'package:planup/model/places.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/model/user_account.dart';
 
 class MapsPage extends StatefulWidget {
   const MapsPage({super.key, required this.trav});
@@ -22,17 +26,21 @@ class _MapsPageState extends State<MapsPage> {
 
   // repository for places data
   PlacesRepository placesRepository = PlacesRepository();
+  LocationRepository locationRepository = LocationRepository();
+  UsersRepository usersRepository = UsersRepository();
 
   // get current user
   User user = FirebaseAuth.instance.currentUser!;
 
   // list of places
   List<Place> places = [];
+  List<Location> locations = [];
 
   @override
   void initState() {
     super.initState();
     getPlaces();
+    getLocations();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mapController.listenerMapLongTapping.addListener(() async {
@@ -91,6 +99,28 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
+  void getLocations() {
+    locationRepository.getStream().listen((event) {
+      locations = event.docs
+          .map((e) => Location.fromSnapshot(e))
+          .where((element) =>
+              element.userid != user.uid &&
+              element.travelid == widget.trav.referenceId)
+          .toList();
+    });
+  }
+
+  String getUser(String userid) {
+    var userFromLocation = UserAccount('', '', '', '');
+    usersRepository.getStream().listen((event) {
+      userFromLocation = event.docs
+          .map((e) => UserAccount.fromSnapshot(e))
+          .where((element) => element.userid == userid)
+          .first;
+    });
+    return userFromLocation.name;
+  }
+
   removePlace(place) {
     setState(() {
       placesRepository.deletePlace(place);
@@ -103,6 +133,42 @@ class _MapsPageState extends State<MapsPage> {
       placesRepository.add(place);
     });
     Navigator.pop(context);
+  }
+
+  Future<void> displayPlaces() async {
+    for (var place in places) {
+      await _mapController.addMarker(
+        GeoPoint(
+            latitude: double.parse(place.lat),
+            longitude: double.parse(place.long)),
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.location_on,
+            color: Colors.amber[700],
+            size: 100,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> displayLocations() async {
+    for (var location in locations) {
+      String username = getUser(location.userid);
+      await _mapController.addMarker(
+        GeoPoint(
+            latitude: double.parse(location.lat),
+            longitude: double.parse(location.long)),
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.group,
+            color: Colors.blueGrey[200],
+            semanticLabel: username,
+            size: 100,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -140,20 +206,8 @@ class _MapsPageState extends State<MapsPage> {
                 color: Colors.black, size: 50),
           )),
           onMapIsReady: (isReady) async {
-            for (var place in places) {
-              await _mapController.addMarker(
-                GeoPoint(
-                    latitude: double.parse(place.lat),
-                    longitude: double.parse(place.long)),
-                markerIcon: MarkerIcon(
-                  icon: Icon(
-                    Icons.location_on,
-                    color: Colors.amber[700],
-                    size: 100,
-                  ),
-                ),
-              );
-            }
+            await displayPlaces();
+            await displayLocations();
             if (isReady) {
               await Future.delayed(const Duration(seconds: 1), () async {
                 await _mapController.currentLocation();
@@ -172,6 +226,57 @@ class _MapsPageState extends State<MapsPage> {
                       CardRemovePlace(place: place, callback: removePlace));
             }
           }),
+      persistentFooterButtons: [
+        // button for add the current user location on database in order to share it with other users
+        FloatingActionButton(
+            shape: const BeveledRectangleBorder(),
+            onPressed: () async {
+              GeoPoint geoPoint = await _mapController.myLocation();
+              var latitude = geoPoint.latitude.toString();
+              var longitude = geoPoint.longitude.toString();
+              bool isAlreadyShared = await locationRepository.isAlreadyShared(
+                  user.uid, widget.trav.referenceId!);
+              if (!isAlreadyShared) {
+                GeoPoint geoPoint = await _mapController.myLocation();
+                var latitude = geoPoint.latitude.toString();
+                var longitude = geoPoint.longitude.toString();
+                locationRepository.add(Location(
+                    latitude, longitude, user.uid, widget.trav.referenceId!));
+              } else {
+                // update my location on database
+                locationRepository.updateLocation(
+                    user.uid,
+                    widget.trav.referenceId!,
+                    Location(latitude, longitude, user.uid,
+                        widget.trav.referenceId!));
+              }
+              // add my location on database
+            },
+            child: const Column(
+              children: [
+                Icon(Icons.add),
+                Text('Add Shared Location',
+                    style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
+              ],
+            )),
+        // button for remove the current user location on database in order to stop sharing it with other users
+        FloatingActionButton(
+            shape: const BeveledRectangleBorder(),
+            onPressed: () async {
+              // remove my location on database
+              // find the point in the database with lat and long and show the information
+              locationRepository.deleteLocation(
+                  user.uid, widget.trav.referenceId!);
+            },
+            child: const Column(
+              children: [
+                Icon(Icons.remove),
+                Text('Remove Shared Location',
+                    style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
+              ],
+            )),
+      ],
+      persistentFooterAlignment: AlignmentDirectional.bottomCenter,
     );
   }
 }
