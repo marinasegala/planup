@@ -83,7 +83,7 @@ class _HomeTravelState extends State<HomeTravel> {
       } else {
         for (var i = 0; i < travels.length; i++) {
           for (var x = 0; x < travels[i]['list part'].length; x++) {
-            if (travels[i]['list part'][x] == currentUser.email &&
+            if (travels[i]['list part'][x] == currentUser.uid &&
                 travels[i]['name'] == trav.name) {
               return TravCard(trav: trav, boldStyle: boldStyle);
             }
@@ -104,7 +104,7 @@ bool _hasMyOwnTravel(AsyncSnapshot<QuerySnapshot> snapshot) {
       return true;
     }
     for (var x = 0; x < trav[i]['list part'].length; x++) {
-      if (trav[i]['list part'][x] == currentUser.email) {
+      if (trav[i]['list part'][x] == currentUser.uid) {
         return true;
       }
     }

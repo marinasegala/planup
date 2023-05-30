@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crea_radio_button/crea_radio_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/travel_rep.dart';
@@ -7,6 +8,7 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
+import 'customdropdown.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -17,36 +19,27 @@ class ItemCheckList extends StatefulWidget {
   State<ItemCheckList> createState() => _CheckListState();
 }
 
-enum StateList { privata, pubblica }
-
 class _CheckListState extends State<ItemCheckList> {
+  final ListRepository repository = ListRepository();
   final UsersRepository userRepository = UsersRepository();
   final TravelRepository travRepository = TravelRepository();
 
-  late List<UserAccount> users;
   late List<String> otherPart = [];
+  late List<UserAccount> useraccount = [];
 
-  bool checkboxValue1 = false;
-  bool checkboxValue2 = false;
-  bool checkboxValue3 = false;
-  StateList? _statelist = StateList.privata;
+  String stateItem = "Privato";
+  List<RadioOption> options = [
+    RadioOption("PUBBLICO", "Pubblico"),
+    RadioOption("PRIVATO", "Privato")
+  ];
 
-  late String list = currentUser?.uid as String;
-  int count = 2;
-
-  List<UserAccount> getUsers() {
-    List<UserAccount> _users = [];
-    userRepository.getStream().listen((event) {
-      _users = event.docs
-          .map((e) => UserAccount.fromSnapshot(e))
-          .where((element) => element.userid != currentUser?.uid)
-          .toList();
-    });
-    return _users;
-  }
+  late String current = currentUser?.uid as String;
 
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
+
+  String nameItem= '';
+  String typeItem= '';
 
   @override
   void initState() {
@@ -56,10 +49,9 @@ class _CheckListState extends State<ItemCheckList> {
         profilePhoto = providerProfile.photoURL;
       }
     }
-    users = getUsers();
   }
 
-  Future<void> updateItem(String field, bool newField, String id) {
+  Future<void> updateItem(String field, String newField, String id) {
     return FirebaseFirestore.instance
         .collection('check')
         .doc(id)
@@ -67,6 +59,28 @@ class _CheckListState extends State<ItemCheckList> {
             (value) => print("Update")
             ,onError: (e) => print("Error updating doc: $e")
         );
+  }
+  Future<void> updateIsChecked (String field, bool newField, String id){
+    return FirebaseFirestore.instance
+      .collection('check')
+      .doc(id)
+      .update({field: newField}).then(
+          (value) => print("Update")
+          ,onError: (e) => print("Error updating doc: $e")
+      );
+  }
+  Future<void> copyItem(Check list){
+    final newitemList = Check(
+      list.name,
+      trav: list.trav,
+      creator: currentUser?.uid,
+      isgroup: false,
+      isPublic: true,
+      isChecked: false,
+      whoBring: 'nil',
+    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
+    return repository.add(newitemList); 
   }
 
   @override
@@ -76,7 +90,8 @@ class _CheckListState extends State<ItemCheckList> {
       appBar: AppBar(
         title: const Text('Check List'),
       ),
-      body: Column(
+      body: ListView(
+        scrollDirection: Axis.vertical,
         children: [
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10.0),
@@ -105,7 +120,7 @@ class _CheckListState extends State<ItemCheckList> {
                                 return const Center(
                                     child: Text("Loading..."));
                               } else {
-                                return _buildListPart(context,
+                                return _buildListPartecipant(context,
                                     snapshot.data!.docs, otherPart, 2);
                               }
                             });
@@ -116,88 +131,185 @@ class _CheckListState extends State<ItemCheckList> {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                Radio<StateList>(
-                  value: StateList.pubblica,
-                  groupValue: _statelist,
-                  onChanged: (StateList? value) {
-                    setState(() {
-                      _statelist = value;
-                    });
+          _title(current),
+          current == currentUser?.uid
+            ? Column(children: [ 
+              const SizedBox(height: 10,),          
+              const Text(
+                'Gli oggetti pubblici sono visibili \nai tuoi compagni di viaggio',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              StreamBuilder<QuerySnapshot>(
+                stream: ListRepository().getStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text('Loading...'));
+                  } else {
+                    final hasDataList = _hasDataList(snapshot, 'personal', true);
+                    if (!hasDataList) {
+                      return _noItem();
+                    } else {
+                      return _buildListCheck(context, snapshot.data!.docs, current, true);
+                    }
+                  }
+                },
+              )
+            ],)
+            : current == 'group'
+                ? StreamBuilder<QuerySnapshot>(
+                  stream: ListRepository().getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      final hasDataList = _hasDataList(snapshot, 'group', true);
+                      if (!hasDataList) {
+                        return _noItem();
+                      } else {
+                        return _buildListCheck(context, snapshot.data!.docs, current, true);
+                      }
+                    }
+                  },
+                )
+                : StreamBuilder<QuerySnapshot>(
+                  stream: ListRepository().getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      final hasDataList = _hasDataList(snapshot, 'personal', false);
+                      if (!hasDataList) {
+                        return _noItem();
+                      } else {
+                        return _buildListCheck(context, snapshot.data!.docs, current, false);
+                      }
+                    }
                   },
                 ),
-                const Text('Pubblica', style: TextStyle(fontSize: 17)),
-                Radio<StateList>(
-                  value: StateList.privata,
-                  groupValue: _statelist,
-                  onChanged: (StateList? value) {
-                    setState(() {
-                      _statelist = value;
-                    });
-                  },
-                ),
-                const Text('Privata', style: TextStyle(fontSize: 17)),
-              ],
-            ),
-          ),
-          const Text(
-            'Se la lista è pubblica, i tuoi compagni di viaggio la possono vedere',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-
-          Column(children: [
-            list == currentUser?.uid
-            ? StreamBuilder<QuerySnapshot>(
-              stream: ListRepository().getStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: Text('Loading...'));
-                } else {
-                  return _hasDataPersonal(snapshot);
-                }
-              },
-            )
-            : const SizedBox.shrink(),
-
-            list == 'group'
-            ? StreamBuilder<QuerySnapshot>(
-              stream: ListRepository().getStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: Text('Loading...'));
-                } else {
-                  return _hasDataGroup(snapshot);
-                }
-              },
-            )
-            : const SizedBox.shrink(),
-          ]),
           
-        ],
-      ),
-      floatingActionButton: list == 'group' || list == currentUser?.uid
+      ]),
+      
+      floatingActionButton: current == currentUser?.uid
       ? FloatingActionButton(
-        onPressed: (){}, 
+        onPressed: (){
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                scrollable: true,
+                title: const Text('Nuovo oggetto'),
+                content: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Nome',
+                          ),
+                          onChanged: (text) => nameItem = text,
+                        ),
+                        const SizedBox(height: 10,),
+                        RadioButtonGroup(
+                          options: options,
+                          preSelectedIdx: 1,
+                          textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          selectedColor: const Color.fromARGB(255, 195, 190, 190),
+                          mainColor: const Color.fromARGB(255, 195, 190, 190),
+                          selectedBorderSide: const BorderSide(width: 2, color: Color.fromARGB(255, 64, 137, 168)),
+                          buttonWidth: 100,
+                          buttonHeight: 35,
+                          callback: (RadioOption val) {
+                            setState(() {
+                              stateItem = val.label;
+                            });
+                            
+                        }),
+                        
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [ ElevatedButton(
+                  child: const Text("Invia"),
+                  onPressed: () {
+                    final newitemList = Check(
+                      nameItem,
+                      trav: widget.trav.referenceId,
+                      creator: currentUser?.uid,
+                      isgroup: false,
+                      isPublic: stateItem=='Pubblico' ? true : false,
+                      isChecked: false,
+                      whoBring: 'nil',
+                    );
+                    repository.add(newitemList); 
+                    Navigator.of(context).pop();
+                  })
+                ],
+              );
+            });
+        }, 
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
         foregroundColor: Colors.black,
-        // mini: true,
         child: const Icon(Icons.add),
       )
-      : const SizedBox.shrink(),
+      : current == 'group' 
+        ? FloatingActionButton(
+            onPressed: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    scrollable: true,
+                    title: const Text('Nuovo oggetto'),
+                    content: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Form(
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Nome',
+                              ),
+                              onChanged: (text) => nameItem = text,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    actions: [ ElevatedButton(
+                      child: const Text("Invia"),
+                      onPressed: () {
+                        final newitemList = Check(
+                          nameItem,
+                          trav: widget.trav.referenceId,
+                          creator: currentUser?.uid,
+                          isgroup: true,
+                          isPublic: false,
+                          isChecked: false,
+                          whoBring: '',
+                        );
+                        repository.add(newitemList); 
+                        Navigator.of(context).pop();
+                      })
+                    ],
+                  );
+                });
+            }, 
+            backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+            foregroundColor: Colors.black,
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox.shrink(),
     );
   }
 
   Widget _noItem() {
     return const Center(
         child: Text(
-      'Non hai ancora inserito gli oggetti da portare',
+      'Non sono ancora presenti gli oggetti da portare',
       style: TextStyle(fontSize: 17),
       textAlign: TextAlign.center,
     ));
@@ -211,9 +323,9 @@ class _CheckListState extends State<ItemCheckList> {
       ),
       onPressed: (){
         setState(() {
-          list = id;
+          current = id;
         });
-      }, 
+      },
       child: Column(children: [
         name == widget.trav.name
         ? const CircleAvatar(
@@ -230,23 +342,24 @@ class _CheckListState extends State<ItemCheckList> {
     );
   }
 
-  Widget _buildListPart(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+  Widget _buildListPartecipant(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
     return Row(
         children: snapshot!
-            .map((data) => _buildListItemPart(context, data, part, index))
+            .map((data) => _buildListItemPartecipant(context, data, part, index))
             .toList());
   }
 
-  Widget _buildListItemPart(BuildContext context, DocumentSnapshot snapshot,
+  Widget _buildListItemPartecipant(BuildContext context, DocumentSnapshot snapshot,
       List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
+    useraccount.add(user);
     final currentUser = FirebaseAuth.instance.currentUser;
     String name;
     String? photo;
     String id;
 
     if (currentUser != null && index == 2 && part.isNotEmpty) {
-      if (user.email == part.first) {
+      if (user.userid == part.first) {
         name = user.name;
         photo = user.photoUrl;
         id = user.userid as String;
@@ -254,100 +367,153 @@ class _CheckListState extends State<ItemCheckList> {
         return createButton(name, photo as String, id);
       }
     }
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
-  // Widget _buildListCheck(
-  //     BuildContext context, List<DocumentSnapshot>? snapshot) {
-  //   return ListView(
-  //     padding: const EdgeInsets.all(8),
-  //     children:
-  //         snapshot!.map((data) => _buildListCheckItem(context, data)).toList(),
-  //   );
-  // }
-  // Widget _buildListCheckItem(BuildContext context, DocumentSnapshot snapshot) {
-  //   final list = Check.fromSnapshot(snapshot);
-  //   final currentUser = FirebaseAuth.instance.currentUser;
-  //   if (list.userid == currentUser?.uid && !list.isgroup) {
-  //     return Column(
-  //       children: [
-  //         CheckboxListTile(
-  //           value: checkboxValue1,
-  //           onChanged: (bool? value) {
-  //             setState(() {
-  //               checkboxValue1 = value!;
-  //             });
-  //           },
-  //           title: Text(list.name),
-  //         ),
-  //         const Divider(height: 0),
-  //       ],
-  //     );
-  //   }
-  //   return const SizedBox.shrink();
-  // }
+  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot, String user, bool bool) {
+    return Column(
+      children: snapshot!
+          .map((data) => _buildListItemCheck(context, data, user, bool))
+          .toList(),
+    );
+  }
 
-  Widget _hasDataPersonal(AsyncSnapshot<QuerySnapshot> snapshot) {
-    final checks = snapshot.data!.docs;
+  Widget _buildListItemCheck(BuildContext context, DocumentSnapshot snapshot, String userid, bool userCurrent) {
+    final list = Check.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
-    for (var i = 0; i < checks.length; i++) {
-      if (checks[i]['trav'] == widget.trav.referenceId as String) {
-        if (checks[i]['userid'] == currentUser?.uid && !checks[i]['isgroup']) {
-          return Column(
-            children: [
-              CheckboxListTile(
-                value: checks[i]['isChecked'],
-                onChanged: (bool? value) {
-                  updateItem('isChecked', value!, checks[i].id);
-                },
-                title: Text(checks[i]['name']),
-              ),
+    if (currentUser != null) {
+      if (userid != 'group' && list.creator == userid && !list.isgroup && list.trav == widget.trav.referenceId) {
+        if(userCurrent){
+          return Column( children: [ 
+            CheckboxListTile(
+              value: list.isChecked, 
+              onChanged:(bool? value) {
+                updateIsChecked('isChecked', value!, list.referenceId as String);
+              },
+              title: Text(list.name),
+              subtitle: Text(list.isPublic ? 'Pubblico' : 'Privato'),
+            ),              
+            const Divider(height: 0),
+          ]);
+        } else {
+          if(list.isPublic){
+            return Column( children: [ 
+              ListTile(
+                title: Text(list.name),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_circle_outline), 
+                  onPressed: (){
+                    setState(() {
+                      
+                      // updateIsChecked('copied', !list.copied, list.referenceId as String);
+                      copyItem(list);
+                    });
+                  },
+                  ),
+              ),              
               const Divider(height: 0),
-            ],
-          );
+            ]);
+          }
+        }
+        
+      } else {
+        if (userid == 'group' && list.isgroup && list.trav == widget.trav.referenceId){
+          return Column( children: [ 
+            CheckboxListTile(
+                value: list.isChecked, 
+                onChanged:(bool? value) {
+                  if(value == false && list.whoBring == currentUser.uid){
+                    updateItem('whoBring', '', list.referenceId as String);
+                    updateIsChecked('isChecked', value!, list.referenceId as String);
+                  } 
+                  if(value == true) {
+                    updateItem('whoBring', currentUser.uid, list.referenceId as String);
+                    updateIsChecked('isChecked', value!, list.referenceId as String);
+                  }
+                },
+                title: Text(list.name),
+                subtitle: list.whoBring != ''
+                ? StreamBuilder<QuerySnapshot>(
+                  stream: userRepository.getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      return _textWhoBring(snapshot, list.whoBring);
+                    }
+                  },)
+                : const Text('')
+              ),
+            const Divider(height: 0),
+          ]);
         }
       }
     }
-    return const Center(child: Text('Non sono ancora presenti oggetti nella lista'),);
+    return const SizedBox.shrink();
   }
-  Widget _hasDataGroup(AsyncSnapshot<QuerySnapshot> snapshot) {
-    final checks = snapshot.data!.docs;
-    // final currentUser = FirebaseAuth.instance.currentUser;
-    for (var i = 0; i < checks.length; i++) {
-      if (checks[i]['trav'] == widget.trav.referenceId as String) {
-        if (checks[i]['isgroup']) {
-          return Column(
-            children: [
-              CheckboxListTile(
-                value: checks[i]['isChecked'],
-                onChanged: (bool? value) {
-                  updateItem('isChecked', value!, checks[i].id);
-                },
-                title: Text(checks[i]['name']),
-              ),
-              const Divider(height: 0),
-            ],
-          );
-        }
-      }
-    }
-    return const Center(child: Text('Non sono ancora presenti oggetti nella lista'),);
-  }
-}
 
+  Widget _title(String list){
+    String nameTitle;
+    switch (list) {
+      case 'group':
+        nameTitle = 'Check List di gruppo';
+        break;
+      default: nameTitle = 'Check List';
+    }
+    return Text(
+      nameTitle,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 16),
+    );
+  }
+
+  Widget _textWhoBring(AsyncSnapshot<QuerySnapshot> snapshot, String whoBring){
+    final user = snapshot.data!.docs;
+    for(var i = 0; i < user.length; i++){
+      if(user[i]['userid'] == whoBring){
+        return Text('Portato da: ${user[i]['name']}');
+      }
+    }
+    return const Text('');
+  }
+  
+}
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final travel = snapshot.data!.docs;
-  List<String> emails = [];
+  List<String> partecipantId = [];
   for (var i = 0; i < travel.length; i++) {
     if (travel[i]['name'] == name) {
       for (var x = 0; x < travel[i]['list part'].length; x++) {
-        if (travel[i]['list part'][x] != currentUser.email) {
-          emails.add(travel[i]['list part'][x]);
+        if (travel[i]['list part'][x] != currentUser.uid) {
+          partecipantId.add(travel[i]['list part'][x]);
         }
       }
     }
   }
-  return emails;
+  return partecipantId;
+}
+
+bool _hasDataList(AsyncSnapshot<QuerySnapshot> snapshot, String type, bool bool) {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final listitem = snapshot.data!.docs;
+  for (var i = 0; i < listitem.length; i++) {
+    if(type == 'group'){
+      if (listitem[i]['isgroup']) {
+        return true;
+      }
+    } 
+    if(type != 'group' && bool) {
+      if (listitem[i]['creator'] == currentUser.uid && !listitem[i]['isgroup']) {
+        return true;
+      }
+    }
+    if(type != 'group' && !bool) {
+      if (listitem[i]['creator'] != currentUser.uid && !listitem[i]['isgroup']) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

@@ -59,7 +59,7 @@ class TravInfo extends StatelessWidget {
             const SizedBox(height: 10),
             ItemWidget(
               name: 'Cosa portare',
-              icon: Icons.shopping_cart,
+              icon: Icons.checklist,
               index: 4,
               trav: trav,
             ),

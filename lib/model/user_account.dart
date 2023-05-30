@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserAccount {
   String name;
-  String email;
+  String? email;
   final String? userid;
   String? photoUrl;
 
@@ -26,7 +26,7 @@ class UserAccount {
 UserAccount _userFromJson(Map<String, dynamic> json) {
   return UserAccount(
     json['name'] as String,
-    json['email'] as String,
+    json['email'] as String?,
     json['userid'] as String?,
     json['photoUrl'] as String?,
   );
