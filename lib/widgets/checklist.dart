@@ -69,6 +69,19 @@ class _CheckListState extends State<ItemCheckList> {
           ,onError: (e) => print("Error updating doc: $e")
       );
   }
+  Future<void> copyItem(Check list){
+    final newitemList = Check(
+      list.name,
+      trav: list.trav,
+      creator: currentUser?.uid,
+      isgroup: false,
+      isPublic: true,
+      isChecked: false,
+      whoBring: 'nil',
+    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
+    return repository.add(newitemList); 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +321,6 @@ class _CheckListState extends State<ItemCheckList> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      
       onPressed: (){
         setState(() {
           current = id;
@@ -388,7 +400,16 @@ class _CheckListState extends State<ItemCheckList> {
             return Column( children: [ 
               ListTile(
                 title: Text(list.name),
-                trailing: const Icon(Icons.add_circle_outline),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_circle_outline), 
+                  onPressed: (){
+                    setState(() {
+                      
+                      // updateIsChecked('copied', !list.copied, list.referenceId as String);
+                      copyItem(list);
+                    });
+                  },
+                  ),
               ),              
               const Divider(height: 0),
             ]);
