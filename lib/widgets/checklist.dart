@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crea_radio_button/crea_radio_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/db/travel_rep.dart';
@@ -7,6 +8,7 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
+import 'customdropdown.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -17,8 +19,6 @@ class ItemCheckList extends StatefulWidget {
   State<ItemCheckList> createState() => _CheckListState();
 }
 
-enum StateList { privata, pubblica }
-
 class _CheckListState extends State<ItemCheckList> {
   final ListRepository repository = ListRepository();
   final UsersRepository userRepository = UsersRepository();
@@ -27,7 +27,11 @@ class _CheckListState extends State<ItemCheckList> {
   late List<String> otherPart = [];
   late List<UserAccount> useraccount = [];
 
-  StateList? _statelist = StateList.privata;
+  String stateItem = "Privato";
+  List<RadioOption> options = [
+    RadioOption("PUBBLICO", "Pubblico"),
+    RadioOption("PRIVATO", "Privato")
+  ];
 
   late String current = currentUser?.uid as String;
 
@@ -35,6 +39,7 @@ class _CheckListState extends State<ItemCheckList> {
   late String? profilePhoto;
 
   String nameItem= '';
+  String typeItem= '';
 
   @override
   void initState() {
@@ -72,7 +77,8 @@ class _CheckListState extends State<ItemCheckList> {
       appBar: AppBar(
         title: const Text('Check List'),
       ),
-      body: Column(
+      body: ListView(
+        scrollDirection: Axis.vertical,
         children: [
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10.0),
@@ -114,39 +120,10 @@ class _CheckListState extends State<ItemCheckList> {
           ),
           _title(current),
           current == currentUser?.uid
-            ? Column(children: [
-              Align(
-                alignment: Alignment.center,
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Radio<StateList>(
-                      value: StateList.pubblica,
-                      groupValue: _statelist,
-                      onChanged: (StateList? value) {
-                        setState(() {
-                          _statelist = value;
-                        });
-                      },
-                    ),
-                    const Text('Pubblica', style: TextStyle(fontSize: 17)),
-                    Radio<StateList>(
-                      value: StateList.privata,
-                      groupValue: _statelist,
-                      onChanged: (StateList? value) {
-                        setState(() {
-                          _statelist = value;
-                        });
-                      },
-                    ),
-                    const Text('Privata', style: TextStyle(fontSize: 17)),
-                  ],
-                ),
-              ),
+            ? Column(children: [ 
+              const SizedBox(height: 10,),          
               const Text(
-                'Se la lista è pubblica, i tuoi compagni di viaggio la possono vedere',
+                'Gli oggetti pubblici sono visibili \nai tuoi compagni di viaggio',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
@@ -196,11 +173,11 @@ class _CheckListState extends State<ItemCheckList> {
                       }
                     }
                   },
-                )
-
+                ),
           
       ]),
-      floatingActionButton: current == 'group' || current == currentUser?.uid
+      
+      floatingActionButton: current == currentUser?.uid
       ? FloatingActionButton(
         onPressed: (){
           showDialog(
@@ -220,6 +197,24 @@ class _CheckListState extends State<ItemCheckList> {
                           ),
                           onChanged: (text) => nameItem = text,
                         ),
+                        const SizedBox(height: 10,),
+                        RadioButtonGroup(
+                          options: options,
+                          preSelectedIdx: 1,
+                          textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          selectedColor: const Color.fromARGB(255, 195, 190, 190),
+                          mainColor: const Color.fromARGB(255, 195, 190, 190),
+                          selectedBorderSide: const BorderSide(width: 2, color: Color.fromARGB(255, 64, 137, 168)),
+                          buttonWidth: 100,
+                          buttonHeight: 35,
+                          callback: (RadioOption val) {
+                            setState(() {
+                              stateItem = val.label;
+                            });
+                            
+                        }),
+                        
                       ],
                     ),
                   ),
@@ -231,10 +226,10 @@ class _CheckListState extends State<ItemCheckList> {
                       nameItem,
                       trav: widget.trav.referenceId,
                       creator: currentUser?.uid,
-                      isgroup: current == 'group' ? true : false,
-                      isPublic: false,
+                      isgroup: false,
+                      isPublic: stateItem=='Pubblico' ? true : false,
                       isChecked: false,
-                      whoBring: current == 'group' ? '' : 'nil',
+                      whoBring: 'nil',
                     );
                     repository.add(newitemList); 
                     Navigator.of(context).pop();
@@ -247,7 +242,54 @@ class _CheckListState extends State<ItemCheckList> {
         foregroundColor: Colors.black,
         child: const Icon(Icons.add),
       )
-      : const SizedBox.shrink(),
+      : current == 'group' 
+        ? FloatingActionButton(
+            onPressed: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    scrollable: true,
+                    title: const Text('Nuovo oggetto'),
+                    content: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Form(
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Nome',
+                              ),
+                              onChanged: (text) => nameItem = text,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    actions: [ ElevatedButton(
+                      child: const Text("Invia"),
+                      onPressed: () {
+                        final newitemList = Check(
+                          nameItem,
+                          trav: widget.trav.referenceId,
+                          creator: currentUser?.uid,
+                          isgroup: true,
+                          isPublic: false,
+                          isChecked: false,
+                          whoBring: '',
+                        );
+                        repository.add(newitemList); 
+                        Navigator.of(context).pop();
+                      })
+                    ],
+                  );
+                });
+            }, 
+            backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+            foregroundColor: Colors.black,
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox.shrink(),
     );
   }
 
@@ -265,14 +307,13 @@ class _CheckListState extends State<ItemCheckList> {
       style: ElevatedButton.styleFrom(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        
       ),
       
       onPressed: (){
         setState(() {
           current = id;
         });
-      }, 
+      },
       child: Column(children: [
         name == widget.trav.name
         ? const CircleAvatar(
@@ -338,17 +379,20 @@ class _CheckListState extends State<ItemCheckList> {
                 updateIsChecked('isChecked', value!, list.referenceId as String);
               },
               title: Text(list.name),
+              subtitle: Text(list.isPublic ? 'Pubblico' : 'Privato'),
             ),              
             const Divider(height: 0),
           ]);
         } else {
-          return Column( children: [ 
-            ListTile(
-              title: Text(list.name),
-              trailing: const Icon(Icons.add_circle_outline),
-            ),              
-            const Divider(height: 0),
-          ]);
+          if(list.isPublic){
+            return Column( children: [ 
+              ListTile(
+                title: Text(list.name),
+                trailing: const Icon(Icons.add_circle_outline),
+              ),              
+              const Divider(height: 0),
+            ]);
+          }
         }
         
       } else {
@@ -391,7 +435,7 @@ class _CheckListState extends State<ItemCheckList> {
     String nameTitle;
     switch (list) {
       case 'group':
-        nameTitle = widget.trav.name;
+        nameTitle = 'Check List di gruppo';
         break;
       default: nameTitle = 'Check List';
     }
@@ -411,6 +455,7 @@ class _CheckListState extends State<ItemCheckList> {
     }
     return const Text('');
   }
+  
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
