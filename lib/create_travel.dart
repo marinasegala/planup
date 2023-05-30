@@ -183,27 +183,27 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       }
       i++;
     }
-    for (; i < asFriend.length; i++) {
-      if (friends.contains(asFriend[i]) && !listid.contains(asFriend[i])) {
-        listid.add(asFriend[i]);
-        FirebaseFirestore.instance
-            .collection('users')
-            .where('userid', isEqualTo: asFriend[i])
-            .get()
-            .then(
-          (querySnapshot) {
-            for (var docSnapshot in querySnapshot.docs) {
-              setState(() {
-                finalFriend.add(docSnapshot.get('name'));
-                finalFriendId.add(docSnapshot.get('userid'));
-                finalFriendId.add(docSnapshot.get('name'));
-              });
-            }
-          },
-          onError: (e) => print("Error completing: $e"),
-        );
-      }
-    }
+    // for (; i < asFriend.length; i++) {
+    //   if (friends.contains(asFriend[i]) && !listid.contains(asFriend[i])) {
+    //     listid.add(asFriend[i]);
+    //     FirebaseFirestore.instance
+    //         .collection('users')
+    //         .where('userid', isEqualTo: asFriend[i])
+    //         .get()
+    //         .then(
+    //       (querySnapshot) {
+    //         for (var docSnapshot in querySnapshot.docs) {
+    //           setState(() {
+    //             finalFriend.add(docSnapshot.get('name'));
+    //             finalFriendId.add(docSnapshot.get('userid'));
+    //             finalFriendId.add(docSnapshot.get('name'));
+    //           });
+    //         }
+    //       },
+    //       onError: (e) => print("Error completing: $e"),
+    //     );
+    //   }
+    // }
   }
 
   @override
