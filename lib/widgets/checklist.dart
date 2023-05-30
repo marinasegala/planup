@@ -7,7 +7,6 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
-import '../show/item_listcheck.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -25,27 +24,12 @@ class _CheckListState extends State<ItemCheckList> {
   final UsersRepository userRepository = UsersRepository();
   final TravelRepository travRepository = TravelRepository();
 
-  late List<UserAccount> users;
   late List<String> otherPart = [];
+  late List<UserAccount> useraccount = [];
 
-  bool checkboxValue1 = false;
-  bool checkboxValue2 = false;
-  bool checkboxValue3 = false;
   StateList? _statelist = StateList.privata;
 
-  late String list = currentUser?.uid as String;
-  int count = 2;
-
-  List<UserAccount> getUsers() {
-    List<UserAccount> _users = [];
-    userRepository.getStream().listen((event) {
-      _users = event.docs
-          .map((e) => UserAccount.fromSnapshot(e))
-          .where((element) => element.userid != currentUser?.uid)
-          .toList();
-    });
-    return _users;
-  }
+  late String current = currentUser?.uid as String;
 
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
@@ -60,10 +44,9 @@ class _CheckListState extends State<ItemCheckList> {
         profilePhoto = providerProfile.photoURL;
       }
     }
-    users = getUsers();
   }
 
-  Future<void> updateItem(String field, bool newField, String id) {
+  Future<void> updateItem(String field, String newField, String id) {
     return FirebaseFirestore.instance
         .collection('check')
         .doc(id)
@@ -71,6 +54,15 @@ class _CheckListState extends State<ItemCheckList> {
             (value) => print("Update")
             ,onError: (e) => print("Error updating doc: $e")
         );
+  }
+  Future<void> updateIsChecked (String field, bool newField, String id){
+    return FirebaseFirestore.instance
+      .collection('check')
+      .doc(id)
+      .update({field: newField}).then(
+          (value) => print("Update")
+          ,onError: (e) => print("Error updating doc: $e")
+      );
   }
 
   @override
@@ -120,79 +112,95 @@ class _CheckListState extends State<ItemCheckList> {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 10,
+          _title(current),
+          current == currentUser?.uid
+            ? Column(children: [
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Radio<StateList>(
+                      value: StateList.pubblica,
+                      groupValue: _statelist,
+                      onChanged: (StateList? value) {
+                        setState(() {
+                          _statelist = value;
+                        });
+                      },
+                    ),
+                    const Text('Pubblica', style: TextStyle(fontSize: 17)),
+                    Radio<StateList>(
+                      value: StateList.privata,
+                      groupValue: _statelist,
+                      onChanged: (StateList? value) {
+                        setState(() {
+                          _statelist = value;
+                        });
+                      },
+                    ),
+                    const Text('Privata', style: TextStyle(fontSize: 17)),
+                  ],
                 ),
-                Radio<StateList>(
-                  value: StateList.pubblica,
-                  groupValue: _statelist,
-                  onChanged: (StateList? value) {
-                    setState(() {
-                      _statelist = value;
-                    });
-                  },
-                ),
-                const Text('Pubblica', style: TextStyle(fontSize: 17)),
-                Radio<StateList>(
-                  value: StateList.privata,
-                  groupValue: _statelist,
-                  onChanged: (StateList? value) {
-                    setState(() {
-                      _statelist = value;
-                    });
-                  },
-                ),
-                const Text('Privata', style: TextStyle(fontSize: 17)),
-              ],
-            ),
-          ),
-          const Text(
-            'Se la lista è pubblica, i tuoi compagni di viaggio la possono vedere',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-
-          list == currentUser?.uid
-            ? StreamBuilder<QuerySnapshot>(
-              stream: ListRepository().getStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: Text('Loading...'));
-                } else {
-                  final hasDataList = _hasDataList(snapshot, 'personal');
-                  if (!hasDataList) {
-                    return _noItem();
+              ),
+              const Text(
+                'Se la lista è pubblica, i tuoi compagni di viaggio la possono vedere',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              StreamBuilder<QuerySnapshot>(
+                stream: ListRepository().getStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text('Loading...'));
                   } else {
-                    return _buildListCheck(context, snapshot.data!.docs, list);
+                    final hasDataList = _hasDataList(snapshot, 'personal', true);
+                    if (!hasDataList) {
+                      return _noItem();
+                    } else {
+                      return _buildListCheck(context, snapshot.data!.docs, current, true);
+                    }
                   }
-                }
-              },
-            )
-            : const SizedBox.shrink(),
+                },
+              )
+            ],)
+            : current == 'group'
+                ? StreamBuilder<QuerySnapshot>(
+                  stream: ListRepository().getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      final hasDataList = _hasDataList(snapshot, 'group', true);
+                      if (!hasDataList) {
+                        return _noItem();
+                      } else {
+                        return _buildListCheck(context, snapshot.data!.docs, current, true);
+                      }
+                    }
+                  },
+                )
+                : StreamBuilder<QuerySnapshot>(
+                  stream: ListRepository().getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      final hasDataList = _hasDataList(snapshot, 'personal', false);
+                      if (!hasDataList) {
+                        return _noItem();
+                      } else {
+                        return _buildListCheck(context, snapshot.data!.docs, current, false);
+                      }
+                    }
+                  },
+                )
 
-          list == 'group'
-            ? StreamBuilder<QuerySnapshot>(
-              stream: ListRepository().getStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: Text('Loading...'));
-                } else {
-                  final hasDataList = _hasDataList(snapshot, 'group');
-                  if (!hasDataList) {
-                    return _noItem();
-                  } else {
-                    return _buildListCheck(context, snapshot.data!.docs, list);
-                  }
-                }
-              },
-            )
-            : const SizedBox.shrink(),
+          
       ]),
-      floatingActionButton: list == 'group' || list == currentUser?.uid
+      floatingActionButton: current == 'group' || current == currentUser?.uid
       ? FloatingActionButton(
         onPressed: (){
           showDialog(
@@ -223,9 +231,10 @@ class _CheckListState extends State<ItemCheckList> {
                       nameItem,
                       trav: widget.trav.referenceId,
                       creator: currentUser?.uid,
-                      isgroup: list == 'group' ? true : false,
+                      isgroup: current == 'group' ? true : false,
                       isPublic: false,
                       isChecked: false,
+                      whoBring: current == 'group' ? '' : 'nil',
                     );
                     repository.add(newitemList); 
                     Navigator.of(context).pop();
@@ -256,10 +265,12 @@ class _CheckListState extends State<ItemCheckList> {
       style: ElevatedButton.styleFrom(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        
       ),
+      
       onPressed: (){
         setState(() {
-          list = id;
+          current = id;
         });
       }, 
       child: Column(children: [
@@ -288,6 +299,7 @@ class _CheckListState extends State<ItemCheckList> {
   Widget _buildListItemPartecipant(BuildContext context, DocumentSnapshot snapshot,
       List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
+    useraccount.add(user);
     final currentUser = FirebaseAuth.instance.currentUser;
     String name;
     String? photo;
@@ -305,39 +317,68 @@ class _CheckListState extends State<ItemCheckList> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot, String user) {
+  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot, String user, bool bool) {
     return Column(
       children: snapshot!
-          .map((data) => _buildListItemCheck(context, data, user))
+          .map((data) => _buildListItemCheck(context, data, user, bool))
           .toList(),
     );
   }
 
-  Widget _buildListItemCheck(BuildContext context, DocumentSnapshot snapshot, String user) {
+  Widget _buildListItemCheck(BuildContext context, DocumentSnapshot snapshot, String userid, bool userCurrent) {
     final list = Check.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      if (user != 'group' && list.creator == currentUser.uid && !list.isgroup && list.trav == widget.trav.referenceId) {
-        return Column( children: [ 
-          CheckboxListTile(
-            value: list.isChecked, 
-            onChanged:(bool? value) {
-              updateItem('isChecked', value!, list.referenceId as String);
-            },
-            title: Text(list.name),
-          ),
-          const Divider(height: 0),
-        ]);
-      } else {
-        if (user == 'group' && list.isgroup && list.trav == widget.trav.referenceId){
+      if (userid != 'group' && list.creator == userid && !list.isgroup && list.trav == widget.trav.referenceId) {
+        if(userCurrent){
           return Column( children: [ 
             CheckboxListTile(
               value: list.isChecked, 
               onChanged:(bool? value) {
-                updateItem('isChecked', value!, list.referenceId as String);
+                updateIsChecked('isChecked', value!, list.referenceId as String);
               },
               title: Text(list.name),
-            ),
+            ),              
+            const Divider(height: 0),
+          ]);
+        } else {
+          return Column( children: [ 
+            ListTile(
+              title: Text(list.name),
+              trailing: const Icon(Icons.add_circle_outline),
+            ),              
+            const Divider(height: 0),
+          ]);
+        }
+        
+      } else {
+        if (userid == 'group' && list.isgroup && list.trav == widget.trav.referenceId){
+          return Column( children: [ 
+            CheckboxListTile(
+                value: list.isChecked, 
+                onChanged:(bool? value) {
+                  if(value == false && list.whoBring == currentUser.uid){
+                    updateItem('whoBring', '', list.referenceId as String);
+                    updateIsChecked('isChecked', value!, list.referenceId as String);
+                  } 
+                  if(value == true) {
+                    updateItem('whoBring', currentUser.uid, list.referenceId as String);
+                    updateIsChecked('isChecked', value!, list.referenceId as String);
+                  }
+                },
+                title: Text(list.name),
+                subtitle: list.whoBring != ''
+                ? StreamBuilder<QuerySnapshot>(
+                  stream: userRepository.getStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else {
+                      return _textWhoBring(snapshot, list.whoBring);
+                    }
+                  },)
+                : const Text('')
+              ),
             const Divider(height: 0),
           ]);
         }
@@ -346,8 +387,31 @@ class _CheckListState extends State<ItemCheckList> {
     return const SizedBox.shrink();
   }
 
-}
+  Widget _title(String list){
+    String nameTitle;
+    switch (list) {
+      case 'group':
+        nameTitle = widget.trav.name;
+        break;
+      default: nameTitle = 'Check List';
+    }
+    return Text(
+      nameTitle,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 16),
+    );
+  }
 
+  Widget _textWhoBring(AsyncSnapshot<QuerySnapshot> snapshot, String whoBring){
+    final user = snapshot.data!.docs;
+    for(var i = 0; i < user.length; i++){
+      if(user[i]['userid'] == whoBring){
+        return Text('Portato da: ${user[i]['name']}');
+      }
+    }
+    return const Text('');
+  }
+}
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   final currentUser = FirebaseAuth.instance.currentUser!;
@@ -365,7 +429,7 @@ List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   return partecipantId;
 }
 
-bool _hasDataList(AsyncSnapshot<QuerySnapshot> snapshot, String type) {
+bool _hasDataList(AsyncSnapshot<QuerySnapshot> snapshot, String type, bool bool) {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final listitem = snapshot.data!.docs;
   for (var i = 0; i < listitem.length; i++) {
@@ -373,8 +437,14 @@ bool _hasDataList(AsyncSnapshot<QuerySnapshot> snapshot, String type) {
       if (listitem[i]['isgroup']) {
         return true;
       }
-    } else {
+    } 
+    if(type != 'group' && bool) {
       if (listitem[i]['creator'] == currentUser.uid && !listitem[i]['isgroup']) {
+        return true;
+      }
+    }
+    if(type != 'group' && !bool) {
+      if (listitem[i]['creator'] != currentUser.uid && !listitem[i]['isgroup']) {
         return true;
       }
     }
