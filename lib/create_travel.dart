@@ -31,9 +31,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   List<String> asFriend = [];
   List<String> listid = [];
   List<String> finalFriend = [];
-  List<String> finalFriendMail = [];
+  List<String> finalFriendId = [];
   List<String> selectedFriends = [];
-  List<String> selectedFriendsMail = [];
+  List<String> selectedFriendsId = [];
   String namefriend = '';
   Map<String, dynamic> toMap() {
     return {
@@ -145,8 +145,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         .collection('friends')
         .where(where, isEqualTo: currentUser.uid)
         .get()
-        .then(
-      (querySnapshot) {
+        .then((querySnapshot) {
         // print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           if (where == 'userid') {
@@ -154,8 +153,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
           } else {
             asFriend.add(docSnapshot.get(add));
           }
-
-          // addtoFriend(docSnapshot.get('userIdFriend'));
         }
       },
       onError: (e) => print("Error completing: $e"),
@@ -176,8 +173,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             for (var docSnapshot in querySnapshot.docs) {
               setState(() {
                 finalFriend.add(docSnapshot.get('name'));
-                finalFriendMail.add(docSnapshot.get('email'));
-                finalFriendMail.add(docSnapshot.get('name'));
+                finalFriendId.add(docSnapshot.get('userid'));
+                finalFriendId.add(docSnapshot.get('name'));
               });
             }
           },
@@ -198,8 +195,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             for (var docSnapshot in querySnapshot.docs) {
               setState(() {
                 finalFriend.add(docSnapshot.get('name'));
-                finalFriendMail.add(docSnapshot.get('email'));
-                finalFriendMail.add(docSnapshot.get('name'));
+                finalFriendId.add(docSnapshot.get('userid'));
+                finalFriendId.add(docSnapshot.get('name'));
               });
             }
           },
@@ -604,11 +601,11 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                                 date = date.substring(0, 10);
                               }
                               var count = 1;
-                              selectedFriendsMail.add(FirebaseAuth.instance.currentUser?.email as String);
+                              selectedFriendsId.add(FirebaseAuth.instance.currentUser?.uid as String);
                               for (var x in selectedFriends) {
-                                for (var i = 0; i < finalFriendMail.length; i++) {
-                                  if (x == finalFriendMail[i]) {
-                                    selectedFriendsMail.add(finalFriendMail[i - 1]);
+                                for (var i = 0; i < finalFriendId.length; i++) {
+                                  if (x == finalFriendId[i]) {
+                                    selectedFriendsId.add(finalFriendId[i - 1]);
                                     count ++;
                                   }
                                 }
@@ -618,7 +615,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                                   partecipant: part,
                                   userid: FirebaseAuth.instance.currentUser?.uid,
                                   date: date,
-                                  listPart: selectedFriendsMail,
+                                  listPart: selectedFriendsId,
                                   photo: imageUrl,
                                   numFriend: count);
                               repository.add(newTrav);

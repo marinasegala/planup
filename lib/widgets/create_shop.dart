@@ -99,8 +99,6 @@ class _CreateItemState extends State<CreateShopItem> {
                       children: [
                         const SizedBox(width: 34),
                         const SizedBox(
-                          // width: 180.0,
-                          // height: 40.0,
                           child: Center(
                               child: Text('Categoria della spesa',
                                   style: TextStyle(fontSize: 15),

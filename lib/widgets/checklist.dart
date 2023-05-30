@@ -7,6 +7,7 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
+import '../show/item_listcheck.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -20,6 +21,7 @@ class ItemCheckList extends StatefulWidget {
 enum StateList { privata, pubblica }
 
 class _CheckListState extends State<ItemCheckList> {
+  final ListRepository repository = ListRepository();
   final UsersRepository userRepository = UsersRepository();
   final TravelRepository travRepository = TravelRepository();
 
@@ -47,6 +49,8 @@ class _CheckListState extends State<ItemCheckList> {
 
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
+
+  String nameItem= '';
 
   @override
   void initState() {
@@ -152,8 +156,7 @@ class _CheckListState extends State<ItemCheckList> {
             style: TextStyle(fontSize: 16),
           ),
 
-          Column(children: [
-            list == currentUser?.uid
+          list == currentUser?.uid
             ? StreamBuilder<QuerySnapshot>(
               stream: ListRepository().getStream(),
               builder: (context, snapshot) {
@@ -166,7 +169,7 @@ class _CheckListState extends State<ItemCheckList> {
             )
             : const SizedBox.shrink(),
 
-            list == 'group'
+          list == 'group'
             ? StreamBuilder<QuerySnapshot>(
               stream: ListRepository().getStream(),
               builder: (context, snapshot) {
@@ -178,13 +181,48 @@ class _CheckListState extends State<ItemCheckList> {
               },
             )
             : const SizedBox.shrink(),
-          ]),
-          
-        ],
-      ),
+      ]),
       floatingActionButton: list == 'group' || list == currentUser?.uid
       ? FloatingActionButton(
-        onPressed: (){}, 
+        onPressed: (){
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                scrollable: true,
+                title: const Text('Nuovo oggetto'),
+                content: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Nome',
+                          ),
+                          onChanged: (text) => nameItem = text,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [ ElevatedButton(
+                  child: const Text("Invia"),
+                  onPressed: () {
+                    final newitemList = Check(
+                      nameItem,
+                      trav: widget.trav.referenceId,
+                      userid: currentUser?.uid,
+                      isgroup: list == 'group' ? true : false,
+                      isPublic: false,
+                      isChecked: false,
+                    );
+                    repository.add(newitemList); 
+                  })
+                ],
+              );
+            });
+        }, 
         backgroundColor: const Color.fromARGB(255, 255, 217, 104),
         foregroundColor: Colors.black,
         // mini: true,
@@ -246,7 +284,7 @@ class _CheckListState extends State<ItemCheckList> {
     String id;
 
     if (currentUser != null && index == 2 && part.isNotEmpty) {
-      if (user.email == part.first) {
+      if (user.userid == part.first) {
         name = user.name;
         photo = user.photoUrl;
         id = user.userid as String;
@@ -254,45 +292,15 @@ class _CheckListState extends State<ItemCheckList> {
         return createButton(name, photo as String, id);
       }
     }
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
-  // Widget _buildListCheck(
-  //     BuildContext context, List<DocumentSnapshot>? snapshot) {
-  //   return ListView(
-  //     padding: const EdgeInsets.all(8),
-  //     children:
-  //         snapshot!.map((data) => _buildListCheckItem(context, data)).toList(),
-  //   );
-  // }
-  // Widget _buildListCheckItem(BuildContext context, DocumentSnapshot snapshot) {
-  //   final list = Check.fromSnapshot(snapshot);
-  //   final currentUser = FirebaseAuth.instance.currentUser;
-  //   if (list.userid == currentUser?.uid && !list.isgroup) {
-  //     return Column(
-  //       children: [
-  //         CheckboxListTile(
-  //           value: checkboxValue1,
-  //           onChanged: (bool? value) {
-  //             setState(() {
-  //               checkboxValue1 = value!;
-  //             });
-  //           },
-  //           title: Text(list.name),
-  //         ),
-  //         const Divider(height: 0),
-  //       ],
-  //     );
-  //   }
-  //   return const SizedBox.shrink();
-  // }
-
-  Widget _hasDataPersonal(AsyncSnapshot<QuerySnapshot> snapshot) {
+  Widget _hasDataPersonal(AsyncSnapshot<QuerySnapshot> snapshot) {//AsyncSnapshot<QuerySnapshot<Object?>> snapshot){ 
     final checks = snapshot.data!.docs;
     final currentUser = FirebaseAuth.instance.currentUser;
     for (var i = 0; i < checks.length; i++) {
       if (checks[i]['trav'] == widget.trav.referenceId as String) {
-        if (checks[i]['userid'] == currentUser?.uid && !checks[i]['isgroup']) {
+        if (checks[i]['userid'] == currentUser?.uid  && !checks[i]['isgroup']) {
           return Column(
             children: [
               CheckboxListTile(
@@ -310,6 +318,7 @@ class _CheckListState extends State<ItemCheckList> {
     }
     return const Center(child: Text('Non sono ancora presenti oggetti nella lista'),);
   }
+
   Widget _hasDataGroup(AsyncSnapshot<QuerySnapshot> snapshot) {
     final checks = snapshot.data!.docs;
     // final currentUser = FirebaseAuth.instance.currentUser;
@@ -339,15 +348,15 @@ class _CheckListState extends State<ItemCheckList> {
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final travel = snapshot.data!.docs;
-  List<String> emails = [];
+  List<String> partecipantId = [];
   for (var i = 0; i < travel.length; i++) {
     if (travel[i]['name'] == name) {
       for (var x = 0; x < travel[i]['list part'].length; x++) {
-        if (travel[i]['list part'][x] != currentUser.email) {
-          emails.add(travel[i]['list part'][x]);
+        if (travel[i]['list part'][x] != currentUser.uid) {
+          partecipantId.add(travel[i]['list part'][x]);
         }
       }
     }
   }
-  return emails;
+  return partecipantId;
 }
