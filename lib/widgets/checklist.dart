@@ -404,6 +404,8 @@ class _CheckListState extends State<ItemCheckList> {
                   icon: const Icon(Icons.add_circle_outline), 
                   onPressed: (){
                     setState(() {
+                      
+                      // updateIsChecked('copied', !list.copied, list.referenceId as String);
                       copyItem(list);
                     });
                   },
