@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crea_radio_button/crea_radio_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'model/travel.dart';
 
 class SettingTravel extends StatefulWidget {
@@ -13,6 +16,19 @@ class SettingTravel extends StatefulWidget {
 }
 
 class _SettingTravelState extends State<SettingTravel> {
+  
+  String changePeriod = "Giornata";
+  List<RadioOption> options = [
+    RadioOption("GIORNATA", "Giornata"),
+    RadioOption("WEEKEND", "Weekend"),
+    RadioOption("SETTIMANA", "Settimana"),
+    RadioOption("ALTRO", "Altro"),
+  ];
+  bool changedata = false;
+  bool _swapDate = false;
+  List<DateTime?> _dialogCalendarPickerValue = [];
+  String date = '';
+
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
   XFile? image;
@@ -20,32 +36,6 @@ class _SettingTravelState extends State<SettingTravel> {
   String imageUrl = '';
   String uniqueFileName = '';
   final ImagePicker picker = ImagePicker();
-
-  // void uploadFile() async {
-  //   // get a reference to storage root
-  //   Reference storageReference = FirebaseStorage.instance.ref();
-  //   Reference referenceDirImage = storageReference.child('images');
-
-  //   // create a reference for the image to be stored
-  //   uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-  //   Reference imageReference = referenceDirImage.child(uniqueFileName);
-
-  //   // handle errors/success
-  //   try {
-  //     // store the image
-  //     await imageReference.putFile(File(image!.path));
-  //     imageReference.
-  //     // await imageReference.putFile(File(image!.path));
-
-  //     // success: get the download url
-  //     imageUrl = await imageReference.getDownloadURL();
-
-  //     // update the UI
-  //     setState(() {});
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
 
   Future<void> updateItem(String field, String newField) {
     return FirebaseFirestore.instance
@@ -106,13 +96,189 @@ class _SettingTravelState extends State<SettingTravel> {
         });
   }
 
+   String _getValueText(
+      CalendarDatePicker2Type datePickerType, List<DateTime?> values) {
+    values =
+        values.map((e) => e != null ? DateUtils.dateOnly(e) : null).toList();
+    var valueText = (values.isNotEmpty ? values[0] : null)
+        .toString()
+        .replaceAll('00:00:00.000', '');
+
+    if (datePickerType == CalendarDatePicker2Type.multi) {
+      valueText = values.isNotEmpty
+          ? values
+              .map((v) => v.toString().replaceAll('00:00:00.000', ''))
+              .join(', ')
+          : 'null';
+    } else if (datePickerType == CalendarDatePicker2Type.range) {
+      if (values.isNotEmpty) {
+        final startDate = values[0].toString().replaceAll('00:00:00.000', '');
+        final endDate = values.length > 1
+            ? values[1].toString().replaceAll('00:00:00.000', '')
+            : 'null';
+        valueText = '$startDate to $endDate';
+      } else {
+        return 'null';
+      }
+    }
+
+    return valueText;
+  }
+
   @override
   Widget build(BuildContext context) {
     String updateName = widget.travel.name;
-    String updatePart = widget.travel.partecipant;
-    String? updateDate = widget.travel.date;
-    bool canupdateDate = false;
     var id = widget.travel.referenceId;
+
+    buildCalendarDialogButton(bool alone) {
+      const dayTextStyle =
+          TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
+      final weekendTextStyle =
+          TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w600);
+      final anniversaryTextStyle = TextStyle(
+        color: Colors.red[400],
+        fontWeight: FontWeight.w700,
+        decoration: TextDecoration.underline,
+      );
+      final config = CalendarDatePicker2WithActionButtonsConfig(
+        dayTextStyle: dayTextStyle,
+        calendarType: CalendarDatePicker2Type.range,
+        selectedDayHighlightColor: Colors.purple[800],
+        closeDialogOnCancelTapped: true,
+        firstDayOfWeek: 1,
+        weekdayLabelTextStyle: const TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.bold,
+        ),
+        controlsTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+        centerAlignModePicker: true,
+        customModePickerIcon: const SizedBox(),
+        selectedDayTextStyle: dayTextStyle.copyWith(color: Colors.white),
+        dayTextStylePredicate: ({required date}) {
+          TextStyle? textStyle;
+          if (date.weekday == DateTime.saturday ||
+              date.weekday == DateTime.sunday) {
+            textStyle = weekendTextStyle;
+          }
+          if (DateUtils.isSameDay(date, DateTime(2021, 1, 25))) {
+            textStyle = anniversaryTextStyle;
+          }
+          return textStyle;
+        },
+        dayBuilder: ({
+          required date,
+          textStyle,
+          decoration,
+          isSelected,
+          isDisabled,
+          isToday,
+        }) {
+          Widget? dayWidget;
+          if (date.day % 3 == 0 && date.day % 9 != 0) {
+            dayWidget = Container(
+              decoration: decoration,
+              child: Center(
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Text(
+                      MaterialLocalizations.of(context).formatDecimal(date.day),
+                      style: textStyle,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 27.5),
+                      child: Container(
+                        height: 4,
+                        width: 4,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: isSelected == true
+                              ? Colors.white
+                              : Colors.grey[500],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          return dayWidget;
+        },
+        yearBuilder: ({
+          required year,
+          decoration,
+          isCurrentYear,
+          isDisabled,
+          isSelected,
+          textStyle,
+        }) {
+          return Center(
+            child: Container(
+              decoration: decoration,
+              height: 36,
+              width: 72,
+              child: Center(
+                child: Semantics(
+                  selected: isSelected,
+                  button: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        year.toString(),
+                        style: textStyle,
+                      ),
+                      if (isCurrentYear == true)
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          margin: const EdgeInsets.only(left: 5),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          onPressed: () async {
+            final values = await showCalendarDatePicker2Dialog(
+              context: context,
+              config: config,
+              dialogSize: const Size(325, 400),
+              borderRadius: BorderRadius.circular(15),
+              dialogBackgroundColor: Colors.white,
+            );
+            if (values != null) {
+              // ignore: avoid_print
+              date = _getValueText(config.calendarType, values);
+              print(date);
+              setState(() {
+                _dialogCalendarPickerValue = values;
+              });
+            }
+          },
+          child: Center(
+            child: Text(alone ? 'Cambio data' : 'Apri il calendario' , 
+              style: const TextStyle(fontSize: 16)
+          )),
+        ),
+      );
+          
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -165,6 +331,7 @@ class _SettingTravelState extends State<SettingTravel> {
             },
             child: const Text('Cambia Foto'),
           ),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
@@ -177,77 +344,91 @@ class _SettingTravelState extends State<SettingTravel> {
               onChanged: (text) => updateName = text,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextField(
-              autofocus: false,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                icon: const Icon(Icons.group_outlined),
-                hintText:
-                    'Numero dei partecipanti: ${widget.travel.partecipant}',
-                counterText: 'Scrivi per modificare il numero',
-              ),
-              onChanged: (text) => updatePart = text,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () => showDialog<String>(
+          
+          const SizedBox(height: 30),
+          
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Cambio la data "', style: TextStyle(fontSize: 17),),
+              Text(widget.travel.date as String, style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 17),),
+              const Text('" con',  style: TextStyle(fontSize: 17),),
+          ],),
+          const SizedBox(height: 10,),
+          widget.travel.date == 'Giornata' || widget.travel.date == 'Settimana' || widget.travel.date == 'Weekend' || widget.travel.date == 'Altro'
+          ? ToggleSwitch(
+              minWidth: 100.0,
+              cornerRadius: 20.0,
+              activeBgColor: const [ Color.fromARGB(255, 59, 94, 115)],
+              inactiveBgColor:const Color.fromARGB(255, 223, 227, 229),
+              initialLabelIndex: null,
+              doubleTapDisable: true, 
+              totalSwitches: 2,
+              labels: const ['Periodo', 'Data'],
+              customTextStyles: const [TextStyle(fontSize: 16)],
+              onToggle: (index) {
+                index == 0
+                ? showDialog(
                   context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Cambio data'),
-                    content: const Center(
-                      child: Text(
-                        'Se si sanno le date del viaggio inserire una delle due opzioni:\nyyyy-mm-dd to yyyy-mm-dd\nyyyy-mm-dd\n\nSe non si conoscono ancora scrivere una delle seguenti scelte:\nGiornata \nWeekend\nSettimana\nAltro',
-                        textAlign: TextAlign.center,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      scrollable: true,
+                      title: const Text('Cambio Periodo del Viaggio'),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Form(
+                          child: Column(
+                            children: <Widget>[
+                              RadioButtonGroup(
+                                options: options,
+                                preSelectedIdx: 0,
+                                vertical: true,
+                                textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                selectedColor: const Color.fromARGB(255, 195, 190, 190),
+                                mainColor: const Color.fromARGB(255, 195, 190, 190),
+                                selectedBorderSide: const BorderSide(width: 2, color: Color.fromARGB(255, 64, 137, 168)),
+                                buttonWidth: 105,
+                                buttonHeight: 35,
+                                callback: (RadioOption val) {
+                                  setState(() {
+                                    changePeriod = val.label;
+                                    date = changePeriod;
+                                    changedata = true;
+                                  });
+                              }),
+                              
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-                ),
-                child: const Text('Hint per cambiare la data'),
-              )),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextField(
-              autofocus: false,
-              decoration: InputDecoration(
-                  icon: const Icon(Icons.date_range_outlined),
-                  hintText: 'Date: ${widget.travel.date}'),
-              onChanged: (text) => updateDate = text,
-            ),
-          ),
+                      actions: [ ElevatedButton(
+                        child: const Text("Invia"),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Cambio Periodo Salvato')));
+                          Navigator.of(context).pop();
+                        })
+                      ],
+                    );
+                  })
+                : showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      scrollable: true,
+                      title: const Text('Cambio Periodo del Viaggio'),
+                      content: buildCalendarDialogButton(false));
+                  });
+              },
+            )
+          : buildCalendarDialogButton(true),
           const SizedBox(
-            height: 10,
+            height: 30,
           ),
           ElevatedButton(
               onPressed: () {
-                if (updateDate != null && updateDate!.isNotEmpty) {
-                  if (updateDate?.toLowerCase() == 'giornata' ||
-                      updateDate?.toLowerCase() == 'settimana' ||
-                      updateDate?.toLowerCase() == 'weekend' ||
-                      updateDate?.toLowerCase() == 'altro') {
-                    canupdateDate = true;
-                  }
-                  if (updateDate?.length == 24 || updateDate?.length == 10) {
-                    canupdateDate = true;
-                  }
-                }
-
                 FirebaseFirestore.instance
                     .collection('travel')
                     .doc(id)
@@ -257,28 +438,14 @@ class _SettingTravelState extends State<SettingTravel> {
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
                     }
-                    if (updatePart != widget.travel.partecipant) {
-                      updateItem('partecipant', updatePart);
-                    }
-                    if (canupdateDate) {
-                      if (updateDate != widget.travel.date) {
-                        FirebaseFirestore.instance
-                            .collection('travel')
-                            .doc(id)
-                            .update({'exactly date': updateDate}).then(
-                                (value) => {print("Update")},
-                                onError: (e) =>
-                                    print("Error updating doc: $e"));
-                      }
+                    if(date != widget.travel.date){
+                      updateItem('exactly date', date);
                     }
                   }
                 });
                 // check
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')));
-                // : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                //     content: Text(
-                //         'Qualcosa è andato storto! Riguarda ciò che hai scritto')));
               },
               child: const Text(
                 'Invia',
@@ -289,3 +456,4 @@ class _SettingTravelState extends State<SettingTravel> {
     );
   }
 }
+

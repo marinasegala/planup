@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Travel {
   String name;
-  String partecipant;
   String? userid;
   String? date;
   List<String>? listPart;
@@ -12,8 +11,7 @@ class Travel {
   String? referenceId;
   // 4
   Travel(this.name,
-      {required this.partecipant,
-      required this.userid,
+      {required this.userid,
       required this.date,
       required this.listPart,
       required this.photo,
@@ -37,7 +35,6 @@ class Travel {
 Travel _travFromJson(Map<String, dynamic> json) {
   return Travel(
     json['name'] as String,
-    partecipant: json['partecipant'] as String,
     userid: json['userid'] as String?,
     date: json['exactly date'] as String?,
     listPart: json['lsit part'] as List<String>?,
@@ -48,7 +45,6 @@ Travel _travFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _travToJson(Travel instance) => <String, dynamic>{
       'name': instance.name,
-      'partecipant': instance.partecipant,
       'userid': instance.userid,
       'exactly date': instance.date,
       'list part': instance.listPart,
