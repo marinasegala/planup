@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
             }
-
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.hasData) {
                 return const HomePage();

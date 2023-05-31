@@ -139,7 +139,7 @@ class _FriendProfileState extends State<FriendProfile> {
               child: Align(
                 alignment: Alignment.topLeft,
                 child:
-                    Text("Le sue statistiche", style: TextStyle(fontSize: 12)),
+                    Text("Le sue statistiche", style: TextStyle(fontSize: 14)),
               ),
             ),
             Row(
@@ -164,7 +164,7 @@ class _FriendProfileState extends State<FriendProfile> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.topLeft,
-                child: Text("I suoi viaggi", style: TextStyle(fontSize: 12)),
+                child: Text("I suoi viaggi", style: TextStyle(fontSize: 14)),
               ),
             ),
             const SizedBox(height: 15),

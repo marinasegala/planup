@@ -148,7 +148,7 @@ class _MapsPageState extends State<MapsPage> {
         markerIcon: MarkerIcon(
           icon: Icon(
             Icons.location_on,
-            color: Colors.amber[700],
+            color: Colors.blueGrey[200],
             size: 100,
           ),
         ),
@@ -238,7 +238,6 @@ class _MapsPageState extends State<MapsPage> {
       persistentFooterButtons: [
         // button for add the current user location on database in order to share it with other users
         FloatingActionButton(
-            shape: const BeveledRectangleBorder(),
             onPressed: () async {
               GeoPoint geoPoint = await _mapController.myLocation();
               var latitude = geoPoint.latitude.toString();
@@ -264,13 +263,12 @@ class _MapsPageState extends State<MapsPage> {
             child: const Column(
               children: [
                 Icon(Icons.add),
-                Text('Add Shared Location',
+                Text('Share',
                     style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
               ],
             )),
         // button for remove the current user location on database in order to stop sharing it with other users
         FloatingActionButton(
-            shape: const BeveledRectangleBorder(),
             onPressed: () async {
               // remove my location on database
               // find the point in the database with lat and long and show the information
@@ -280,7 +278,7 @@ class _MapsPageState extends State<MapsPage> {
             child: const Column(
               children: [
                 Icon(Icons.remove),
-                Text('Remove Shared Location',
+                Text('Remove',
                     style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
               ],
             )),
@@ -457,15 +455,18 @@ class _CardLocationState extends State<CardLocation> {
 
   List<String> users = [];
 
-  String getUser(String userid) {
-    var userFromLocation = UserAccount('', '', '', '');
+  void getUsers(String userid) async {
     usersRepository.getStream().listen((event) {
-      userFromLocation = event.docs
+      var user = event.docs
           .map((e) => UserAccount.fromSnapshot(e))
           .where((element) => element.userid == userid)
-          .first;
+          .first
+          .name;
+      setState(() {
+        users.add(user);
+      });
     });
-    return userFromLocation.name;
+    await Future.delayed(const Duration(milliseconds: 50));
   }
 
   String printUsers() {
@@ -483,16 +484,10 @@ class _CardLocationState extends State<CardLocation> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    for (var location in widget.location) {
-      users.add(getUser(location.userid));
-      print(users);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    for (var location in widget.location) {
+      getUsers(location.userid);
+    }
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -515,6 +510,7 @@ class _CardLocationState extends State<CardLocation> {
                             : 'I tuoi amici ${printUsers()} si trovano qui',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
+                        textAlign: TextAlign.center,
                       ),
                     )
                   ],

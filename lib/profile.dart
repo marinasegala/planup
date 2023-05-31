@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
     travelsList.then((value) {
       for (var element in value.docs) {
         for (var partecipant in element['list part']) {
-          if (partecipant == currentUser!.email) {
+          if (partecipant == currentUser!.uid) {
             setState(() {
               travels++;
             });
@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Align(
                 alignment: Alignment.topLeft,
                 child:
-                    Text("Le tue statistiche", style: TextStyle(fontSize: 12))),
+                    Text("Le tue statistiche", style: TextStyle(fontSize: 14))),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -184,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Align(
                 alignment: Alignment.topLeft,
-                child: Text("I tuoi viaggi", style: TextStyle(fontSize: 12))),
+                child: Text("I tuoi viaggi", style: TextStyle(fontSize: 14))),
           ),
           const SizedBox(height: 15),
           Padding(

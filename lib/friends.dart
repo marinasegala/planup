@@ -43,8 +43,7 @@ class _FriendPageState extends State<FriendPage> {
       if (friends.userid == currentUser.uid) {
         final user = users.firstWhere(
           (element) => element.userid == friends.userIdFriend,
-          orElse: () =>
-              UserAccount('Not found', 'Not found', 'Not found', 'Not found'),
+          orElse: () => UserAccount(' ', ' ', ' ', ' '),
         );
         return ListTile(
             leading: user.photoUrl != null
