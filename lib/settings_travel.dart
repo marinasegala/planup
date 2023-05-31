@@ -109,7 +109,7 @@ class _SettingTravelState extends State<SettingTravel> {
   @override
   Widget build(BuildContext context) {
     String updateName = widget.travel.name;
-    String updatePart = widget.travel.partecipant;
+    String updatePart = widget.travel.numFriend.toString();
     String? updateDate = widget.travel.date;
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
@@ -184,8 +184,7 @@ class _SettingTravelState extends State<SettingTravel> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 icon: const Icon(Icons.group_outlined),
-                hintText:
-                    'Numero dei partecipanti: ${widget.travel.partecipant}',
+                hintText: 'Numero dei partecipanti: ${widget.travel.numFriend}',
                 counterText: 'Scrivi per modificare il numero',
               ),
               onChanged: (text) => updatePart = text,
@@ -257,7 +256,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
                     }
-                    if (updatePart != widget.travel.partecipant) {
+                    if (updatePart != widget.travel.numFriend.toString()) {
                       updateItem('partecipant', updatePart);
                     }
                     if (canupdateDate) {

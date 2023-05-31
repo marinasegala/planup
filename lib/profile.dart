@@ -49,10 +49,6 @@ class _ProfilePageState extends State<ProfilePage> {
               element.date!.compareTo(currentDate) < 0)
           .toList();
     });
-    for (final travel in pastTravels) {
-      print(travel);
-      print("done");
-    }
   }
 
   @override

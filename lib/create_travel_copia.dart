@@ -519,6 +519,24 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.groups_outlined),
+                          border: OutlineInputBorder(),
+                          hintText: 'Numero di partecipanti *'),
+                      onChanged: (text) => part = text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obbligatorio';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   Column(children: [
                     const SizedBox(
                       height: 20,
@@ -597,6 +615,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               }
 
                               final newTrav = Travel(nameTrav!,
+                                  //partecipant: part,
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
                                   date: date,

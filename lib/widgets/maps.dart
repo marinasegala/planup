@@ -84,8 +84,13 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   Place? getPlace(String lat, String long) {
-    return places
-        .firstWhere((element) => element.lat == lat && element.long == long);
+    var listPlaces =
+        places.where((element) => element.lat == lat && element.long == long);
+    if (listPlaces.isNotEmpty) {
+      return listPlaces.first;
+    } else {
+      return null;
+    }
   }
 
   void getPlaces() {
@@ -110,15 +115,14 @@ class _MapsPageState extends State<MapsPage> {
     });
   }
 
-  String getUser(String userid) {
-    var userFromLocation = UserAccount('', '', '', '');
-    usersRepository.getStream().listen((event) {
-      userFromLocation = event.docs
-          .map((e) => UserAccount.fromSnapshot(e))
-          .where((element) => element.userid == userid)
-          .first;
-    });
-    return userFromLocation.name;
+  List<Location> getUserLocation(String lat, String long) {
+    return locations
+        .where((element) =>
+            element.lat == lat &&
+            element.long == long &&
+            element.travelid == widget.trav.referenceId &&
+            element.userid != user.uid)
+        .toList();
   }
 
   removePlace(place) {
@@ -154,16 +158,14 @@ class _MapsPageState extends State<MapsPage> {
 
   Future<void> displayLocations() async {
     for (var location in locations) {
-      String username = getUser(location.userid);
       await _mapController.addMarker(
         GeoPoint(
             latitude: double.parse(location.lat),
             longitude: double.parse(location.long)),
         markerIcon: MarkerIcon(
           icon: Icon(
-            Icons.group,
+            Icons.location_on,
             color: Colors.blueGrey[200],
-            semanticLabel: username,
             size: 100,
           ),
         ),
@@ -216,7 +218,7 @@ class _MapsPageState extends State<MapsPage> {
           },
           onGeoPointClicked: (geoPoint) async {
             // find the point in the database with lat and long and show the information
-            var place = getPlace(
+            Place? place = getPlace(
                 geoPoint.latitude.toString(), geoPoint.longitude.toString());
             if (place != null) {
               // when user click to marker
@@ -224,6 +226,13 @@ class _MapsPageState extends State<MapsPage> {
                   context: context,
                   builder: (context) =>
                       CardRemovePlace(place: place, callback: removePlace));
+            } else {
+              // find the location in the database with userid and travelid and show the information
+              List<Location> location = getUserLocation(
+                  geoPoint.latitude.toString(), geoPoint.longitude.toString());
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) => CardLocation(location: location));
             }
           }),
       persistentFooterButtons: [
@@ -431,5 +440,88 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
         ],
       ),
     ));
+  }
+}
+
+class CardLocation extends StatefulWidget {
+  const CardLocation({super.key, required this.location});
+
+  final List<Location> location;
+
+  @override
+  State<CardLocation> createState() => _CardLocationState();
+}
+
+class _CardLocationState extends State<CardLocation> {
+  UsersRepository usersRepository = UsersRepository();
+
+  List<String> users = [];
+
+  String getUser(String userid) {
+    var userFromLocation = UserAccount('', '', '', '');
+    usersRepository.getStream().listen((event) {
+      userFromLocation = event.docs
+          .map((e) => UserAccount.fromSnapshot(e))
+          .where((element) => element.userid == userid)
+          .first;
+    });
+    return userFromLocation.name;
+  }
+
+  String printUsers() {
+    String usersString = '';
+    for (var user in users) {
+      if (user != users.last) {
+        usersString += '$user, ';
+      } else if (user == users.last) {
+        usersString += user;
+      } else if (user == users[users.length - 2]) {
+        usersString += '$user e ';
+      }
+    }
+    return usersString;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (var location in widget.location) {
+      users.add(getUser(location.userid));
+      print(users);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        widget.location.length == 1
+                            ? 'Il tuo amico ${users[0]} si trova qui'
+                            : 'I tuoi amici ${printUsers()} si trovano qui',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ]),
+      ),
+    );
   }
 }

@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
 
         const SizedBox(height: 25),
 
-        LoginButton(),
+        const LoginButton(),
 
         const SizedBox(
           height: 25,
@@ -72,7 +72,6 @@ class _LoginButtonState extends State<LoginButton> {
                 user.displayName!, user.email!, user.uid, user.photoURL!));
           }
 
-          print(context);
           SchedulerBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               Navigator.pushReplacement(

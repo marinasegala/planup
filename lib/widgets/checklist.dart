@@ -8,7 +8,6 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
-import 'customdropdown.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -38,8 +37,8 @@ class _CheckListState extends State<ItemCheckList> {
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
 
-  String nameItem= '';
-  String typeItem= '';
+  String nameItem = '';
+  String typeItem = '';
 
   @override
   void initState() {
@@ -55,21 +54,19 @@ class _CheckListState extends State<ItemCheckList> {
     return FirebaseFirestore.instance
         .collection('check')
         .doc(id)
-        .update({field: newField}).then(
-            (value) => print("Update")
-            ,onError: (e) => print("Error updating doc: $e")
-        );
+        .update({field: newField}).then((value) => print("Update"),
+            onError: (e) => print("Error updating doc: $e"));
   }
-  Future<void> updateIsChecked (String field, bool newField, String id){
+
+  Future<void> updateIsChecked(String field, bool newField, String id) {
     return FirebaseFirestore.instance
-      .collection('check')
-      .doc(id)
-      .update({field: newField}).then(
-          (value) => print("Update")
-          ,onError: (e) => print("Error updating doc: $e")
-      );
+        .collection('check')
+        .doc(id)
+        .update({field: newField}).then((value) => print("Update"),
+            onError: (e) => print("Error updating doc: $e"));
   }
-  Future<void> copyItem(Check list){
+
+  Future<void> copyItem(Check list) {
     final newitemList = Check(
       list.name,
       trav: list.trav,
@@ -79,8 +76,9 @@ class _CheckListState extends State<ItemCheckList> {
       isChecked: false,
       whoBring: 'nil',
     );
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
-    return repository.add(newitemList); 
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Processing Data')));
+    return repository.add(newitemList);
   }
 
   @override
@@ -90,21 +88,20 @@ class _CheckListState extends State<ItemCheckList> {
       appBar: AppBar(
         title: const Text('Check List'),
       ),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10.0),
-            height: 100.0,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                const SizedBox(
-                  width: 10,
-                ),
-                createButton('La mia lista', profilePhoto as String, currentUser?.uid as String),
-                createButton(widget.trav.name, '', 'group'),
-                StreamBuilder<QuerySnapshot>(
+      body: ListView(scrollDirection: Axis.vertical, children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          height: 100.0,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              const SizedBox(
+                width: 10,
+              ),
+              createButton('La mia lista', profilePhoto as String,
+                  currentUser?.uid as String),
+              createButton(widget.trav.name, '', 'group'),
+              StreamBuilder<QuerySnapshot>(
                   stream: travRepository.getStream(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -117,192 +114,208 @@ class _CheckListState extends State<ItemCheckList> {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const Center(
-                                    child: Text("Loading..."));
+                                return const Center(child: Text("Loading..."));
                               } else {
-                                return _buildListPartecipant(context,
-                                    snapshot.data!.docs, otherPart, 2);
+                                return _buildListPartecipant(
+                                    context, snapshot.data!.docs, otherPart, 2);
                               }
                             });
                       }
                       return const SizedBox.shrink();
                     }
-                }),
-              ],
-            ),
+                  }),
+            ],
           ),
-          _title(current),
-          current == currentUser?.uid
-            ? Column(children: [ 
-              const SizedBox(height: 10,),          
-              const Text(
-                'Gli oggetti pubblici sono visibili \nai tuoi compagni di viaggio',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
-              ),
-              StreamBuilder<QuerySnapshot>(
-                stream: ListRepository().getStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: Text('Loading...'));
-                  } else {
-                    final hasDataList = _hasDataList(snapshot, 'personal', true);
-                    if (!hasDataList) {
-                      return _noItem();
-                    } else {
-                      return _buildListCheck(context, snapshot.data!.docs, current, true);
-                    }
-                  }
-                },
+        ),
+        _title(current),
+        current == currentUser?.uid
+            ? Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'Gli oggetti pubblici sono visibili \nai tuoi compagni di viaggio',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: ListRepository().getStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: Text('Loading...'));
+                      } else {
+                        final hasDataList =
+                            _hasDataList(snapshot, 'personal', true);
+                        if (!hasDataList) {
+                          return _noItem();
+                        } else {
+                          return _buildListCheck(
+                              context, snapshot.data!.docs, current, true);
+                        }
+                      }
+                    },
+                  )
+                ],
               )
-            ],)
             : current == 'group'
                 ? StreamBuilder<QuerySnapshot>(
-                  stream: ListRepository().getStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: Text('Loading...'));
-                    } else {
-                      final hasDataList = _hasDataList(snapshot, 'group', true);
-                      if (!hasDataList) {
-                        return _noItem();
+                    stream: ListRepository().getStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: Text('Loading...'));
                       } else {
-                        return _buildListCheck(context, snapshot.data!.docs, current, true);
+                        final hasDataList =
+                            _hasDataList(snapshot, 'group', true);
+                        if (!hasDataList) {
+                          return _noItem();
+                        } else {
+                          return _buildListCheck(
+                              context, snapshot.data!.docs, current, true);
+                        }
                       }
-                    }
-                  },
-                )
+                    },
+                  )
                 : StreamBuilder<QuerySnapshot>(
-                  stream: ListRepository().getStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: Text('Loading...'));
-                    } else {
-                      final hasDataList = _hasDataList(snapshot, 'personal', false);
-                      if (!hasDataList) {
-                        return _noItem();
+                    stream: ListRepository().getStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: Text('Loading...'));
                       } else {
-                        return _buildListCheck(context, snapshot.data!.docs, current, false);
+                        final hasDataList =
+                            _hasDataList(snapshot, 'personal', false);
+                        if (!hasDataList) {
+                          return _noItem();
+                        } else {
+                          return _buildListCheck(
+                              context, snapshot.data!.docs, current, false);
+                        }
                       }
-                    }
-                  },
-                ),
-          
-      ]),
-      
-      floatingActionButton: current == currentUser?.uid
-      ? FloatingActionButton(
-        onPressed: (){
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                scrollable: true,
-                title: const Text('Nuovo oggetto'),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Nome',
-                          ),
-                          onChanged: (text) => nameItem = text,
-                        ),
-                        const SizedBox(height: 10,),
-                        RadioButtonGroup(
-                          options: options,
-                          preSelectedIdx: 1,
-                          textStyle: const TextStyle(fontSize: 15, color: Colors.black),
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          selectedColor: const Color.fromARGB(255, 195, 190, 190),
-                          mainColor: const Color.fromARGB(255, 195, 190, 190),
-                          selectedBorderSide: const BorderSide(width: 2, color: Color.fromARGB(255, 64, 137, 168)),
-                          buttonWidth: 100,
-                          buttonHeight: 35,
-                          callback: (RadioOption val) {
-                            setState(() {
-                              stateItem = val.label;
-                            });
-                            
-                        }),
-                        
-                      ],
-                    ),
+                    },
                   ),
-                ),
-                actions: [ ElevatedButton(
-                  child: const Text("Invia"),
-                  onPressed: () {
-                    final newitemList = Check(
-                      nameItem,
-                      trav: widget.trav.referenceId,
-                      creator: currentUser?.uid,
-                      isgroup: false,
-                      isPublic: stateItem=='Pubblico' ? true : false,
-                      isChecked: false,
-                      whoBring: 'nil',
-                    );
-                    repository.add(newitemList); 
-                    Navigator.of(context).pop();
-                  })
-                ],
-              );
-            });
-        }, 
-        backgroundColor: const Color.fromARGB(255, 255, 217, 104),
-        foregroundColor: Colors.black,
-        child: const Icon(Icons.add),
-      )
-      : current == 'group' 
-        ? FloatingActionButton(
-            onPressed: (){
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    scrollable: true,
-                    title: const Text('Nuovo oggetto'),
-                    content: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Form(
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Nome',
-                              ),
-                              onChanged: (text) => nameItem = text,
+      ]),
+      floatingActionButton: current == currentUser?.uid
+          ? FloatingActionButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        scrollable: true,
+                        title: const Text('Nuovo oggetto'),
+                        content: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Form(
+                            child: Column(
+                              children: <Widget>[
+                                TextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Nome',
+                                  ),
+                                  onChanged: (text) => nameItem = text,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                RadioButtonGroup(
+                                    options: options,
+                                    preSelectedIdx: 1,
+                                    textStyle: const TextStyle(
+                                        fontSize: 15, color: Colors.black),
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    selectedColor: const Color.fromARGB(
+                                        255, 195, 190, 190),
+                                    mainColor: const Color.fromARGB(
+                                        255, 195, 190, 190),
+                                    selectedBorderSide: const BorderSide(
+                                        width: 2,
+                                        color:
+                                            Color.fromARGB(255, 64, 137, 168)),
+                                    buttonWidth: 100,
+                                    buttonHeight: 35,
+                                    callback: (RadioOption val) {
+                                      setState(() {
+                                        stateItem = val.label;
+                                      });
+                                    }),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    actions: [ ElevatedButton(
-                      child: const Text("Invia"),
-                      onPressed: () {
-                        final newitemList = Check(
-                          nameItem,
-                          trav: widget.trav.referenceId,
-                          creator: currentUser?.uid,
-                          isgroup: true,
-                          isPublic: false,
-                          isChecked: false,
-                          whoBring: '',
-                        );
-                        repository.add(newitemList); 
-                        Navigator.of(context).pop();
-                      })
-                    ],
-                  );
-                });
-            }, 
-            backgroundColor: const Color.fromARGB(255, 255, 217, 104),
-            foregroundColor: Colors.black,
-            child: const Icon(Icons.add),
-          )
-        : const SizedBox.shrink(),
+                        actions: [
+                          ElevatedButton(
+                              child: const Text("Invia"),
+                              onPressed: () {
+                                final newitemList = Check(
+                                  nameItem,
+                                  trav: widget.trav.referenceId,
+                                  creator: currentUser?.uid,
+                                  isgroup: false,
+                                  isPublic:
+                                      stateItem == 'Pubblico' ? true : false,
+                                  isChecked: false,
+                                  whoBring: 'nil',
+                                );
+                                repository.add(newitemList);
+                                Navigator.of(context).pop();
+                              })
+                        ],
+                      );
+                    });
+              },
+              backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+              foregroundColor: Colors.black,
+              child: const Icon(Icons.add),
+            )
+          : current == 'group'
+              ? FloatingActionButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            scrollable: true,
+                            title: const Text('Nuovo oggetto'),
+                            content: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Form(
+                                child: Column(
+                                  children: <Widget>[
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        labelText: 'Nome',
+                                      ),
+                                      onChanged: (text) => nameItem = text,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                  child: const Text("Invia"),
+                                  onPressed: () {
+                                    final newitemList = Check(
+                                      nameItem,
+                                      trav: widget.trav.referenceId,
+                                      creator: currentUser?.uid,
+                                      isgroup: true,
+                                      isPublic: false,
+                                      isChecked: false,
+                                      whoBring: '',
+                                    );
+                                    repository.add(newitemList);
+                                    Navigator.of(context).pop();
+                                  })
+                            ],
+                          );
+                        });
+                  },
+                  backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+                  foregroundColor: Colors.black,
+                  child: const Icon(Icons.add),
+                )
+              : const SizedBox.shrink(),
     );
   }
 
@@ -321,36 +334,44 @@ class _CheckListState extends State<ItemCheckList> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      onPressed: (){
+      onPressed: () {
         setState(() {
           current = id;
         });
       },
       child: Column(children: [
         name == widget.trav.name
-        ? const CircleAvatar(
-          radius: 27,
-          child: Icon(Icons.group_outlined, size: 30,),
-        )
-        : CircleAvatar(
-          backgroundImage: NetworkImage(photo),
-          radius: 27,
-        ),
+            ? const CircleAvatar(
+                radius: 27,
+                child: Icon(
+                  Icons.group_outlined,
+                  size: 30,
+                ),
+              )
+            : CircleAvatar(
+                backgroundImage: NetworkImage(photo),
+                radius: 27,
+              ),
         const SizedBox(height: 10),
-        Text(name, style: const TextStyle(color: Colors.black),)
+        Text(
+          name,
+          style: const TextStyle(color: Colors.black),
+        )
       ]),
     );
   }
 
-  Widget _buildListPartecipant(BuildContext context, List<DocumentSnapshot>? snapshot, List<String> part, int index) {
+  Widget _buildListPartecipant(BuildContext context,
+      List<DocumentSnapshot>? snapshot, List<String> part, int index) {
     return Row(
         children: snapshot!
-            .map((data) => _buildListItemPartecipant(context, data, part, index))
+            .map(
+                (data) => _buildListItemPartecipant(context, data, part, index))
             .toList());
   }
 
-  Widget _buildListItemPartecipant(BuildContext context, DocumentSnapshot snapshot,
-      List<String> part, int index) {
+  Widget _buildListItemPartecipant(BuildContext context,
+      DocumentSnapshot snapshot, List<String> part, int index) {
     final user = UserAccount.fromSnapshot(snapshot);
     useraccount.add(user);
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -370,7 +391,8 @@ class _CheckListState extends State<ItemCheckList> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot, String user, bool bool) {
+  Widget _buildListCheck(BuildContext context, List<DocumentSnapshot>? snapshot,
+      String user, bool bool) {
     return Column(
       children: snapshot!
           .map((data) => _buildListItemCheck(context, data, user, bool))
@@ -378,72 +400,81 @@ class _CheckListState extends State<ItemCheckList> {
     );
   }
 
-  Widget _buildListItemCheck(BuildContext context, DocumentSnapshot snapshot, String userid, bool userCurrent) {
+  Widget _buildListItemCheck(BuildContext context, DocumentSnapshot snapshot,
+      String userid, bool userCurrent) {
     final list = Check.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      if (userid != 'group' && list.creator == userid && !list.isgroup && list.trav == widget.trav.referenceId) {
-        if(userCurrent){
-          return Column( children: [ 
+      if (userid != 'group' &&
+          list.creator == userid &&
+          !list.isgroup &&
+          list.trav == widget.trav.referenceId) {
+        if (userCurrent) {
+          return Column(children: [
             CheckboxListTile(
-              value: list.isChecked, 
-              onChanged:(bool? value) {
-                updateIsChecked('isChecked', value!, list.referenceId as String);
+              value: list.isChecked,
+              onChanged: (bool? value) {
+                updateIsChecked(
+                    'isChecked', value!, list.referenceId as String);
               },
               title: Text(list.name),
               subtitle: Text(list.isPublic ? 'Pubblico' : 'Privato'),
-            ),              
+            ),
             const Divider(height: 0),
           ]);
         } else {
-          if(list.isPublic){
-            return Column( children: [ 
+          if (list.isPublic) {
+            return Column(children: [
               ListTile(
                 title: Text(list.name),
                 trailing: IconButton(
-                  icon: const Icon(Icons.add_circle_outline), 
-                  onPressed: (){
+                  icon: const Icon(Icons.add_circle_outline),
+                  onPressed: () {
                     setState(() {
-                      
                       // updateIsChecked('copied', !list.copied, list.referenceId as String);
                       copyItem(list);
                     });
                   },
-                  ),
-              ),              
+                ),
+              ),
               const Divider(height: 0),
             ]);
           }
         }
-        
       } else {
-        if (userid == 'group' && list.isgroup && list.trav == widget.trav.referenceId){
-          return Column( children: [ 
+        if (userid == 'group' &&
+            list.isgroup &&
+            list.trav == widget.trav.referenceId) {
+          return Column(children: [
             CheckboxListTile(
-                value: list.isChecked, 
-                onChanged:(bool? value) {
-                  if(value == false && list.whoBring == currentUser.uid){
+                value: list.isChecked,
+                onChanged: (bool? value) {
+                  if (value == false && list.whoBring == currentUser.uid) {
                     updateItem('whoBring', '', list.referenceId as String);
-                    updateIsChecked('isChecked', value!, list.referenceId as String);
-                  } 
-                  if(value == true) {
-                    updateItem('whoBring', currentUser.uid, list.referenceId as String);
-                    updateIsChecked('isChecked', value!, list.referenceId as String);
+                    updateIsChecked(
+                        'isChecked', value!, list.referenceId as String);
+                  }
+                  if (value == true) {
+                    updateItem('whoBring', currentUser.uid,
+                        list.referenceId as String);
+                    updateIsChecked(
+                        'isChecked', value!, list.referenceId as String);
                   }
                 },
                 title: Text(list.name),
                 subtitle: list.whoBring != ''
-                ? StreamBuilder<QuerySnapshot>(
-                  stream: userRepository.getStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: Text('Loading...'));
-                    } else {
-                      return _textWhoBring(snapshot, list.whoBring);
-                    }
-                  },)
-                : const Text('')
-              ),
+                    ? StreamBuilder<QuerySnapshot>(
+                        stream: userRepository.getStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(child: Text('Loading...'));
+                          } else {
+                            return _textWhoBring(snapshot, list.whoBring);
+                          }
+                        },
+                      )
+                    : const Text('')),
             const Divider(height: 0),
           ]);
         }
@@ -452,13 +483,14 @@ class _CheckListState extends State<ItemCheckList> {
     return const SizedBox.shrink();
   }
 
-  Widget _title(String list){
+  Widget _title(String list) {
     String nameTitle;
     switch (list) {
       case 'group':
         nameTitle = 'Check List di gruppo';
         break;
-      default: nameTitle = 'Check List';
+      default:
+        nameTitle = 'Check List';
     }
     return Text(
       nameTitle,
@@ -467,16 +499,15 @@ class _CheckListState extends State<ItemCheckList> {
     );
   }
 
-  Widget _textWhoBring(AsyncSnapshot<QuerySnapshot> snapshot, String whoBring){
+  Widget _textWhoBring(AsyncSnapshot<QuerySnapshot> snapshot, String whoBring) {
     final user = snapshot.data!.docs;
-    for(var i = 0; i < user.length; i++){
-      if(user[i]['userid'] == whoBring){
+    for (var i = 0; i < user.length; i++) {
+      if (user[i]['userid'] == whoBring) {
         return Text('Portato da: ${user[i]['name']}');
       }
     }
     return const Text('');
   }
-  
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
@@ -495,22 +526,25 @@ List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
   return partecipantId;
 }
 
-bool _hasDataList(AsyncSnapshot<QuerySnapshot> snapshot, String type, bool bool) {
+bool _hasDataList(
+    AsyncSnapshot<QuerySnapshot> snapshot, String type, bool bool) {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final listitem = snapshot.data!.docs;
   for (var i = 0; i < listitem.length; i++) {
-    if(type == 'group'){
+    if (type == 'group') {
       if (listitem[i]['isgroup']) {
         return true;
       }
-    } 
-    if(type != 'group' && bool) {
-      if (listitem[i]['creator'] == currentUser.uid && !listitem[i]['isgroup']) {
+    }
+    if (type != 'group' && bool) {
+      if (listitem[i]['creator'] == currentUser.uid &&
+          !listitem[i]['isgroup']) {
         return true;
       }
     }
-    if(type != 'group' && !bool) {
-      if (listitem[i]['creator'] != currentUser.uid && !listitem[i]['isgroup']) {
+    if (type != 'group' && !bool) {
+      if (listitem[i]['creator'] != currentUser.uid &&
+          !listitem[i]['isgroup']) {
         return true;
       }
     }

@@ -66,8 +66,10 @@ class SettingsProfile extends StatelessWidget {
                 onPressed: () {
                   AuthenticationServices().signOut();
                   Navigator.popUntil(context, (route) => route.isFirst);
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (builder) => LoginPage()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const LoginPage()));
                 },
                 child: const Text(
                   "SIGN OUT",
