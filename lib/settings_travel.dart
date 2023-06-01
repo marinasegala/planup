@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crea_radio_button/crea_radio_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:planup/home.dart';
 import 'package:planup/home_travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'model/travel.dart';
@@ -455,7 +456,8 @@ class _SettingTravelState extends State<SettingTravel> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')));
                 setState(() {});
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomeTravel()));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: const Text(
                 'Invia',
