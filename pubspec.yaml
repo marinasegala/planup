@@ -89,9 +89,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/profile.jpg
-    - assets/vienna.jpg
-    - assets/montagna.jpg
     - assets/google.jpg
     - assets/planup_black.png
 
