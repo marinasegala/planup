@@ -97,7 +97,7 @@ class _SettingTravelState extends State<SettingTravel> {
         });
   }
 
-   String _getValueText(
+  String _getValueText(
       CalendarDatePicker2Type datePickerType, List<DateTime?> values) {
     values =
         values.map((e) => e != null ? DateUtils.dateOnly(e) : null).toList();
