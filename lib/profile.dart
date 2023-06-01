@@ -4,21 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:planup/db/friends_rep.dart';
 import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/db/travel_rep.dart';
+import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/travel.dart';
+import 'package:planup/model/user_account.dart';
 import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
 import 'package:planup/show/timeline_card.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, this.user});
+
+  final UserAccount? user;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late String? name;
-  late String? profilePhoto;
   int friends = 0;
   int travels = 0;
   int places = 0;
@@ -29,6 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser;
 
   List<Travel> pastTravels = [];
+
+  late String? name;
+  late String? profilePhoto;
 
   // get all the past travels of currentuser
   void getPastTravels() {
@@ -55,12 +60,8 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
 
-    if (FirebaseAuth.instance.currentUser != null) {
-      for (final providerProfile in currentUser!.providerData) {
-        name = providerProfile.displayName;
-        profilePhoto = providerProfile.photoURL;
-      }
-    }
+    name = widget.user!.name;
+    profilePhoto = widget.user!.photoUrl;
 
     // get the number of friends of currentuser from the list of friends
     _getLengthFriends();
@@ -73,6 +74,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     getPastTravels();
   }
+
+  UsersRepository usersRepository = UsersRepository();
 
   void _getLengthFriends() {
     var friendsList = FirebaseFirestore.instance.collection('friends').get();
@@ -153,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
           const SizedBox(height: 15),
-          Text(name as String, style: Theme.of(context).textTheme.titleLarge),
+          Text(name!, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 15),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),

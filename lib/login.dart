@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/home.dart';
@@ -72,14 +71,12 @@ class _LoginButtonState extends State<LoginButton> {
                 user.displayName!, user.email!, user.uid, user.photoURL!));
           }
 
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => const HomePage()));
-            }
-          });
+          if (mounted) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => const HomePage()));
+          }
         },
         child: const Text('Sign in with Google'),
       ),
