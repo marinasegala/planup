@@ -1,15 +1,69 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/login.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:planup/model/user_account.dart';
 
+import 'home.dart';
+
+// ignore: must_be_immutable
 class SettingsProfile extends StatefulWidget {
-  const SettingsProfile({super.key});
+  UserAccount user;
+  SettingsProfile({super.key, required this.user});
   @override
   State<SettingsProfile> createState() => _SettingsProfile();
 }
 
 class _SettingsProfile extends State<SettingsProfile> {
+  // ignore: unused_field
+  final _formKey = GlobalKey<FormState>();
+  XFile? image;
+  File? file;
+  String imageUrl = '';
+  String uniqueFileName = '';
+  final ImagePicker picker = ImagePicker();
+
+  Future getImageFromGallery() async {
+    image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    uploadFile();
+  }
+
+  Future<void> getImageFromCamera() async {
+    image = await picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+    uploadFile();
+  }
+
+  void uploadFile() async {
+    // get a reference to storage root
+    Reference storageReference = FirebaseStorage.instance.ref();
+    Reference referenceDirImage = storageReference.child('images');
+
+    // create a reference for the image to be stored
+    uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference imageReference = referenceDirImage.child(uniqueFileName);
+
+    // handle errors/success
+    try {
+      // store the image
+      await imageReference.putFile(File(image!.path));
+
+      // success: get the download url
+      imageUrl = await imageReference.getDownloadURL();
+
+      // update the UI
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void choosePhoto() {
     showDialog(
         context: context,
@@ -61,75 +115,193 @@ class _SettingsProfile extends State<SettingsProfile> {
         });
   }
 
+  Future<void> updateItem(String field, String newField) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.userid)
+        .update({field: newField});
+  }
+
   @override
   Widget build(BuildContext context) {
+    String updateName = widget.user.name;
     return Scaffold(
       appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.settings),
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 1),
-      body: Column(children: [
-        const SizedBox(
-          height: 10,
+        title: Text(AppLocalizations.of(context)!.settings),
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 1,
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        scrollable: true,
+                        title: const Text('Sei sicuro di voler uscire?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'No'),
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              AuthenticationServices().signOut();
+                              Navigator.popUntil(
+                                  context, (route) => route.isFirst);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (builder) => const LoginPage()));
+                            },
+                            child: const Text('Si'),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.logout_outlined,
+                size: 30,
+              ))
+        ],
+      ),
+      body: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        const SizedBox(height: 20),
+        widget.user.photoUrl != null
+            ? ClipOval(
+                child: Material(
+                  child: Image.network(
+                    widget.user.photoUrl as String,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+              )
+            : const ClipOval(
+                child: Material(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Icon(
+                      Icons.person,
+                      size: 60,
+                    ),
+                  ),
+                ),
+              ),
+        const SizedBox(height: 15),
+        ElevatedButton(
+          onPressed: () => choosePhoto(),
+          child: const Text('Cambia Foto'),
         ),
-        // Container(
-        //     width: 100,
-        //     height: 100,
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       border: Border.all(
-        //         color: Colors.grey[300]!,
-        //         width: 1,
-        //       ),
-        //     ),
-        //     child: widget.travel.photo!.isNotEmpty
-        //         ? ClipOval(
-        //             child: Material(
-        //               child: Image.network(
-        //                 widget.travel.photo!,
-        //                 fit: BoxFit.fitHeight,
-        //               ),
-        //             ),
-        //           )
-        //         : const ClipOval(
-        //             child: Material(
-        //               child: Padding(
-        //                 padding: EdgeInsets.all(16.0),
-        //                 child: Icon(
-        //                   Icons.add_a_photo_outlined,
-        //                   size: 60,
-        //                 ),
-        //               ),
-        //             ),
-        //           )),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     choosePhoto();
-        //     // reload the page
-        //   },
-        //   child: const Text('Cambia Foto'),
-        // ),
-        Center(
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: TextField(
+            autofocus: false,
+            decoration: InputDecoration(
+              icon: const Icon(Icons.person),
+              hintText: 'Nome: ${widget.user.name}',
+              counterText: 'Scrivi per modificare il nome',
             ),
-            onPressed: () {
-              AuthenticationServices().signOut();
-              Navigator.popUntil(context, (route) => route.isFirst);
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (builder) => const LoginPage()));
-            },
-            child: Text(
-              AppLocalizations.of(context)!.signOut,
-              style: const TextStyle(
-                  fontSize: 18, letterSpacing: 2.2, color: Colors.blueGrey),
-            ),
+            onChanged: (text) => updateName = text,
           ),
-        )
+        ),
+        ElevatedButton(
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .where('userid', isEqualTo: widget.user.userid)
+                  .get()
+                  .then((querySnapshot) {
+                for (var docSnapshot in querySnapshot.docs) {
+                  if (updateName != widget.user.name) {
+                    print('cioa $updateName');
+                    print('id:  ${widget.user.userid}');
+                    updateItem('name', updateName);
+                  }
+                  print(docSnapshot.data());
+                  print('prima ${widget.user.name} - dopo $updateName');
+                }
+              });
+              // check
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Processing Data')));
+              setState(() {});
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (builder) => const HomePage()));
+            },
+            child: const Text(
+              'Invia',
+              style: TextStyle(fontSize: 16),
+            )),
       ]),
     );
+
+    //       child: widget.user!.photoUrl!.isNotEmpty
+    //             ? ClipOval(
+    //                 child: Material(
+    //                   child: Image.network(
+    //                     widget.user!.photoUrl!,
+    //                     fit: BoxFit.fitHeight,
+    //                   ),
+    //                 ),
+    //               )
+    //             : widget.user!.photoUrl! != imageUrl && image!=null
+    //               ? ClipOval(
+    //                   child: Material(
+    //                     child: Image.file(
+    //                       File(image!.path),
+    //                       fit: BoxFit.cover,
+    //                       width: 100,
+    //                       height: 100,
+    //                     ),
+    //                   )
+    //                 )
+    //         ElevatedButton(
+    //           onPressed: () {
+    //             choosePhoto();
+    //             // reload the page
+    //           },
+    //           child: const Text('Cambia Foto'),
+    //         ),
+    //         const SizedBox(height: 10,),
+    // Padding(
+    //   padding: const EdgeInsets.all(8),
+    //   child: TextField(
+    //     autofocus: false,
+    //     decoration: InputDecoration(
+    //       icon: const Icon(Icons.pin_drop_outlined),
+    //       hintText: 'Nome: ${widget.user!.name}',
+    //       counterText: 'Scrivi per modificare il nome',
+    //     ),
+    //     onChanged: (text) => updateName = text,
+    //   ),
+    // ),
+    //         const SizedBox(height: 10,),
+    //         ElevatedButton(
+    //           onPressed: () {
+    //             FirebaseFirestore.instance
+    //                 .collection('users')
+    //                 .doc(widget.user!.userid)
+    //                 .get()
+    //                 .then((DocumentSnapshot documentSnapshot) {
+    //               if (documentSnapshot.exists) {
+    //                 if (updateName != widget.user!.name) {
+    //                   updateItem('name', updateName);
+    //                 }
+    //               }
+    //             });
+    //             // check
+    //             ScaffoldMessenger.of(context).showSnackBar(
+    //                 const SnackBar(content: Text('Processing Data')));
+    //             setState(() {});
+    //             Navigator.pop(context);
+    //           },
+    //           child: const Text(
+    //             'Invia',
+    //             style: TextStyle(fontSize: 16),
+    //           )
+    //         ),
+    //     ]),
+    //   );
   }
 }
