@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:planup/model/shopping.dart';
 import 'package:planup/model/travel.dart';
 import 'package:planup/widgets/create_shop.dart';
-
 import '../db/shopping_rep.dart';
 import '../show/shop_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Shopping extends StatefulWidget {
   final Travel trav;
@@ -30,7 +30,7 @@ class _ShoppingState extends State<Shopping> {
       bottom: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('I miei acquisti'),
+          title: Text(AppLocalizations.of(context)!.myShopping),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -41,7 +41,7 @@ class _ShoppingState extends State<Shopping> {
             stream: repository.getStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text("Loading..."));
+                return Center(child: Text(AppLocalizations.of(context)!.loading));
               } else {
                 final hasMyOnwData =
                     _hasMyOnwData(snapshot, widget.trav.referenceId!);
@@ -70,10 +70,10 @@ class _ShoppingState extends State<Shopping> {
   }
 
   Widget _noItem() {
-    return const Center(
+    return Center(
         child: Text(
-      'Non hai ancora acquisti',
-      style: TextStyle(fontSize: 17),
+      AppLocalizations.of(context)!.noShopping,
+      style: const TextStyle(fontSize: 17),
     ));
   }
 

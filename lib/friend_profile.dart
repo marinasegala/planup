@@ -7,6 +7,7 @@ import 'package:planup/model/travel.dart';
 import 'package:planup/model/user_account.dart';
 import 'package:planup/show/statistic_card.dart';
 import 'package:planup/show/timeline_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FriendProfile extends StatefulWidget {
   const FriendProfile({super.key, required this.friend});
@@ -134,37 +135,38 @@ class _FriendProfileState extends State<FriendProfile> {
             Text(widget.friend.name,
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.topLeft,
-                child:
-                    Text("Le sue statistiche", style: TextStyle(fontSize: 14)),
+                child: Text(AppLocalizations.of(context)!.friendStatistics,
+                    style: const TextStyle(fontSize: 14)),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StatisticCard(
-                  statisticTitle: "Amici",
+                  statisticTitle: 'Amici',
                   statisticValue: friends,
                 ),
                 StatisticCard(
-                  statisticTitle: "Viaggi",
+                  statisticTitle: 'Viaggi',
                   statisticValue: travels,
                 ),
-                const StatisticCard(
-                  statisticTitle: "Posti",
-                  statisticValue: 0,
+                StatisticCard(
+                  statisticTitle: 'Posti',
+                  statisticValue: places,
                 ),
               ],
             ),
             const SizedBox(height: 15),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.topLeft,
-                child: Text("I suoi viaggi", style: TextStyle(fontSize: 14)),
+                child: Text(AppLocalizations.of(context)!.friendTravels,
+                    style: const TextStyle(fontSize: 14)),
               ),
             ),
             const SizedBox(height: 15),

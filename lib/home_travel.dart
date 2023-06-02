@@ -5,6 +5,7 @@ import 'package:planup/create_travel.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'show/trav_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeTravel extends StatefulWidget {
   const HomeTravel({super.key});
@@ -23,13 +24,13 @@ class _HomeTravelState extends State<HomeTravel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('I tuoi viaggi'),
+        title: Text(AppLocalizations.of(context)!.myTravels),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: repository.getStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text("Loading..."));
+              return Center(child: Text(AppLocalizations.of(context)!.loading));
             } else {
               final hasMyOwnTravel = _hasMyOwnTravel(snapshot);
               if (!hasMyOwnTravel) {
@@ -54,10 +55,10 @@ class _HomeTravelState extends State<HomeTravel> {
   }
 
   Widget _noItem() {
-    return const Center(
+    return Center(
         child: Text(
-      'Non hai viaggi.\nClicca sul + per crearne di nuovi!',
-      style: TextStyle(fontSize: 17),
+      AppLocalizations.of(context)!.myTravelsEmpty,
+      style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,
     ));
   }

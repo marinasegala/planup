@@ -8,6 +8,7 @@ import '../db/users_rep.dart';
 import '../model/checklist.dart';
 import '../model/travel.dart';
 import '../model/user_account.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
@@ -27,10 +28,6 @@ class _CheckListState extends State<ItemCheckList> {
   late List<UserAccount> useraccount = [];
 
   String stateItem = "Privato";
-  List<RadioOption> options = [
-    RadioOption("PUBBLICO", "Pubblico"),
-    RadioOption("PRIVATO", "Privato")
-  ];
 
   late String current = currentUser?.uid as String;
 
@@ -83,10 +80,14 @@ class _CheckListState extends State<ItemCheckList> {
 
   @override
   Widget build(BuildContext context) {
+    List<RadioOption> options = [
+      RadioOption("Pubblico", AppLocalizations.of(context)!.public),
+      RadioOption("Privato", AppLocalizations.of(context)!.private)
+    ];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Check List'),
+        title: Text(AppLocalizations.of(context)!.whatBring),
       ),
       body: ListView(scrollDirection: Axis.vertical, children: [
         Container(
@@ -98,14 +99,15 @@ class _CheckListState extends State<ItemCheckList> {
               const SizedBox(
                 width: 10,
               ),
-              createButton('La mia lista', profilePhoto as String,
-                  currentUser?.uid as String),
+              createButton(AppLocalizations.of(context)!.myList,
+                  profilePhoto as String, currentUser?.uid as String),
               createButton(widget.trav.name, '', 'group'),
               StreamBuilder<QuerySnapshot>(
                   stream: travRepository.getStream(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: Text("Loading..."));
+                      return Center(
+                          child: Text(AppLocalizations.of(context)!.loading));
                     } else {
                       otherPart = parts(snapshot, widget.trav.name);
                       if (otherPart.isNotEmpty) {
@@ -114,7 +116,9 @@ class _CheckListState extends State<ItemCheckList> {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const Center(child: Text("Loading..."));
+                                return Center(
+                                    child: Text(
+                                        AppLocalizations.of(context)!.loading));
                               } else {
                                 return _buildListPartecipant(
                                     context, snapshot.data!.docs, otherPart, 2);
@@ -134,16 +138,17 @@ class _CheckListState extends State<ItemCheckList> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text(
-                    'Gli oggetti pubblici sono visibili \nai tuoi compagni di viaggio',
+                  Text(
+                    AppLocalizations.of(context)!.publicObjects,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: ListRepository().getStream(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text('Loading...'));
+                        return Center(
+                            child: Text(AppLocalizations.of(context)!.loading));
                       } else {
                         final hasDataList =
                             _hasDataList(snapshot, 'personal', true);
@@ -163,7 +168,8 @@ class _CheckListState extends State<ItemCheckList> {
                     stream: ListRepository().getStream(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text('Loading...'));
+                        return Center(
+                            child: Text(AppLocalizations.of(context)!.loading));
                       } else {
                         final hasDataList =
                             _hasDataList(snapshot, 'group', true);
@@ -180,7 +186,8 @@ class _CheckListState extends State<ItemCheckList> {
                     stream: ListRepository().getStream(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text('Loading...'));
+                        return Center(
+                            child: Text(AppLocalizations.of(context)!.loading));
                       } else {
                         final hasDataList =
                             _hasDataList(snapshot, 'personal', false);
@@ -202,15 +209,16 @@ class _CheckListState extends State<ItemCheckList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         scrollable: true,
-                        title: const Text('Nuovo oggetto'),
+                        title: Text(AppLocalizations.of(context)!.newObject),
                         content: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Form(
                             child: Column(
                               children: <Widget>[
                                 TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nome',
+                                  decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(context)!
+                                        .nameObject,
                                   ),
                                   onChanged: (text) => nameItem = text,
                                 ),
@@ -244,7 +252,7 @@ class _CheckListState extends State<ItemCheckList> {
                         ),
                         actions: [
                           ElevatedButton(
-                              child: const Text("Invia"),
+                              child: Text(AppLocalizations.of(context)!.send),
                               onPressed: () {
                                 final newitemList = Check(
                                   nameItem,
@@ -275,15 +283,17 @@ class _CheckListState extends State<ItemCheckList> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             scrollable: true,
-                            title: const Text('Nuovo oggetto'),
+                            title:
+                                Text(AppLocalizations.of(context)!.newObject),
                             content: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Form(
                                 child: Column(
                                   children: <Widget>[
                                     TextFormField(
-                                      decoration: const InputDecoration(
-                                        labelText: 'Nome',
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!
+                                            .nameObject,
                                       ),
                                       onChanged: (text) => nameItem = text,
                                     ),
@@ -293,7 +303,8 @@ class _CheckListState extends State<ItemCheckList> {
                             ),
                             actions: [
                               ElevatedButton(
-                                  child: const Text("Invia"),
+                                  child:
+                                      Text(AppLocalizations.of(context)!.send),
                                   onPressed: () {
                                     final newitemList = Check(
                                       nameItem,
@@ -320,10 +331,10 @@ class _CheckListState extends State<ItemCheckList> {
   }
 
   Widget _noItem() {
-    return const Center(
+    return Center(
         child: Text(
-      'Non sono ancora presenti gli oggetti da portare',
-      style: TextStyle(fontSize: 17),
+      AppLocalizations.of(context)!.noObjects,
+      style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,
     ));
   }
@@ -418,7 +429,9 @@ class _CheckListState extends State<ItemCheckList> {
                     'isChecked', value!, list.referenceId as String);
               },
               title: Text(list.name),
-              subtitle: Text(list.isPublic ? 'Pubblico' : 'Privato'),
+              subtitle: Text(list.isPublic
+                  ? AppLocalizations.of(context)!.public
+                  : AppLocalizations.of(context)!.private),
             ),
             const Divider(height: 0),
           ]);
@@ -468,7 +481,9 @@ class _CheckListState extends State<ItemCheckList> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const Center(child: Text('Loading...'));
+                            return Center(
+                                child: Text(
+                                    AppLocalizations.of(context)!.loading));
                           } else {
                             return _textWhoBring(snapshot, list.whoBring);
                           }
@@ -487,10 +502,10 @@ class _CheckListState extends State<ItemCheckList> {
     String nameTitle;
     switch (list) {
       case 'group':
-        nameTitle = 'Check List di gruppo';
+        nameTitle = AppLocalizations.of(context)!.groupList;
         break;
       default:
-        nameTitle = 'Check List';
+        nameTitle = AppLocalizations.of(context)!.checkList;
     }
     return Text(
       nameTitle,
@@ -503,7 +518,7 @@ class _CheckListState extends State<ItemCheckList> {
     final user = snapshot.data!.docs;
     for (var i = 0; i < user.length; i++) {
       if (user[i]['userid'] == whoBring) {
-        return Text('Portato da: ${user[i]['name']}');
+        return Text(AppLocalizations.of(context)!.bringBy(user[i]['name']));
       }
     }
     return const Text('');

@@ -5,6 +5,7 @@ import 'package:planup/friends.dart';
 import 'package:planup/home_travel.dart';
 import 'package:planup/model/user_account.dart';
 import 'package:planup/profile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,7 +47,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     getUser();
-    print('user: $user');
     final List<Widget> widgetOptions = <Widget>[
       const HomeTravel(),
       ProfilePage(user: user),
@@ -58,15 +58,17 @@ class _HomePageState extends State<HomePage> {
         child: widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_sharp), label: 'Me'),
+              icon: const Icon(Icons.account_circle_sharp),
+              label: AppLocalizations.of(context)!.myProfile),
           BottomNavigationBarItem(
-              icon: Icon(Icons.supervisor_account), label: 'Amici'),
+              icon: const Icon(Icons.supervisor_account),
+              label: AppLocalizations.of(context)!.friends),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
-
 import '../db/notes_rep.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateNote extends StatefulWidget {
   final String travel;
@@ -24,7 +24,7 @@ class _CreateNoteState extends State<CreateNote> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Nuova Nota'),
+          title: Text(AppLocalizations.of(context)!.notes),
         ),
         body: Column(
           children: [
@@ -40,13 +40,13 @@ class _CreateNoteState extends State<CreateNote> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.shopping_bag_outlined),
-                          hintText: 'Nome nota *'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.shopping_bag_outlined),
+                          hintText: AppLocalizations.of(context)!.nameNote),
                       onChanged: (text) => name = text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Campo obbligatorio';
+                          return AppLocalizations.of(context)!.requiredField;
                         }
                         return null;
                       },
@@ -57,9 +57,10 @@ class _CreateNoteState extends State<CreateNote> {
                     child: TextField(
                       maxLength: 30,
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.description_outlined),
-                          hintText: 'Descrizione'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.description_outlined),
+                          hintText:
+                              AppLocalizations.of(context)!.descriptionNote),
                       onChanged: (text) => desc = text,
                     ),
                   ),
@@ -83,14 +84,16 @@ class _CreateNoteState extends State<CreateNote> {
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')));
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .processingData)));
                               Navigator.pop(context);
                             }
                           }
                         },
-                        child:
-                            const Text('Invia', style: TextStyle(fontSize: 16)),
+                        child: Text(AppLocalizations.of(context)!.send,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),

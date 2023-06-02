@@ -1,0 +1,226 @@
+{
+    "home": "Home",
+    "friends": "Friends",
+    "me": "Me",
+    "myProfile": "My profile",
+    "myStatistics": "My statistics",
+    "travels": "Travels",
+    "places": "Places",
+    "myTravels": "My Travels",
+    "settings": "Settings",
+    "statisticCardTitle": "{number}\n{title}",
+    "@statisticCardTitle": {
+        "descrption": "Title of the statistic card",
+        "placeholders": {
+            "number": {
+                "type": "String",
+                "example": "10"
+            },
+            "title": {
+                "type": "String",
+                "example": "Travels"
+            }
+        }
+    },
+    
+    "signOut": "Logout",
+    
+    "uploadMethod": "Choose a method to upload your photo",
+    "gallery": "Gallery",
+    "camera": "Camera",
+    "changeDateSaved": "Date has been changed",
+    "changeDate": "Change date",
+    "calendar": "Open calendar",
+    "changePhoto": "Change photo",
+
+    "hintTextNameTravel": "Travel name: {name}",
+    "@hintTextNameTravel": {
+        "descrption": "Hint text for the name of the travel",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Paris"
+            }
+        }
+    },
+
+
+    "counterTextNameTravel": "Write to change the name of your travel",
+
+    "changeDateFrom": "Change travel date {date}",
+    "@changeDateFrom": {
+        "descrption": "Change the date of the travel",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "2023-06-01"
+            }
+        }
+    },
+
+    "oneDay": "One day",
+    "weekend": "Weekend",
+    "week": "Week",
+    "other": "Other",
+    "period": "Period",
+    "date": "Date",
+    "changePeriod": "Change period",
+    "changePeriodSaved": "Period has been changed",
+
+    "tickets": "Tickets",
+    "map": "Map",
+    "shopping": "Personal shopping",
+    "notes": "Notes",
+    "whatBring": "What to bring",
+    
+    "welcomeOnPlanUp": "Welcome to PlanUp! Please, sign in with google",
+    "signInWithGoogle": "Sign in with Google",
+    
+    "loading": "Loading...",
+    "processingData": "Processing data...",
+    "send": "Send",
+    
+    "myTravelsEmpty": "You don't have any travel yet, click + to create one!",
+    "removeFriend": "Remove friend",
+    "noFriends": "You don't have any friend yet, add them!",
+    
+    "searchFriends": "Search friends",
+    "addFriend": "Add",
+    "friendStatistics": "Statistics",
+    "friendTravels": "Travels",
+    
+    "createTravel": "Create a new travel",
+    "uploadPhoto": "Upload a photo",
+    "insertNameTravel": "Insert the name of your travel",
+    "requiredField": "Field required",
+    "knownDate": "I already know the date",
+    "yes": "Yes",
+    "no": "No",
+    "addFriends": "Add friends",
+
+    "myTickets": "My tickets",
+    
+    "share": "Share",
+    "addMarker": "Add a new marker",
+    "lat": "Latitude: {lat}",
+    "@lat": {
+        "descrption": "Latitude of the marker",
+        "placeholders": {
+            "lat": {
+                "type": "String",
+                "example": "45.123456"
+            }
+        }
+    },
+
+    "long": "Longitude: {long}",
+    "@long": {
+        "descrption": "Longitude of the marker",
+        "placeholders": {
+            "long": {
+                "type": "String",
+                "example": "9.123456"
+            }
+        }
+    },
+
+    "nameMarker": "Place name",
+    "nameRequired": "The name is mandatory",
+    "descriptionMarker": "Place description",
+    "cancel": "Cancel",
+    "add": "Add",
+    "noDescription": "You didn't insert any description for this place",
+    "remove": "Remove",
+
+    "friendLocation": "Your friend {user} is here",
+    "@friendLocation": {
+        "descrption": "Text to show the location of a friend",
+        "placeholders": {
+            "user": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
+
+    "friendsLocation": "Your friends {printUsers} are here",
+    "@friendsLocation": {
+        "descrption": "Text to show the location of multiple friends",
+        "placeholders": {
+            "printUsers": {
+                "type": "String",
+                "example": "John, Mary"
+            }
+        }
+    },
+    
+    "accomodation": "Accomodation",
+    "food": "Food",
+    "restaurant": "Restaurant",
+    "freeTime": "Free time",
+    "presents": "Presents",
+    "transport": "Transport",
+    "gasoline": "Gasoline",
+
+    "newShopping": "New expense",
+    "addNameShopping": "Insert the name of the expense",
+    "price": "Price",
+    "descriptionShopping": "Expence description",
+    "categoryShopping": "Expense category",
+    "addCategoryShopping": "Select the category of the expense",
+    "myShopping": "My expenses",
+    "noShopping": "You don't have any expense yet, click + to create one!",
+    
+    "newNote": "New note",
+    "nameNote": "Note name",
+    "descriptionNote": "Note description",
+    "noNotes": "You don't have any note yet, click + to create one!",
+
+    "authorNote": "Author {author}",
+    "@authorNote": {
+        "descrption": "Text to show the author of a note",
+        "placeholders": {
+            "author": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
+
+    "authorNoteWithDescription": "Author {author}\n{desc}",
+    "@authorNoteWithDescription": {
+        "descrption": "Text to show the author of a note with the description",
+        "placeholders": {
+            "author": {
+                "type": "String",
+                "example": "John"
+            },
+            "desc": {
+                "type": "String",
+                "example": "This is a note"
+            }
+        }
+    },
+    
+    "private": "Private",
+    "public": "Public",
+    "myList": "My list",
+    "publicObjects": "Public objects are visible\nto all users of the travel",
+    "newObject": "New object",
+    "nameObject": "Object name",
+    "noObjects": "You don't have any object yet,\nclick + to create one!",
+    "groupList": "Group list",
+    "checkList": "Check list",
+    "bringBy": "Bring by {user}",
+    "@bringBy": {
+        "descrption": "Text to show who has to bring an object",
+        "placeholders": {
+            "user": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
+    
+    "noTravelFriend": "This user doesn't have any travel yet.\nGo and organize a trip together!"
+}

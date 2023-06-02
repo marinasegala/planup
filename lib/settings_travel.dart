@@ -1,13 +1,11 @@
-// import 'dart:io';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crea_radio_button/crea_radio_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:planup/home.dart';
-import 'package:planup/home_travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'model/travel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingTravel extends StatefulWidget {
   final Travel travel;
@@ -18,16 +16,11 @@ class SettingTravel extends StatefulWidget {
 }
 
 class _SettingTravelState extends State<SettingTravel> {
-  
   String changePeriod = "Giornata";
-  List<RadioOption> options = [
-    RadioOption("GIORNATA", "Giornata"),
-    RadioOption("WEEKEND", "Weekend"),
-    RadioOption("SETTIMANA", "Settimana"),
-    RadioOption("ALTRO", "Altro"),
-  ];
   bool changedata = false;
+  // ignore: unused_field, prefer_final_fields
   bool _swapDate = false;
+  // ignore: unused_field
   List<DateTime?> _dialogCalendarPickerValue = [];
   String date = '';
 
@@ -42,8 +35,7 @@ class _SettingTravelState extends State<SettingTravel> {
     return FirebaseFirestore.instance
         .collection('travel')
         .doc(widget.travel.referenceId)
-        .update({field: newField}).then((value) => print("Update"),
-            onError: (e) => print("Error updating doc: $e"));
+        .update({field: newField});
   }
 
   void choosePhoto() {
@@ -128,7 +120,14 @@ class _SettingTravelState extends State<SettingTravel> {
 
   @override
   Widget build(BuildContext context) {
+    List<RadioOption> options = [
+      RadioOption(AppLocalizations.of(context)!.oneDay, "Giornata"),
+      RadioOption(AppLocalizations.of(context)!.weekend, "Weekend"),
+      RadioOption(AppLocalizations.of(context)!.week, "Settimana"),
+      RadioOption(AppLocalizations.of(context)!.other, "Altro"),
+    ];
     String updateName = widget.travel.name;
+    // ignore: unused_local_variable
     bool canupdateDate = false;
     var id = widget.travel.referenceId;
 
@@ -267,26 +266,31 @@ class _SettingTravelState extends State<SettingTravel> {
             if (values != null) {
               // ignore: avoid_print
               date = _getValueText(config.calendarType, values);
-              print(date);
               setState(() {
                 _dialogCalendarPickerValue = values;
               });
+              // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cambio Data Salvato')));
+                  // ignore: use_build_context_synchronously
+                  SnackBar(
+                      content:
+                          // ignore: use_build_context_synchronously
+                          Text(AppLocalizations.of(context)!.changeDateSaved)));
             }
           },
           child: Center(
-            child: Text(alone ? 'Cambio data' : 'Apri il calendario' , 
-              style: const TextStyle(fontSize: 16)
-          )),
+              child: Text(
+                  alone
+                      ? AppLocalizations.of(context)!.changeDate
+                      : AppLocalizations.of(context)!.calendar,
+                  style: const TextStyle(fontSize: 16))),
         ),
       );
-          
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Impostazioni'),
+        title: Text(AppLocalizations.of(context)!.settings),
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -333,7 +337,7 @@ class _SettingTravelState extends State<SettingTravel> {
               choosePhoto();
               // reload the page
             },
-            child: const Text('Cambia Foto'),
+            child: Text(AppLocalizations.of(context)!.changePhoto),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -342,8 +346,10 @@ class _SettingTravelState extends State<SettingTravel> {
               autofocus: false,
               decoration: InputDecoration(
                 icon: const Icon(Icons.pin_drop_outlined),
-                hintText: 'Nome del viaggio: ${widget.travel.name}',
-                counterText: 'Scrivi per modificare il nome',
+                hintText: AppLocalizations.of(context)!
+                    .hintTextNameTravel(widget.travel.name),
+                counterText:
+                    AppLocalizations.of(context)!.counterTextNameTravel,
               ),
               onChanged: (text) => updateName = text,
             ),
@@ -352,84 +358,103 @@ class _SettingTravelState extends State<SettingTravel> {
             height: 10,
           ),
           const SizedBox(height: 30),
-          
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Cambio la data "', style: TextStyle(fontSize: 17),),
-              Text(widget.travel.date as String, style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 17),),
-              const Text('" con',  style: TextStyle(fontSize: 17),),
-          ],),
-          const SizedBox(height: 10,),
-          widget.travel.date == 'Giornata' || widget.travel.date == 'Settimana' || widget.travel.date == 'Weekend' || widget.travel.date == 'Altro'
-          ? ToggleSwitch(
-              minWidth: 100.0,
-              cornerRadius: 20.0,
-              activeBgColor: const [ Color.fromARGB(255, 59, 94, 115)],
-              inactiveBgColor:const Color.fromARGB(255, 223, 227, 229),
-              initialLabelIndex: null,
-              doubleTapDisable: true, 
-              totalSwitches: 2,
-              labels: const ['Periodo', 'Data'],
-              customTextStyles: const [TextStyle(fontSize: 16)],
-              onToggle: (index) {
-                index == 0
-                ? showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      scrollable: true,
-                      title: const Text('Cambio Periodo del Viaggio'),
-                      content: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Form(
-                          child: Column(
-                            children: <Widget>[
-                              RadioButtonGroup(
-                                options: options,
-                                preSelectedIdx: 0,
-                                vertical: true,
-                                textStyle: const TextStyle(fontSize: 15, color: Colors.black),
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                selectedColor: const Color.fromARGB(255, 195, 190, 190),
-                                mainColor: const Color.fromARGB(255, 195, 190, 190),
-                                selectedBorderSide: const BorderSide(width: 2, color: Color.fromARGB(255, 64, 137, 168)),
-                                buttonWidth: 105,
-                                buttonHeight: 35,
-                                callback: (RadioOption val) {
-                                  setState(() {
-                                    changePeriod = val.label;
-                                    date = changePeriod;
-                                    changedata = true;
-                                  });
-                              }),
-                              
-                            ],
-                          ),
-                        ),
-                      ),
-                      actions: [ ElevatedButton(
-                        child: const Text("Invia"),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cambio Periodo Salvato')));
-                          Navigator.of(context).pop();
-                        })
-                      ],
-                    );
-                  })
-                : showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      scrollable: true,
-                      title: const Text('Cambio Periodo del Viaggio'),
-                      content: buildCalendarDialogButton(false));
-                  });
-              },
-            )
-          : buildCalendarDialogButton(true),
+          Text(AppLocalizations.of(context)!
+              .changeDateFrom(widget.travel.date!)),
+          const SizedBox(
+            height: 10,
+          ),
+          widget.travel.date == 'Giornata' ||
+                  widget.travel.date == 'Settimana' ||
+                  widget.travel.date == 'Weekend' ||
+                  widget.travel.date == 'Altro'
+              ? ToggleSwitch(
+                  minWidth: 100.0,
+                  cornerRadius: 20.0,
+                  activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
+                  inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
+                  initialLabelIndex: null,
+                  doubleTapDisable: true,
+                  totalSwitches: 2,
+                  labels: [
+                    AppLocalizations.of(context)!.period,
+                    AppLocalizations.of(context)!.date
+                  ],
+                  customTextStyles: const [TextStyle(fontSize: 16)],
+                  onToggle: (index) {
+                    index == 0
+                        ? showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                scrollable: true,
+                                title: Text(
+                                    AppLocalizations.of(context)!.changePeriod),
+                                content: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Form(
+                                    child: Column(
+                                      children: <Widget>[
+                                        RadioButtonGroup(
+                                            options: options,
+                                            preSelectedIdx: 0,
+                                            vertical: true,
+                                            textStyle: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black),
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            selectedColor: const Color.fromARGB(
+                                                255, 195, 190, 190),
+                                            mainColor: const Color.fromARGB(
+                                                255, 195, 190, 190),
+                                            selectedBorderSide:
+                                                const BorderSide(
+                                                    width: 2,
+                                                    color: Color.fromARGB(
+                                                        255, 64, 137, 168)),
+                                            buttonWidth: 105,
+                                            buttonHeight: 35,
+                                            callback: (RadioOption val) {
+                                              setState(() {
+                                                changePeriod = val.label;
+                                                date = changePeriod;
+                                                changedata = true;
+                                              });
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      child: Text(
+                                          AppLocalizations.of(context)!.send),
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .changePeriodSaved)));
+                                        Navigator.of(context).pop();
+                                      })
+                                ],
+                              );
+                            })
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  scrollable: true,
+                                  title: Text(AppLocalizations.of(context)!
+                                      .changePeriod),
+                                  content: buildCalendarDialogButton(false));
+                            });
+                  },
+                )
+              : buildCalendarDialogButton(true),
           const SizedBox(
             height: 30,
           ),
@@ -444,7 +469,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
                     }
-                    if(date != widget.travel.date){
+                    if (date != widget.travel.date) {
                       if (date.contains('null')) {
                         date = date.substring(0, 10);
                       }
@@ -453,15 +478,16 @@ class _SettingTravelState extends State<SettingTravel> {
                   }
                 });
                 // check
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content:
+                        Text(AppLocalizations.of(context)!.processingData)));
                 setState(() {});
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
-              child: const Text(
-                'Invia',
-                style: TextStyle(fontSize: 16),
+              child: Text(
+                AppLocalizations.of(context)!.send,
+                style: const TextStyle(fontSize: 16),
               )),
         ],
       ),

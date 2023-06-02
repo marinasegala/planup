@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatisticCard extends StatefulWidget {
   const StatisticCard(
@@ -12,6 +13,19 @@ class StatisticCard extends StatefulWidget {
 }
 
 class _StatisticCardState extends State<StatisticCard> {
+  String getTitle() {
+    switch (widget.statisticTitle) {
+      case 'Amici':
+        return AppLocalizations.of(context)!.friends;
+      case 'Viaggi':
+        return AppLocalizations.of(context)!.travels;
+      case 'Posti':
+        return AppLocalizations.of(context)!.places;
+      default:
+        return AppLocalizations.of(context)!.friends;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -25,7 +39,8 @@ class _StatisticCardState extends State<StatisticCard> {
             chooseIcon(widget.statisticTitle),
             const SizedBox(height: 10),
             Text(
-              '${widget.statisticValue} \n${widget.statisticTitle}',
+              AppLocalizations.of(context)!.statisticCardTitle(
+                  widget.statisticValue.toString(), getTitle()),
               style: const TextStyle(fontSize: 15, letterSpacing: 2),
               textAlign: TextAlign.center,
             ),

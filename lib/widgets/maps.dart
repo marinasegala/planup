@@ -8,6 +8,7 @@ import 'package:planup/model/location.dart';
 import 'package:planup/model/places.dart';
 import 'package:planup/model/travel.dart';
 import 'package:planup/model/user_account.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MapsPage extends StatefulWidget {
   const MapsPage({super.key, required this.trav});
@@ -20,7 +21,8 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
   // controller for map
-  final _mapController = MapController(initMapWithUserPosition: true);
+  final _mapController = MapController(
+      initMapWithUserPosition: const UserTrackingOption(enableTracking: true));
 
   var markerApp = <String, String>{};
 
@@ -178,12 +180,11 @@ class _MapsPageState extends State<MapsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Mappa'),
+        title: Text(AppLocalizations.of(context)!.map),
       ),
       body: OSMFlutter(
           controller: _mapController,
           mapIsLoading: const Center(child: CircularProgressIndicator()),
-          trackMyPosition: true,
           initZoom: 14,
           minZoomLevel: 2,
           maxZoomLevel: 19,
@@ -275,11 +276,12 @@ class _MapsPageState extends State<MapsPage> {
               locationRepository.deleteLocation(
                   user.uid, widget.trav.referenceId!);
             },
-            child: const Column(
+            child: Column(
               children: [
-                Icon(Icons.remove),
-                Text('Remove',
-                    style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
+                const Icon(Icons.remove),
+                Text(AppLocalizations.of(context)!.remove,
+                    style: const TextStyle(fontSize: 7),
+                    textAlign: TextAlign.center),
               ],
             )),
       ],
@@ -316,29 +318,31 @@ class _DialagAddMarkerState extends State<DialagAddMarker> {
   Widget build(BuildContext context) {
     return AlertDialog(
       scrollable: true,
-      title: const Text('Add Marker'),
+      title: Text(AppLocalizations.of(context)!.addMarker),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Lat: ${widget.lat}'),
-          Text('Long: ${widget.long}'),
+          Text(AppLocalizations.of(context)!.lat(widget.lat)),
+          Text(AppLocalizations.of(context)!.long(widget.long)),
           const SizedBox(height: 20),
           TextFormField(
             controller: _nameController,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.place_outlined),
-              border: OutlineInputBorder(),
-              labelText: 'Name',
+            decoration: InputDecoration(
+              icon: const Icon(Icons.place_outlined),
+              border: const OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.nameMarker,
             ),
-            validator: (value) => value!.isEmpty ? 'Name is required' : null,
+            validator: (value) => value!.isEmpty
+                ? AppLocalizations.of(context)!.nameRequired
+                : null,
           ),
           const SizedBox(height: 20),
           TextFormField(
             controller: _descriptionController,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.description_outlined),
-              border: OutlineInputBorder(),
-              labelText: 'Description',
+            decoration: InputDecoration(
+              icon: const Icon(Icons.description_outlined),
+              border: const OutlineInputBorder(),
+              labelText: AppLocalizations.of(context)!.descriptionMarker,
             ),
           )
         ],
@@ -346,7 +350,7 @@ class _DialagAddMarkerState extends State<DialagAddMarker> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () {
@@ -362,7 +366,7 @@ class _DialagAddMarkerState extends State<DialagAddMarker> {
                 travelid: widget.travel);
             widget.callback(place);
           },
-          child: const Text('Add'),
+          child: Text(AppLocalizations.of(context)!.add),
         ),
       ],
     );
@@ -407,8 +411,9 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
                 ),
               ),
               const Divider(thickness: 1),
-              const Text('Descrizione',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(AppLocalizations.of(context)!.descriptionMarker,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16)),
               SizedBox(
                   height: 200,
                   child: Center(
@@ -417,9 +422,10 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.grey),
                             textAlign: TextAlign.center)
-                        : const Text(
-                            'Non hai inserito una descrizione per questo luogo',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                        : Text(
+                            AppLocalizations.of(context)!.noDescription,
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.grey),
                             textAlign: TextAlign.center,
                           ),
                   )),
@@ -427,8 +433,8 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
                   onPressed: () async {
                     widget.callback(widget.place);
                   },
-                  child: const Text('Rimuovi',
-                      style: TextStyle(color: Colors.blueGrey)))
+                  child: Text(AppLocalizations.of(context)!.remove,
+                      style: const TextStyle(color: Colors.blueGrey)))
             ],
           )),
           GestureDetector(
@@ -506,8 +512,10 @@ class _CardLocationState extends State<CardLocation> {
                       padding: const EdgeInsets.all(8),
                       child: Text(
                         widget.location.length == 1
-                            ? 'Il tuo amico ${users[0]} si trova qui'
-                            : 'I tuoi amici ${printUsers()} si trovano qui',
+                            ? AppLocalizations.of(context)!
+                                .friendLocation(users[0])
+                            : AppLocalizations.of(context)!
+                                .friendsLocation(printUsers()),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                         textAlign: TextAlign.center,

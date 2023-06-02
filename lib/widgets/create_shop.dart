@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/shopping.dart';
-
 import '../db/shopping_rep.dart';
 import 'customdropdown.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateShopItem extends StatefulWidget {
   final String travel;
@@ -15,16 +15,6 @@ class CreateShopItem extends StatefulWidget {
 
 class _CreateItemState extends State<CreateShopItem> {
   final _formKey = GlobalKey<FormState>();
-  final List<String> items = [
-    'Alloggio',
-    'Alimentari',
-    'Ristorante',
-    'Svago',
-    'Regali',
-    'Trasporti',
-    'Benzina',
-    'Altro',
-  ];
   String? selectedValue;
 
   String? nameShop;
@@ -35,10 +25,20 @@ class _CreateItemState extends State<CreateShopItem> {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> items = [
+      AppLocalizations.of(context)!.accomodation,
+      AppLocalizations.of(context)!.food,
+      AppLocalizations.of(context)!.restaurant,
+      AppLocalizations.of(context)!.freeTime,
+      AppLocalizations.of(context)!.presents,
+      AppLocalizations.of(context)!.transport,
+      AppLocalizations.of(context)!.gasoline,
+      AppLocalizations.of(context)!.other,
+    ];
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Nuovo acquisto'),
+          title: Text(AppLocalizations.of(context)!.newShopping),
         ),
         body: Column(
           children: [
@@ -54,13 +54,14 @@ class _CreateItemState extends State<CreateShopItem> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.shopping_bag_outlined),
-                          hintText: 'Inserire il nome della nuova spesa *'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.shopping_bag_outlined),
+                          hintText:
+                              AppLocalizations.of(context)!.addNameShopping),
                       onChanged: (text) => nameShop = text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Campo obbligatorio';
+                          return AppLocalizations.of(context)!.requiredField;
                         }
                         return null;
                       },
@@ -70,13 +71,13 @@ class _CreateItemState extends State<CreateShopItem> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.euro_outlined),
-                          hintText: 'Prezzo *'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.euro_outlined),
+                          hintText: AppLocalizations.of(context)!.price),
                       onChanged: (text) => price = text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Campo obbligatorio';
+                          return AppLocalizations.of(context)!.requiredField;
                         }
                         return null;
                       },
@@ -87,9 +88,10 @@ class _CreateItemState extends State<CreateShopItem> {
                     child: TextField(
                       maxLength: 30,
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.description_outlined),
-                          hintText: 'Descrizione'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.description_outlined),
+                          hintText: AppLocalizations.of(context)!
+                              .descriptionShopping),
                       onChanged: (text) => desc = text,
                     ),
                   ),
@@ -98,17 +100,20 @@ class _CreateItemState extends State<CreateShopItem> {
                     child: Row(
                       children: [
                         const SizedBox(width: 34),
-                        const SizedBox(
+                        SizedBox(
                           child: Center(
-                              child: Text('Categoria della spesa',
-                                  style: TextStyle(fontSize: 15),
+                              child: Text(
+                                  AppLocalizations.of(context)!
+                                      .categoryShopping,
+                                  style: const TextStyle(fontSize: 15),
                                   textAlign: TextAlign.center)),
                         ),
                         const SizedBox(
                           width: 20,
                         ),
                         CustomDropdownButton(
-                          hint: 'Seleziona la categoria della tua spesa',
+                          hint:
+                              AppLocalizations.of(context)!.addCategoryShopping,
                           dropdownItems: items,
                           value: selectedValue,
                           onChanged: (value) {
@@ -141,14 +146,16 @@ class _CreateItemState extends State<CreateShopItem> {
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')));
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .processingData)));
                               Navigator.pop(context);
                             }
                           }
                         },
-                        child:
-                            const Text('Invia', style: TextStyle(fontSize: 16)),
+                        child: Text(AppLocalizations.of(context)!.send,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),

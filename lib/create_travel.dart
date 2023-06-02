@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +12,7 @@ import 'package:planup/model/user_account.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/friends_rep.dart';
 import 'db/travel_rep.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateTravelPage extends StatefulWidget {
   const CreateTravelPage({Key? key}) : super(key: key);
@@ -156,7 +156,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
           }
         }
       },
-      onError: (e) => print("Error completing: $e"),
     );
   }
 
@@ -180,7 +179,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
               });
             }
           },
-          onError: (e) => print("Error completing: $e"),
         );
       }
       i++;
@@ -352,16 +350,15 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
               if (values != null) {
                 // ignore: avoid_print
                 date = _getValueText(config.calendarType, values);
-                print(date);
                 setState(() {
                   _dialogCalendarPickerValue = values;
                 });
               }
             },
-            child: const Center(
+            child: Center(
                 child: Text(
-              'Apri il calendario',
-              style: TextStyle(fontSize: 16),
+              AppLocalizations.of(context)!.calendar,
+              style: const TextStyle(fontSize: 16),
             )),
           ),
         ]),
@@ -377,7 +374,12 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
       inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
       totalSwitches: 4,
-      labels: const ['Giornata', 'Weekend', 'Settimana', 'Altro'],
+      labels: [
+        AppLocalizations.of(context)!.oneDay,
+        AppLocalizations.of(context)!.weekend,
+        AppLocalizations.of(context)!.week,
+        AppLocalizations.of(context)!.other
+      ],
       onToggle: (index) {
         switch (index) {
           case 1:
@@ -394,7 +396,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         // setState(() {
         //   _swapDate = !_swapDate;
         // });
-        print('switched to $index -- $date');
       },
     ));
 
@@ -410,7 +411,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              title: const Text('Seleziona il metodo di caricamento'),
+              title: Text(AppLocalizations.of(context)!.uploadMethod),
               content: SizedBox(
                 height: MediaQuery.of(context).size.height / 6,
                 child: Column(
@@ -421,10 +422,10 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         Navigator.pop(context);
                         getImageFromGallery();
                       },
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.image),
-                          Text('Galleria'),
+                          const Icon(Icons.image),
+                          Text(AppLocalizations.of(context)!.gallery),
                         ],
                       ),
                     ),
@@ -434,10 +435,10 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         Navigator.pop(context);
                         getImageFromCamera();
                       },
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.camera),
-                          Text('Camera'),
+                          const Icon(Icons.camera),
+                          Text(AppLocalizations.of(context)!.camera),
                         ],
                       ),
                     ),
@@ -457,7 +458,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Crea il tuo viaggio'),
+        title: Text(AppLocalizations.of(context)!.createTravel),
       ),
       body: Align(
         alignment: Alignment.topCenter,
@@ -495,7 +496,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 choosePhoto();
                 // reload the page
               },
-              child: const Text('Carica una foto'),
+              child: Text(AppLocalizations.of(context)!.uploadPhoto),
             ),
             Form(
               key: _formKey,
@@ -506,14 +507,15 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       autofocus: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.pin_drop_outlined),
-                          border: OutlineInputBorder(),
-                          hintText: 'Inserire il nome del viaggio *'),
+                      decoration: InputDecoration(
+                          icon: const Icon(Icons.pin_drop_outlined),
+                          border: const OutlineInputBorder(),
+                          hintText:
+                              AppLocalizations.of(context)!.insertNameTravel),
                       onChanged: (text) => nameTrav = text,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Campo obbligatorio';
+                          return AppLocalizations.of(context)!.requiredField;
                         }
                         return null;
                       },
@@ -526,9 +528,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'So già le date del mio viaggio',
-                          style: TextStyle(fontSize: 16),
+                        Text(
+                          AppLocalizations.of(context)!.knownDate,
+                          style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(
                           width: 25,
@@ -544,12 +546,14 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               const Color.fromARGB(255, 223, 227, 229),
                           totalSwitches: 2,
                           fontSize: 16,
-                          labels: const ['Si', 'No'],
+                          labels: [
+                            AppLocalizations.of(context)!.yes,
+                            AppLocalizations.of(context)!.no
+                          ],
                           onToggle: (index) {
                             setState(() {
                               _swapDate = !_swapDate;
                             });
-                            print('switched to $index $_swapDate');
                           },
                         ),
                       ],
@@ -569,7 +573,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         },
                         options: finalFriend,
                         selectedValues: selectedFriends,
-                        whenEmpty: 'Aggiungi amici',
+                        whenEmpty: AppLocalizations.of(context)!.addFriends,
                         icon: const Icon(Icons.person_add_alt_1_outlined),
                       ),
                     ),
@@ -606,14 +610,16 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                               repository.add(newTrav);
 
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')));
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .processingData)));
                               Navigator.pop(context);
                             }
                           }
                         },
-                        child:
-                            const Text('Invia', style: TextStyle(fontSize: 16)),
+                        child: Text(AppLocalizations.of(context)!.send,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),

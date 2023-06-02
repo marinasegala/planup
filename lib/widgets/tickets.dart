@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planup/model/travel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Tickets extends StatefulWidget {
   final Travel trav;
@@ -63,7 +63,7 @@ class _TicketState extends State<Tickets> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Seleziona il metodo di caricamento'),
+            title: Text(AppLocalizations.of(context)!.uploadMethod),
             content: SizedBox(
               height: MediaQuery.of(context).size.height / 6,
               child: Column(
@@ -74,10 +74,10 @@ class _TicketState extends State<Tickets> {
                       Navigator.pop(context);
                       getImageFromGallery();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.image),
-                        Text('Galleria'),
+                        const Icon(Icons.image),
+                        Text(AppLocalizations.of(context)!.gallery),
                       ],
                     ),
                   ),
@@ -87,10 +87,10 @@ class _TicketState extends State<Tickets> {
                       Navigator.pop(context);
                       getImageFromCamera();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.camera),
-                        Text('Camera'),
+                        const Icon(Icons.camera),
+                        Text(AppLocalizations.of(context)!.camera),
                       ],
                     ),
                   ),
@@ -114,7 +114,7 @@ class _TicketState extends State<Tickets> {
       bottom: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('I miei biglietti'),
+          title: Text(AppLocalizations.of(context)!.myTickets),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {

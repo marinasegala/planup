@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planup/db/authentication_service.dart';
 import 'package:planup/login.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsProfile extends StatefulWidget {
   const SettingsProfile({super.key});
@@ -8,7 +9,7 @@ class SettingsProfile extends StatefulWidget {
   State<SettingsProfile> createState() => _SettingsProfile();
 }
 
-class _SettingsProfile extends State<SettingsProfile>{
+class _SettingsProfile extends State<SettingsProfile> {
   void choosePhoto() {
     showDialog(
         context: context,
@@ -16,7 +17,7 @@ class _SettingsProfile extends State<SettingsProfile>{
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Seleziona il metodo di caricamento'),
+            title: Text(AppLocalizations.of(context)!.uploadMethod),
             content: SizedBox(
               height: MediaQuery.of(context).size.height / 6,
               child: Column(
@@ -27,10 +28,10 @@ class _SettingsProfile extends State<SettingsProfile>{
                       Navigator.pop(context);
                       // getImageFromGallery();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.image),
-                        Text('Galleria'),
+                        const Icon(Icons.image),
+                        Text(AppLocalizations.of(context)!.gallery),
                       ],
                     ),
                   ),
@@ -40,10 +41,10 @@ class _SettingsProfile extends State<SettingsProfile>{
                       Navigator.pop(context);
                       // getImageFromCamera();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.camera),
-                        Text('Camera'),
+                        const Icon(Icons.camera),
+                        Text(AppLocalizations.of(context)!.camera),
                       ],
                     ),
                   ),
@@ -63,75 +64,72 @@ class _SettingsProfile extends State<SettingsProfile>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: const Text('Impostazioni'),
-            backgroundColor: Theme.of(context).primaryColor,
-            elevation: 1),
-        body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          // Container(
-          //     width: 100,
-          //     height: 100,
-          //     decoration: BoxDecoration(
-          //       shape: BoxShape.circle,
-          //       border: Border.all(
-          //         color: Colors.grey[300]!,
-          //         width: 1,
-          //       ),
-          //     ),
-          //     child: widget.travel.photo!.isNotEmpty
-          //         ? ClipOval(
-          //             child: Material(
-          //               child: Image.network(
-          //                 widget.travel.photo!,
-          //                 fit: BoxFit.fitHeight,
-          //               ),
-          //             ),
-          //           )
-          //         : const ClipOval(
-          //             child: Material(
-          //               child: Padding(
-          //                 padding: EdgeInsets.all(16.0),
-          //                 child: Icon(
-          //                   Icons.add_a_photo_outlined,
-          //                   size: 60,
-          //                 ),
-          //               ),
-          //             ),
-          //           )),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     choosePhoto();
-          //     // reload the page
-          //   },
-          //   child: const Text('Cambia Foto'),
-          // ),
-          Center(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-              ),
-              onPressed: () {
-                AuthenticationServices().signOut();
-                Navigator.popUntil(context, (route) => route.isFirst);
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (builder) => const LoginPage()));
-              },
-              child: const Text(
-                "SIGN OUT",
-                style: TextStyle(
-                    fontSize: 18, letterSpacing: 2.2, color: Colors.blueGrey),
-              ),
+      appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.settings),
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 1),
+      body: Column(children: [
+        const SizedBox(
+          height: 10,
+        ),
+        // Container(
+        //     width: 100,
+        //     height: 100,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       border: Border.all(
+        //         color: Colors.grey[300]!,
+        //         width: 1,
+        //       ),
+        //     ),
+        //     child: widget.travel.photo!.isNotEmpty
+        //         ? ClipOval(
+        //             child: Material(
+        //               child: Image.network(
+        //                 widget.travel.photo!,
+        //                 fit: BoxFit.fitHeight,
+        //               ),
+        //             ),
+        //           )
+        //         : const ClipOval(
+        //             child: Material(
+        //               child: Padding(
+        //                 padding: EdgeInsets.all(16.0),
+        //                 child: Icon(
+        //                   Icons.add_a_photo_outlined,
+        //                   size: 60,
+        //                 ),
+        //               ),
+        //             ),
+        //           )),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     choosePhoto();
+        //     // reload the page
+        //   },
+        //   child: const Text('Cambia Foto'),
+        // ),
+        Center(
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
-          )
-          ]),
-        );
+            onPressed: () {
+              AuthenticationServices().signOut();
+              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (builder) => const LoginPage()));
+            },
+            child: Text(
+              AppLocalizations.of(context)!.signOut,
+              style: const TextStyle(
+                  fontSize: 18, letterSpacing: 2.2, color: Colors.blueGrey),
+            ),
+          ),
+        )
+      ]),
+    );
   }
 }

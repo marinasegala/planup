@@ -1,0 +1,126 @@
+{
+    "home": "Home",
+    "friends": "Amici",
+    "me": "Me",
+    "myProfile": "Il mio profilo",
+    "myStatistics": "Le mie statistiche",
+    "travels": "Viaggi",
+    "places": "Posti",
+    "myTravels": "I miei viaggi",
+    "settings": "Impostazioni",
+    "statisticCardDTitle": "{number}\n{title}",
+    
+    "signOut": "Esci",
+    
+    "uploadMethod": "Seleziona il metodo di caricamento",
+    "gallery": "Galleria",
+    "camera": "Fotocamera",
+    "changeDateSaved": "La data è stata modificata",
+    "changeDate": "Cambia la data",
+    "calendar": "Apri il calendario",
+    "changePhoto": "Cambia la foto",
+    "hintTextNameTravel": "Nome del viaggio: {name}",
+
+    "counterTextNameTravel": "Scrivi per modificare il nome del viaggio",
+
+    "changeDateFrom": "Cambio la data del viaggio {date}",
+
+    "oneDay": "Giornata",
+    "weekend": "Fine Settimana",
+    "week": "Settimana",
+    "other": "Altro",
+    "period": "Periodo",
+    "date": "Data",
+    "changePeriod": "Cambia il periodo del viaggio",
+    "changePeriodSaved": "Il periodo è stato modificato",
+
+    "tickets": "Biglietti",
+    "map": "Mappa",
+    "shopping": "Acquisti personali",
+    "notes": "Note",
+    "whatBring": "Cosa portare",
+    
+    "welcomeOnPlanUp": "Benvenuto su PlanUp, per favore accedi con google",
+    "signInWithGoogle": "Accedi con Google",
+    
+    "loading": "Caricamento...",
+    "processingData": "Elaborazione dei dati",
+    "send": "Invia",
+    
+    "myTravelsEmpty": "Non hai ancora viaggiato, clicca su + per creare il tuo primo viaggio!",
+    "removeFriend": "Rimuovi amico",
+    "noFriends": "Non hai ancora amici, aggiungili!",
+    
+    "searchFriends": "Cerca amici",
+    "addFriend": "Aggiungi",
+    "friendStatistics": "Le sue statistiche",
+    "friendTravels": "I suoi viaggi",
+    
+    "createTravel": "Crea il tuo viaggio",
+    "uploadPhoto": "Carica una foto",
+    "insertNameTravel": "Inserisci il nome del viaggio",
+    "requiredField": "Campo obbligatorio",
+    "knownDate": "So già le date del mio viaggio",
+    "yes": "Si",
+    "no": "No",
+    "addFriends": "Aggiungi amici",
+
+    "myTickets": "I miei biglietti",
+    
+    "share": "Condividi",
+    "addMarker": "Aggiungi un marker",
+    "lat": "Latitudine: {lat}",
+
+    "long": "Longitudine: {long}",
+
+    "nameMarker": "Nome del posto",
+    "nameRequired": "Il nome è obbligatorio",
+    "descriptionMarker": "Descrizione del posto",
+    "cancel": "Annulla",
+    "add": "Aggiungi",
+    "noDescription": "Non hai inserito una descrizione per questo luogo",
+    "remove": "Rimuovi",
+
+    "friendLocation": "Il tuo amico {user} si trova qui",
+
+    "friendsLocation": "I tuoi amici {printUsers} si trovano qui",
+    
+    "accomodation": "Alloggio",
+    "food": "Alimentari",
+    "restaurant": "Ristorante",
+    "freeTime": "Svago",
+    "presents": "Regali",
+    "transport": "Trasporti",
+    "gasoline": "Benzina",
+
+    "newShopping": "Nuovo acquisto",
+    "addNameShopping": "Inserisci il nome della spesa",
+    "price": "Prezzo",
+    "descriptionShopping": "Descrizione della spesa",
+    "categoryShopping": "Categoria della spesa",
+    "addCategoryShopping": "Seleziona la categoria della tua spesa",
+    "myShopping": "I miei acquisti",
+    "noShopping": "Non hai ancora acquistato nulla, clicca su + per aggiungere il tuo primo acquisto",
+    
+    "newNote": "Nuova nota",
+    "nameNote": "Nome nota",
+    "descriptionNote": "Descrizione nota",
+    "noNotes": "Non sono ancora state inserite note, clicca su + per aggiungere la prima nota",
+
+    "authorNote": "Autore {author}",
+
+    "authorNoteWithDescription": "Autore {author}\n{desc}",
+    
+    "private": "Privato",
+    "public": "Pubblico",
+    "myList": "La mia lista",
+    "publicObjects": "Gli oggetti pubblici sono visibili\nai tuoi compagni di viaggio",
+    "newObject": "Nuovo oggetto",
+    "nameObject": "Nome oggetto",
+    "noObjects": "Non sono ancora presenti gli oggetti da portare,\nclicca su + per aggiungere il primo oggetto",
+    "groupList": "Lista di gruppo",
+    "checkList": "Check list",
+    "bringBy": "Portato da {user}",
+    
+    "noTravelFriend": "Questo utente non ha ancora viaggiato\nAndate ad organizzare un viaggio insieme!"
+}

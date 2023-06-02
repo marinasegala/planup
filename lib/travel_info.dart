@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:planup/settings_travel.dart';
 import 'package:planup/show/item_card.dart';
-
 import 'model/travel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TravInfo extends StatelessWidget {
   final Travel trav;
@@ -37,35 +37,35 @@ class TravInfo extends StatelessWidget {
           child: Column(children: [
             const SizedBox(height: 30),
             ItemWidget(
-              name: 'Biglietti',
+              name: AppLocalizations.of(context)!.tickets,
               icon: Icons.airplane_ticket,
               index: 1,
               trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
-              name: 'Mappa',
+              name: AppLocalizations.of(context)!.map,
               icon: Icons.map,
               index: 2,
               trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
-              name: 'Acquisti personali',
+              name: AppLocalizations.of(context)!.shopping,
               icon: Icons.euro_symbol,
               index: 3,
               trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
-              name: 'Cosa portare',
+              name: AppLocalizations.of(context)!.whatBring,
               icon: Icons.checklist,
               index: 4,
               trav: trav,
             ),
             const SizedBox(height: 10),
             ItemWidget(
-              name: 'Note',
+              name: AppLocalizations.of(context)!.notes,
               icon: Icons.note,
               index: 5,
               trav: trav,

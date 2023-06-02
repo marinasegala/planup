@@ -10,6 +10,7 @@ import 'package:planup/model/user_account.dart';
 import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
 import 'package:planup/show/timeline_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, this.user});
@@ -120,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Il mio profilo"),
+        title: Text(AppLocalizations.of(context)!.myProfile),
         actions: [
           IconButton(
               onPressed: () {
@@ -158,36 +159,37 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 15),
           Text(name!, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 15),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Align(
                 alignment: Alignment.topLeft,
-                child:
-                    Text("Le tue statistiche", style: TextStyle(fontSize: 14))),
+                child: Text(AppLocalizations.of(context)!.myStatistics,
+                    style: const TextStyle(fontSize: 14))),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               StatisticCard(
-                statisticTitle: "Amici",
+                statisticTitle: 'Amici',
                 statisticValue: friends,
               ),
               StatisticCard(
-                statisticTitle: "Viaggi",
+                statisticTitle: 'Viaggi',
                 statisticValue: travels,
               ),
               StatisticCard(
-                statisticTitle: "Posti",
+                statisticTitle: 'Posti',
                 statisticValue: places,
               ),
             ],
           ),
           const SizedBox(height: 15),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Align(
                 alignment: Alignment.topLeft,
-                child: Text("I tuoi viaggi", style: TextStyle(fontSize: 14))),
+                child: Text(AppLocalizations.of(context)!.myTravels,
+                    style: const TextStyle(fontSize: 14))),
           ),
           const SizedBox(height: 15),
           Padding(

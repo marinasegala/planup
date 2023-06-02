@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
 import 'package:planup/model/travel.dart';
-
 import '../db/notes_rep.dart';
 import '../show/note_card.dart';
 import 'create_note.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Notes extends StatefulWidget {
   final Travel trav;
@@ -49,7 +49,7 @@ class _NotesState extends State<Notes> {
       bottom: false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Note'),
+          title: Text(AppLocalizations.of(context)!.notes),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -60,7 +60,8 @@ class _NotesState extends State<Notes> {
             stream: repository.getStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text("Loading..."));
+                return Center(
+                    child: Text(AppLocalizations.of(context)!.loading));
               } else {
                 final hasMyOnwData =
                     _hasMyOnwData(snapshot, widget.trav.referenceId!);
@@ -90,10 +91,10 @@ class _NotesState extends State<Notes> {
   }
 
   Widget _noItem() {
-    return const Center(
+    return Center(
         child: Text(
-      'Non hai ancora note',
-      style: TextStyle(fontSize: 17),
+      AppLocalizations.of(context)!.noNotes,
+      style: const TextStyle(fontSize: 17),
     ));
   }
 
@@ -118,12 +119,10 @@ class _NotesState extends State<Notes> {
             .get()
             .then(
           (querySnapshot) {
-            print("Successfully completed");
             for (var docSnapshot in querySnapshot.docs) {
               author = docSnapshot.get('name');
             }
           },
-          onError: (e) => print("Error completing: $e"),
         );
         return NoteCard(note: note, boldStyle: boldStyle, author: author);
       }

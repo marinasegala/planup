@@ -6,6 +6,7 @@ import 'package:planup/db/users_rep.dart';
 import 'package:planup/friend_profile.dart';
 import 'package:planup/model/friend.dart';
 import 'package:planup/model/user_account.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FriendPage extends StatefulWidget {
   const FriendPage({super.key});
@@ -74,14 +75,14 @@ class _FriendPageState extends State<FriendPage> {
                 onPressed: () {
                   removeFriend(user.userid!);
                 },
-                child: const Text('Rimuovi')));
+                child: Text(AppLocalizations.of(context)!.remove)));
       }
     }
     return const SizedBox.shrink();
   }
 
   Widget _noItem() {
-    return const Center(child: Text('Non hai ancora amici, aggiungili!'));
+    return Center(child: Text(AppLocalizations.of(context)!.noFriends));
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
@@ -95,24 +96,26 @@ class _FriendPageState extends State<FriendPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Cerca amici"), actions: <Widget>[
-        StreamBuilder(
-          stream: userRepository.getStream(),
-          builder: (context, snapshot) {
-            return IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: UserSearch(users: users));
-                });
-          },
-        ),
-      ]),
+      appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.searchFriends),
+          actions: <Widget>[
+            StreamBuilder(
+              stream: userRepository.getStream(),
+              builder: (context, snapshot) {
+                return IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context, delegate: UserSearch(users: users));
+                    });
+              },
+            ),
+          ]),
       body: StreamBuilder<QuerySnapshot>(
           stream: friendRepository.getStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text('Loading...'));
+              return Center(child: Text(AppLocalizations.of(context)!.loading));
             } else {
               final hasFriends = _hasFriends(snapshot);
               if (!hasFriends) {
@@ -199,7 +202,7 @@ class UserSearch extends SearchDelegate<String> {
               addFriend(suggestion[index].userid);
               close(context, '');
             },
-            child: const Text('Aggiungi'),
+            child: Text(AppLocalizations.of(context)!.addFriend),
           )),
       itemCount: suggestion.length,
     );

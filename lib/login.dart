@@ -4,6 +4,7 @@ import 'package:planup/db/authentication_service.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/home.dart';
 import 'package:planup/model/user_account.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -22,9 +23,9 @@ class LoginPage extends StatelessWidget {
         ),
         const SizedBox(height: 50),
 
-        const Text('Welcome to PlanUp\n please sign in with google',
+        Text(AppLocalizations.of(context)!.welcomeOnPlanUp,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.blueGrey,
               fontSize: 16,
               letterSpacing: 1.5,
@@ -78,7 +79,7 @@ class _LoginButtonState extends State<LoginButton> {
                     builder: (BuildContext context) => const HomePage()));
           }
         },
-        child: const Text('Sign in with Google'),
+        child: Text(AppLocalizations.of(context)!.signInWithGoogle),
       ),
     );
   }
