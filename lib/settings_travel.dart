@@ -367,17 +367,17 @@ class _SettingTravelState extends State<SettingTravel> {
               //         ),
               //       )
               //     )
-                : const ClipOval(
-                    child: Material(
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          size: 60,
-                        ),
+              : const ClipOval(
+                  child: Material(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Icon(
+                        Icons.add_a_photo_outlined,
+                        size: 60,
                       ),
                     ),
-                  )),
+                  ),
+                )),
           ElevatedButton(
             onPressed: () {
               choosePhoto();
@@ -491,13 +491,15 @@ class _SettingTravelState extends State<SettingTravel> {
                     .get()
                     .then((DocumentSnapshot documentSnapshot) {
                   if (documentSnapshot.exists) {
-                    // if(imageUrl != widget.travel.photo){
-                    //   updateItem('photo', imageUrl);
-                    // }
+                    if(imageUrl != widget.travel.photo){
+                      // updateItem('photo', imageUrl);
+                      print('photo: ${uniqueFileName}');
+                      print('photo: ${imageUrl}');
+                    }
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
                     }
-                    if(date != widget.travel.date){
+                    if(date != widget.travel.date && date != ''){
                       if (date.contains('null')) {
                         date = date.substring(0, 10);
                       }

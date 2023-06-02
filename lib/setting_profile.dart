@@ -208,13 +208,13 @@ class _SettingsProfile extends State<SettingsProfile>{
                 .get()
                 .then((querySnapshot) {
                   for (var docSnapshot in querySnapshot.docs) {
-                    // if(updateName != widget.user.name){
-                    //   print('cioa $updateName');
-                    //   updateItem('name', updateName);
-                    // }
+                    if(updateName != widget.user.name){
+                      print('cioa $updateName');
+                      print('id:  ${widget.user.userid}');
+                      updateItem('name', updateName);
+                    }
                     print(docSnapshot.data());
-                    print(updateName );
-                    print(widget.user.name );
+                    print('prima ${widget.user.name} - dopo $updateName');
                   }
               });
               // check
