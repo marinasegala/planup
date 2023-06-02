@@ -127,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (builder) => SettingsProfile(user: widget.user)));
+                        builder: (builder) => SettingsProfile(user: widget.user!)));
               },
               icon: const Icon(Icons.settings)),
         ],

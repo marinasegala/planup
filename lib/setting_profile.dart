@@ -8,8 +8,10 @@ import 'package:planup/db/authentication_service.dart';
 import 'package:planup/login.dart';
 import 'package:planup/model/user_account.dart';
 
+import 'home.dart';
+
 class SettingsProfile extends StatefulWidget {
-  UserAccount? user;
+  UserAccount user;
   SettingsProfile({super.key, required this.user});
   @override
   State<SettingsProfile> createState() => _SettingsProfile();
@@ -120,131 +122,183 @@ class _SettingsProfile extends State<SettingsProfile>{
 
   @override
   Widget build(BuildContext context) {
-    String updateName = widget.user!.name;
+    String updateName = widget.user.name;
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Impostazioni'),
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 1,
-          actions: [
-            IconButton(
-              onPressed: (){
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      scrollable: true,
-                      title: const Text('Sei sicuro di voler uscire?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'No'),
-                          child: const Text('No', style: TextStyle(fontSize: 17),),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            AuthenticationServices().signOut();
-                            Navigator.popUntil(context, (route) => route.isFirst);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (builder) => const LoginPage()));
-                          },
-                          child: const Text('Si', style: TextStyle(fontSize: 17),),
-                    )]);
-                });
-              }, 
-              icon: const Icon(Icons.logout_outlined, size: 30,)
-            ),
-          ],
-        ),
-        body: Column( children: [
-          const SizedBox( height: 10),
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.grey[300]!,
-                width: 1,
-              ),
-            ),
-            child: widget.user!.photoUrl!.isNotEmpty
+      appBar: AppBar(
+        title: const Text('Impostazioni'),
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 1,
+        actions: [IconButton(
+          onPressed: (){
+            showDialog(
+              context: context, 
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  scrollable: true,
+                  title: const Text('Sei sicuro di voler uscire?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'No'), 
+                      child: const Text('No'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        AuthenticationServices().signOut();
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (builder) => const LoginPage())
+                        );
+                      }, 
+                      child: const Text('Si'),
+                    ),
+                  ],
+                );
+              }
+            );
+          }, 
+          icon: const Icon(Icons.logout_outlined, size: 30,)
+        )],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          widget.user.photoUrl != null
               ? ClipOval(
                   child: Material(
                     child: Image.network(
-                      widget.user!.photoUrl!,
+                      widget.user.photoUrl as String,
                       fit: BoxFit.fitHeight,
                     ),
                   ),
                 )
-              : widget.user!.photoUrl! != imageUrl && image!=null
-                ? ClipOval(
-                    child: Material(
-                      child: Image.file(
-                        File(image!.path),
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
-                      ),
-                    )
-                  )
-                : const ClipOval(
-                    child: Material(
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          size: 60,
-                        ),
+              : const ClipOval(
+                  child: Material(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
                       ),
                     ),
-                  )),
+                  ),
+                ),
+          const SizedBox(height: 15),
           ElevatedButton(
-            onPressed: () {
-              choosePhoto();
-              // reload the page
-            },
+            onPressed: () => choosePhoto(),
             child: const Text('Cambia Foto'),
           ),
-          const SizedBox(height: 10,),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
               autofocus: false,
               decoration: InputDecoration(
-                icon: const Icon(Icons.pin_drop_outlined),
-                hintText: 'Nome: ${widget.user!.name}',
+                icon: const Icon(Icons.person),
+                hintText: 'Nome: ${widget.user.name}',
                 counterText: 'Scrivi per modificare il nome',
               ),
               onChanged: (text) => updateName = text,
             ),
           ),
-          const SizedBox(height: 10,),
           ElevatedButton(
             onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.user!.userid)
-                  .get()
-                  .then((DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists) {
-                  if (updateName != widget.user!.name) {
-                    updateItem('name', updateName);
+              FirebaseFirestore.instance.collection('users')
+                .where('userid', isEqualTo: widget.user.userid)
+                .get()
+                .then((querySnapshot) {
+                  for (var docSnapshot in querySnapshot.docs) {
+                    // if(updateName != widget.user.name){
+                    //   print('cioa $updateName');
+                    //   updateItem('name', updateName);
+                    // }
+                    print(docSnapshot.data());
+                    print(updateName );
+                    print(widget.user.name );
                   }
-                }
               });
               // check
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Processing Data')));
               setState(() {});
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => const HomePage()));
             },
             child: const Text(
               'Invia',
               style: TextStyle(fontSize: 16),
-            )
-          ),
+            )),
       ]),
     );
+
+  //       child: widget.user!.photoUrl!.isNotEmpty
+  //             ? ClipOval(
+  //                 child: Material(
+  //                   child: Image.network(
+  //                     widget.user!.photoUrl!,
+  //                     fit: BoxFit.fitHeight,
+  //                   ),
+  //                 ),
+  //               )
+  //             : widget.user!.photoUrl! != imageUrl && image!=null
+  //               ? ClipOval(
+  //                   child: Material(
+  //                     child: Image.file(
+  //                       File(image!.path),
+  //                       fit: BoxFit.cover,
+  //                       width: 100,
+  //                       height: 100,
+  //                     ),
+  //                   )
+  //                 )
+  //         ElevatedButton(
+  //           onPressed: () {
+  //             choosePhoto();
+  //             // reload the page
+  //           },
+  //           child: const Text('Cambia Foto'),
+  //         ),
+  //         const SizedBox(height: 10,),
+          // Padding(
+          //   padding: const EdgeInsets.all(8),
+          //   child: TextField(
+          //     autofocus: false,
+          //     decoration: InputDecoration(
+          //       icon: const Icon(Icons.pin_drop_outlined),
+          //       hintText: 'Nome: ${widget.user!.name}',
+          //       counterText: 'Scrivi per modificare il nome',
+          //     ),
+          //     onChanged: (text) => updateName = text,
+          //   ),
+          // ),
+  //         const SizedBox(height: 10,),
+  //         ElevatedButton(
+  //           onPressed: () {
+  //             FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(widget.user!.userid)
+  //                 .get()
+  //                 .then((DocumentSnapshot documentSnapshot) {
+  //               if (documentSnapshot.exists) {
+  //                 if (updateName != widget.user!.name) {
+  //                   updateItem('name', updateName);
+  //                 }
+  //               }
+  //             });
+  //             // check
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //                 const SnackBar(content: Text('Processing Data')));
+  //             setState(() {});
+  //             Navigator.pop(context);
+  //           },
+  //           child: const Text(
+  //             'Invia',
+  //             style: TextStyle(fontSize: 16),
+  //           )
+  //         ),
+  //     ]),
+  //   );
   }
 }
