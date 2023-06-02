@@ -231,14 +231,12 @@ class _SettingsProfile extends State<SettingsProfile>{
                   if (updateName != widget.user!.name) {
                     updateItem('name', updateName);
                   }
-                  
                 }
               });
               // check
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Processing Data')));
               setState(() {});
-              Navigator.pop(context);
               Navigator.pop(context);
             },
             child: const Text(

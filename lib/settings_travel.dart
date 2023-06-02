@@ -509,8 +509,10 @@ class _SettingTravelState extends State<SettingTravel> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing Data')));
                 setState(() {});
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => const HomePage()));
               },
               child: const Text(
                 'Invia',
