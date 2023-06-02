@@ -1,7 +1,10 @@
 // import 'dart:io';
+import 'dart:io';
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crea_radio_button/crea_radio_button.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planup/home.dart';
@@ -34,6 +37,7 @@ class _SettingTravelState extends State<SettingTravel> {
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
   XFile? image;
+  File? file;
   String imageUrl = '';
   String uniqueFileName = '';
   final ImagePicker picker = ImagePicker();
@@ -44,6 +48,41 @@ class _SettingTravelState extends State<SettingTravel> {
         .doc(widget.travel.referenceId)
         .update({field: newField}).then((value) => print("Update"),
             onError: (e) => print("Error updating doc: $e"));
+  }
+  Future getImageFromGallery() async {
+    image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    uploadFile();
+  }
+
+  Future<void> getImageFromCamera() async {
+    image = await picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+    uploadFile();
+  }
+
+  void uploadFile() async {
+    // get a reference to storage root
+    Reference storageReference = FirebaseStorage.instance.ref();
+    Reference referenceDirImage = storageReference.child('images');
+
+    // create a reference for the image to be stored
+    uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference imageReference = referenceDirImage.child(uniqueFileName);
+
+    // handle errors/success
+    try {
+      // store the image
+      await imageReference.putFile(File(image!.path));
+
+      // success: get the download url
+      imageUrl = await imageReference.getDownloadURL();
+
+      // update the UI
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
   }
 
   void choosePhoto() {
@@ -62,7 +101,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     //if user click this button, user can upload image from gallery
                     onPressed: () {
                       Navigator.pop(context);
-                      // getImageFromGallery();
+                      getImageFromGallery();
                     },
                     child: const Row(
                       children: [
@@ -75,7 +114,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     //if user click this button. user can upload image from camera
                     onPressed: () {
                       Navigator.pop(context);
-                      // getImageFromCamera();
+                      getImageFromCamera();
                     },
                     child: const Row(
                       children: [
@@ -129,7 +168,7 @@ class _SettingTravelState extends State<SettingTravel> {
   @override
   Widget build(BuildContext context) {
     String updateName = widget.travel.name;
-    bool canupdateDate = false;
+    // bool canupdateDate = false;
     var id = widget.travel.referenceId;
 
     buildCalendarDialogButton(bool alone) {
@@ -309,25 +348,36 @@ class _SettingTravelState extends State<SettingTravel> {
                 ),
               ),
               child: widget.travel.photo!.isNotEmpty
-                  ? ClipOval(
-                      child: Material(
-                        child: Image.network(
-                          widget.travel.photo!,
-                          fit: BoxFit.fitHeight,
+              ? ClipOval(
+                  child: Material(
+                    child: Image.network(
+                      widget.travel.photo!,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                )
+              // : widget.travel.photo! != imageUrl && image!=null
+              //   ? ClipOval(
+              //       child: Material(
+              //         child: Image.file(
+              //           File(image!.path),
+              //           fit: BoxFit.cover,
+              //           width: 100,
+              //           height: 100,
+              //         ),
+              //       )
+              //     )
+                : const ClipOval(
+                    child: Material(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Icon(
+                          Icons.add_a_photo_outlined,
+                          size: 60,
                         ),
                       ),
-                    )
-                  : const ClipOval(
-                      child: Material(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 60,
-                          ),
-                        ),
-                      ),
-                    )),
+                    ),
+                  )),
           ElevatedButton(
             onPressed: () {
               choosePhoto();
@@ -441,6 +491,9 @@ class _SettingTravelState extends State<SettingTravel> {
                     .get()
                     .then((DocumentSnapshot documentSnapshot) {
                   if (documentSnapshot.exists) {
+                    // if(imageUrl != widget.travel.photo){
+                    //   updateItem('photo', imageUrl);
+                    // }
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
                     }
