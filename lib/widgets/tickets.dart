@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 import 'package:planup/db/ticket_rep.dart';
 import 'package:planup/model/travel.dart';
 
@@ -32,9 +33,25 @@ class _TicketState extends State<Tickets> {
   String urlDownload = '';
   FilePickerResult? result;
   late File file;
+  late String p;
+  
+
+  late Future<ListResult> futureFiles;
+
+  @override
+  void initState(){
+    super.initState();
+    futureFiles = FirebaseStorage.instance
+      .ref('tickets/${widget.trav.referenceId}/${currentUser.uid}}')
+      .listAll();
+  }
   
   Future selectFile() async {
-    final result = await FilePicker.platform.pickFiles();
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'pdf'],
+    );
     if (result == null) return;
     setState(() {
       pickedfile = result.files.first;
@@ -60,11 +77,29 @@ class _TicketState extends State<Tickets> {
     urlDownload = await snapshot.ref.getDownloadURL();
     setState(() {
       uploadTask = null;
+      p = file.path;
     });
+    print('ciao: ${file.path}');
     setState(() {});
     // buildProgress() ;
   }
 
+  Future<ListResult> listFiles() async{
+    ListResult list = await FirebaseStorage.instance
+      .ref('tickets/${widget.trav.referenceId}/${currentUser.uid}')
+      .listAll();
+    list.items.forEach((Reference ref) { print('found: $ref');});
+    return list;
+  }
+
+  Future<String> downloadUrl(String nameImage) async{
+    String downloadUrl = await FirebaseStorage.instance
+      .ref('tickets/${widget.trav.referenceId}/${currentUser.uid}/${nameImage}')
+      .getDownloadURL();
+
+    return downloadUrl;
+      
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -113,16 +148,64 @@ class _TicketState extends State<Tickets> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               buildProgress() 
-                
+                buildProgress(), 
+                FutureBuilder(
+                  future: listFiles(),
+                  builder: (BuildContext context, AsyncSnapshot<ListResult> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                      return Container( 
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        height: 300,
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          // shrinkWrap: true,
+                          itemCount: snapshot.data!.items.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                
+                                },
+                                child: Text(snapshot.data!.items[index].name),
+                              ),
+                            );
+                        })
+                      );
+                    }
+                    if(snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData){
+                      return const CircularProgressIndicator();
+                    }
+                    return Container();
+                  }
+                ),
+
+                FutureBuilder(
+                  future: downloadUrl('dispensa-fisica.pdf'),
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                      return Container(
+                        width: 300,
+                        height: 250,
+                        // child: Image.network(snapshot.data!, fit: BoxFit.cover),
+                        child: PdfView(path: p),
+                      );
+                    }
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return const CircularProgressIndicator();
+                    }
+                    if(!snapshot.hasData) { return const Center(child: Text('Non ci sono biglietti'));}
+                    return const SizedBox.shrink();                    
+                  }
+                ),
               ]
             ),
           ),
         floatingActionButton: FloatingActionButton(
-        onPressed: selectFile,
-        backgroundColor: const Color.fromARGB(255, 255, 217, 104),
-        foregroundColor: Colors.black,
-        child: const Icon(Icons.add),
+          onPressed: selectFile,
+          backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+          foregroundColor: Colors.black,
+          child: const Icon(Icons.add),
     ));
 
     
