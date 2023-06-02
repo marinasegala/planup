@@ -1,9 +1,16 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:planup/db/ticket_rep.dart';
 import 'package:planup/model/travel.dart';
+
+import '../model/ticket.dart';
 
 class Tickets extends StatefulWidget {
   final Travel trav;
@@ -14,105 +21,84 @@ class Tickets extends StatefulWidget {
 }
 
 class _TicketState extends State<Tickets> {
-  XFile? image;
-  File? file;
-  String imageUrl = '';
 
-  final ImagePicker picker = ImagePicker();
+  String uniqueFileName = '';
+  String fileURL = '';
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final TicketRepository repository = TicketRepository();
 
-  Future getImageFromGallery() async {
-    image = await picker.pickImage(source: ImageSource.gallery);
-    if (image == null) return;
+  PlatformFile? pickedfile;
+  UploadTask? uploadTask;
+  String urlDownload = '';
+  FilePickerResult? result;
+  late File file;
+  
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+    setState(() {
+      pickedfile = result.files.first;
+    });
+    print(pickedfile!.path!);
     uploadFile();
+    
   }
 
-  Future<void> getImageFromCamera() async {
-    image = await picker.pickImage(source: ImageSource.camera);
-    if (image == null) return;
-    uploadFile();
+  Future uploadFile() async{
+
+    final path = 'tickets/${widget.trav.referenceId}/${currentUser.uid}/${pickedfile!.name}';
+    final file = File(pickedfile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    // ref.putFile(file);
+
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+
+    final snapshot = await uploadTask!.whenComplete(() {});
+    urlDownload = await snapshot.ref.getDownloadURL();
+    setState(() {
+      uploadTask = null;
+    });
+    setState(() {});
+    // buildProgress() ;
   }
 
-  void uploadFile() async {
-    // get a reference to storage root
-    Reference storageReference = FirebaseStorage.instance.ref();
-    Reference referenceDirImage = storageReference.child('tickets');
-
-    // create a reference for the image to be stored
-    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference imageReference = referenceDirImage.child(uniqueFileName);
-
-    // handle errors/success
-    try {
-      // store the image
-      await imageReference.putFile(File(image!.path));
-
-      // success: get the download url
-      imageUrl = await imageReference.getDownloadURL();
-
-      // update the UI
-      setState(() {});
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void choosePhoto() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Seleziona il metodo di caricamento'),
-            content: SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    //if user click this button, user can upload image from gallery
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImageFromGallery();
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(Icons.image),
-                        Text('Galleria'),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    //if user click this button. user can upload image from camera
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImageFromCamera();
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(Icons.camera),
-                        Text('Camera'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => Navigator.pop(context, true), // passing true
-                icon: const Icon(Icons.clear),
-              ),
-            ],
-          );
-        });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: Scaffold(
+    Widget buildProgress() => StreamBuilder<TaskSnapshot>(
+      stream: uploadTask?.snapshotEvents,
+      builder: (context, snapshot){
+        if (snapshot.hasData){
+          final data = snapshot.data!;
+          double progress = data.bytesTransferred/data.totalBytes;
+
+          return SizedBox(
+            height: 50,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey,
+                  color: Colors.teal,
+                ),
+                Center(
+                  child: Text(
+                    '${(100*progress).roundToDouble()}%',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            )
+          );
+        } else { return const SizedBox.shrink();}
+      }
+    );
+
+    return Scaffold(
         appBar: AppBar(
           title: const Text('I miei biglietti'),
           leading: IconButton(
@@ -121,16 +107,54 @@ class _TicketState extends State<Tickets> {
                 Navigator.pop(context);
               }),
         ),
-        body: const Center(child: Text('TODO: add widget')),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+               buildProgress() 
+                
+              ]
+            ),
+          ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            choosePhoto();
-          },
-          backgroundColor: const Color.fromARGB(255, 255, 217, 104),
-          foregroundColor: Colors.black,
-          child: const Icon(Icons.add),
-        ),
-      ),
-    );
+        onPressed: selectFile,
+        backgroundColor: const Color.fromARGB(255, 255, 217, 104),
+        foregroundColor: Colors.black,
+        child: const Icon(Icons.add),
+    ));
+
+    
   }
+  
+  Widget buildProgress() => StreamBuilder<TaskSnapshot>(
+      stream: uploadTask?.snapshotEvents,
+      builder: (context, snapshot){
+        if (snapshot.hasData){
+          final data = snapshot.data!;
+          double progress = data.bytesTransferred/data.totalBytes;
+
+          return SizedBox(
+            height: 50,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey,
+                  color: Colors.teal,
+                ),
+                Center(
+                  child: Text(
+                    '${(100*progress).roundToDouble()}%',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            )
+          );
+        } else { return const SizedBox.shrink();}
+      }
+    );
 }
