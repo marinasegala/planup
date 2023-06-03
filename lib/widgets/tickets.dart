@@ -8,6 +8,8 @@ import 'package:planup/db/ticket_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../model/ticket.dart';
+
 class Tickets extends StatefulWidget {
   final Travel trav;
   const Tickets({Key? key, required this.trav}) : super(key: key);
@@ -27,7 +29,8 @@ class _TicketState extends State<Tickets> {
   String urlDownload = '';
   FilePickerResult? result;
   late File file;
-  late String p;
+  late String p = '';
+  String name = '';
 
   late Future<ListResult> futureFiles;
 
@@ -72,6 +75,16 @@ class _TicketState extends State<Tickets> {
       p = file.path;
     });
     print('ciao: ${file.path}');
+
+    var newTicket = Ticket(
+      name,
+      nameFile: pickedfile!.name,
+      trav: widget.trav.referenceId,
+      userid: currentUser.uid,
+      url: urlDownload,
+    );
+    repository.add(newTicket);
+
     setState(() {});
     // buildProgress() ;
   }
@@ -198,7 +211,32 @@ class _TicketState extends State<Tickets> {
               ]),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: selectFile,
+          onPressed: (){
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  scrollable: true,
+                  title: Text(AppLocalizations.of(context)!.addTicket),
+                  content: TextFormField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.nameTicket),
+                    onChanged: (text) => name = text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.requiredField;
+                      }
+                      return null;
+                    },
+                  ),
+                  actions: [ ElevatedButton(
+                    onPressed: selectFile,
+                    child: Text(AppLocalizations.of(context)!.uploadTicket),
+                  )],
+                );
+            });
+          },
           backgroundColor: const Color.fromARGB(255, 255, 217, 104),
           foregroundColor: Colors.black,
           child: const Icon(Icons.add),

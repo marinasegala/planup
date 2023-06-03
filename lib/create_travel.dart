@@ -26,7 +26,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   final currentUser = FirebaseAuth.instance.currentUser!;
 
-  final FriendsRepository friendRepository = FriendsRepository();
+  // final FriendsRepository friendRepository = FriendsRepository();
   List<String> friends = [];
   List<String> asFriend = [];
   List<String> listid = [];
@@ -160,8 +160,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   }
 
   getfinal() {
-    // ignore: unused_local_variable
-    int i = 0;
     for (var id in friends) {
       if (asFriend.contains(id) && !listid.contains(id)) {
         listid.add(id);
@@ -181,29 +179,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
           },
         );
       }
-      i++;
     }
-    // for (; i < asFriend.length; i++) {
-    //   if (friends.contains(asFriend[i]) && !listid.contains(asFriend[i])) {
-    //     listid.add(asFriend[i]);
-    //     FirebaseFirestore.instance
-    //         .collection('users')
-    //         .where('userid', isEqualTo: asFriend[i])
-    //         .get()
-    //         .then(
-    //       (querySnapshot) {
-    //         for (var docSnapshot in querySnapshot.docs) {
-    //           setState(() {
-    //             finalFriend.add(docSnapshot.get('name'));
-    //             finalFriendId.add(docSnapshot.get('userid'));
-    //             finalFriendId.add(docSnapshot.get('name'));
-    //           });
-    //         }
-    //       },
-    //       onError: (e) => print("Error completing: $e"),
-    //     );
-    //   }
-    // }
   }
 
   @override

@@ -2,13 +2,18 @@ import 'dart:io';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crea_radio_button/crea_radio_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:planup/home.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'db/users_rep.dart';
 import 'model/travel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'model/user_account.dart';
 
 class SettingTravel extends StatefulWidget {
   final Travel travel;
@@ -21,19 +26,52 @@ class SettingTravel extends StatefulWidget {
 class _SettingTravelState extends State<SettingTravel> {
   String changePeriod = "Giornata";
   bool changedata = false;
-  // ignore: unused_field, prefer_final_fields
-  bool _swapDate = false;
-  // ignore: unused_field
-  List<DateTime?> _dialogCalendarPickerValue = [];
-  String date = '';
 
   // ignore: unused_field
-  final _formKey = GlobalKey<FormState>();
+  List<DateTime?> _dialogCalendarPickerValue = [];
+  
+  String date = '';
+
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  List<String> friends = [];
+  List<String> asFriend = [];
+  List<String> listid = [];
+  List<String> finalFriend = [];
+  List<String> finalFriendId = [];
+  List<String> finalToUse = [];
+  List<String> hasAlredy = [];
+  List<String> selectedFriends = [];
+  List<String> selectedFriendsId = [];
+  String namefriend = '';
+  Map<String, dynamic> toMap() {
+    return {
+      'name': namefriend,
+    };
+  }
+  late List<UserAccount> users = [];
+  final UsersRepository usersRepository = UsersRepository();
+
+  void getUsers() {
+    // obtain users from the repository and add to the list
+    usersRepository.getUsers().then((usersList) {
+      setState(() {
+        users = usersList;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsers();
+  }
+
   XFile? image;
   File? file;
   String imageUrl = '';
   String uniqueFileName = '';
   final ImagePicker picker = ImagePicker();
+  
 
   Future<void> updateItem(String field, String newField) {
     return FirebaseFirestore.instance
@@ -157,6 +195,48 @@ class _SettingTravelState extends State<SettingTravel> {
 
     return valueText;
   }
+  
+  
+  get(String where, String add) {
+    FirebaseFirestore.instance
+        .collection('friends')
+        .where(where, isEqualTo: currentUser.uid)
+        .get()
+        .then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          if (where == 'userid') {
+            friends.add(docSnapshot.get(add));
+          } else {
+            asFriend.add(docSnapshot.get(add));
+          }
+        }
+      },
+    );
+  }
+
+  getfinal() {
+    for (var id in friends) {
+      if (asFriend.contains(id) && !listid.contains(id)) {
+        listid.add(id);
+        FirebaseFirestore.instance
+          .collection('users')
+          .where('userid', isEqualTo: id)
+          .get()
+          .then((querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              setState(() {
+                finalFriend.add(docSnapshot.get('name'));
+                finalFriendId.add(docSnapshot.get('userid'));
+                finalFriendId.add(docSnapshot.get('name'));
+              });
+            }
+          },
+        );
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +248,27 @@ class _SettingTravelState extends State<SettingTravel> {
     ];
     String updateName = widget.travel.name;
     var id = widget.travel.referenceId;
+
+    get('userid', 'userIdFriend');
+    get('userIdFriend', 'userid');
+    getfinal();
+    // FirebaseFirestore.instance.collection('travel')
+    //   .doc(id)
+    //   .get()
+    //   .then((querySnapshot){
+    //     // print('lista: ${querySnapshot.get('list part')}');
+    //     for(var x in querySnapshot.get('list part')){
+    //       if(x != currentUser.uid){
+    //         for(var userid in finalFriend){
+    //           print(userid);
+    //           if(x == userid){
+    //             print('ole - $x');
+    //           }
+    //         }
+    //       }
+    //       // print('list part: $x');
+    //     }
+    //   });
 
     buildCalendarDialogButton(bool alone) {
       const dayTextStyle =
@@ -413,9 +514,9 @@ class _SettingTravelState extends State<SettingTravel> {
             height: 10,
           ),
           widget.travel.date == 'Giornata' ||
-                  widget.travel.date == 'Settimana' ||
-                  widget.travel.date == 'Weekend' ||
-                  widget.travel.date == 'Altro'
+            widget.travel.date == 'Settimana' ||
+            widget.travel.date == 'Weekend' ||
+            widget.travel.date == 'Altro'
               ? ToggleSwitch(
                   minWidth: 100.0,
                   cornerRadius: 20.0,
@@ -498,7 +599,7 @@ class _SettingTravelState extends State<SettingTravel> {
                               return AlertDialog(
                                   scrollable: true,
                                   title: Text(AppLocalizations.of(context)!
-                                      .changePeriod),
+                                      .addTicket),
                                   content: buildCalendarDialogButton(false));
                             });
                   },
@@ -506,6 +607,22 @@ class _SettingTravelState extends State<SettingTravel> {
               : buildCalendarDialogButton(true),
           const SizedBox(
             height: 30,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: DropDownMultiSelect(
+                onChanged: (List<String> x) {
+                  setState(() {
+                    selectedFriends = x;
+                  });
+                },
+                options: finalFriend,
+                selectedValues: selectedFriends,
+                whenEmpty: AppLocalizations.of(context)!.addFriends,
+                icon: const Icon(Icons.person_add_alt_1_outlined),
+              ),
+            ),
           ),
           ElevatedButton(
               onPressed: () {

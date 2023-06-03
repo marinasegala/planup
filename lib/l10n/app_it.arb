@@ -66,6 +66,9 @@
     "addFriends": "Aggiungi amici",
 
     "myTickets": "I miei biglietti",
+    "addTicket": "Aggiungi biglietto",
+    "nameTicket": "Nome",
+    "uploadTicket": "Carica",
     
     "share": "Condividi",
     "addMarker": "Aggiungi un marker",

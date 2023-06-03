@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Ticket {
   String name;
+  String? nameFile;
   String? trav;
   String? userid;
   String? url;
@@ -9,7 +10,8 @@ class Ticket {
   String? referenceId;
 
   Ticket(this.name,
-      {required this.trav,
+      { required this.nameFile,
+      required this.trav,
       required this.userid,
       required this.url,
       this.referenceId});
@@ -20,25 +22,27 @@ class Ticket {
     return newShop;
   }
   // 6
-  factory Ticket.fromJson(Map<String, dynamic> json) => _shopFromJson(json);
+  factory Ticket.fromJson(Map<String, dynamic> json) => _ticketFromJson(json);
   // 7
-  Map<String, dynamic> toJson() => _shopToJson(this);
+  Map<String, dynamic> toJson() => _ticketToJson(this);
 
   @override
   String toString() => 'Ticket<$name>';
 }
 
-Ticket _shopFromJson(Map<String, dynamic> json) {
+Ticket _ticketFromJson(Map<String, dynamic> json) {
   return Ticket(
     json['name'] as String,
+    nameFile: json['nameFile'] as String?,
     trav: json['trav'] as String?,
     userid: json['userid'] as String?,
     url: json['url'] as String?
   );
 }
 
-Map<String, dynamic> _shopToJson(Ticket instance) => <String, dynamic>{
+Map<String, dynamic> _ticketToJson(Ticket instance) => <String, dynamic>{
       'name': instance.name,
+      'nameFile': instance.nameFile,
       'trav': instance.trav,
       'userid': instance.userid,
       'url': instance.url,

@@ -99,6 +99,9 @@
     "addFriends": "Add friends",
 
     "myTickets": "My tickets",
+    "addTicket": "Add ticket",
+    "nameTicket": "Name",
+    "uploadTicket": "Upload",
     
     "share": "Share",
     "addMarker": "Add a new marker",
