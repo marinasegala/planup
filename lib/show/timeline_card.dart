@@ -4,6 +4,7 @@ import 'package:planup/db/travel_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class TravelTimeline extends StatefulWidget {
@@ -30,11 +31,11 @@ class _TravelTimelineState extends State<TravelTimeline> {
   Widget build(BuildContext context) {
     sortListTravel();
     return widget.pastTravels.isEmpty
-        ? const Center(
+        ? Center(
             child: Text(
-              "Questo utente non ha ancora viaggiato\nDirei che è il momento di organizzarne uno insieme!",
+              AppLocalizations.of(context)!.noTravelFriend,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           )
         : Timeline.builder(

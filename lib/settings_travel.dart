@@ -85,7 +85,7 @@ class _SettingTravelState extends State<SettingTravel> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Seleziona il metodo di caricamento'),
+            title: Text(AppLocalizations.of(context)!.uploadMethod),
             content: SizedBox(
               height: MediaQuery.of(context).size.height / 6,
               child: Column(
@@ -96,10 +96,10 @@ class _SettingTravelState extends State<SettingTravel> {
                       Navigator.pop(context);
                       getImageFromGallery();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.image),
-                        Text('Galleria'),
+                        const Icon(Icons.image),
+                        Text(AppLocalizations.of(context)!.gallery),
                       ],
                     ),
                   ),
@@ -109,10 +109,10 @@ class _SettingTravelState extends State<SettingTravel> {
                       Navigator.pop(context);
                       getImageFromCamera();
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.camera),
-                        Text('Camera'),
+                        const Icon(Icons.camera),
+                        Text(AppLocalizations.of(context)!.camera),
                       ],
                     ),
                   ),
@@ -161,10 +161,10 @@ class _SettingTravelState extends State<SettingTravel> {
   @override
   Widget build(BuildContext context) {
     List<RadioOption> options = [
-      RadioOption(AppLocalizations.of(context)!.oneDay, "Giornata"),
-      RadioOption(AppLocalizations.of(context)!.weekend, "Weekend"),
-      RadioOption(AppLocalizations.of(context)!.week, "Settimana"),
-      RadioOption(AppLocalizations.of(context)!.other, "Altro"),
+      RadioOption("Giornata", AppLocalizations.of(context)!.oneDay),
+      RadioOption("Weekend", AppLocalizations.of(context)!.weekend),
+      RadioOption("Settimana", AppLocalizations.of(context)!.week),
+      RadioOption("Altro", AppLocalizations.of(context)!.other),
     ];
     String updateName = widget.travel.name;
     var id = widget.travel.referenceId;
@@ -517,8 +517,6 @@ class _SettingTravelState extends State<SettingTravel> {
                   if (documentSnapshot.exists) {
                     if (imageUrl != widget.travel.photo) {
                       // updateItem('photo', imageUrl);
-                      print('photo: ${uniqueFileName}');
-                      print('photo: ${imageUrl}');
                     }
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);

@@ -138,7 +138,7 @@ class _SettingsProfile extends State<SettingsProfile> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         scrollable: true,
-                        title: const Text('Sei sicuro di voler uscire?'),
+                        title: Text(AppLocalizations.of(context)!.sureToExit),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'No'),
@@ -154,7 +154,7 @@ class _SettingsProfile extends State<SettingsProfile> {
                                   MaterialPageRoute(
                                       builder: (builder) => const LoginPage()));
                             },
-                            child: const Text('Si'),
+                            child: Text(AppLocalizations.of(context)!.yes),
                           ),
                         ],
                       );
@@ -191,7 +191,7 @@ class _SettingsProfile extends State<SettingsProfile> {
         const SizedBox(height: 15),
         ElevatedButton(
           onPressed: () => choosePhoto(),
-          child: const Text('Cambia Foto'),
+          child: Text(AppLocalizations.of(context)!.changePhoto),
         ),
         Padding(
           padding: const EdgeInsets.all(8),
@@ -199,8 +199,9 @@ class _SettingsProfile extends State<SettingsProfile> {
             autofocus: false,
             decoration: InputDecoration(
               icon: const Icon(Icons.person),
-              hintText: 'Nome: ${widget.user.name}',
-              counterText: 'Scrivi per modificare il nome',
+              hintText:
+                  AppLocalizations.of(context)!.nameUser(widget.user.name),
+              counterText: AppLocalizations.of(context)!.hintTextNameUser,
             ),
             onChanged: (text) => updateName = text,
           ),
@@ -212,26 +213,20 @@ class _SettingsProfile extends State<SettingsProfile> {
                   .where('userid', isEqualTo: widget.user.userid)
                   .get()
                   .then((querySnapshot) {
-                for (var docSnapshot in querySnapshot.docs) {
-                  if (updateName != widget.user.name) {
-                    print('cioa $updateName');
-                    print('id:  ${widget.user.userid}');
-                    updateItem('name', updateName);
-                  }
-                  print(docSnapshot.data());
-                  print('prima ${widget.user.name} - dopo $updateName');
+                if (updateName != widget.user.name) {
+                  updateItem('name', updateName);
                 }
               });
               // check
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Processing Data')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(AppLocalizations.of(context)!.processingData)));
               setState(() {});
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (builder) => const HomePage()));
             },
-            child: const Text(
-              'Invia',
-              style: TextStyle(fontSize: 16),
+            child: Text(
+              AppLocalizations.of(context)!.send,
+              style: const TextStyle(fontSize: 16),
             )),
       ]),
     );
