@@ -6,6 +6,7 @@ class Ticket {
   String? trav;
   String? userid;
   String? url;
+  String? ext;
 
   String? referenceId;
 
@@ -14,6 +15,7 @@ class Ticket {
       required this.trav,
       required this.userid,
       required this.url,
+      required this.ext,
       this.referenceId});
   // 5
   factory Ticket.fromSnapshot(DocumentSnapshot snapshot) {
@@ -36,7 +38,8 @@ Ticket _ticketFromJson(Map<String, dynamic> json) {
     nameFile: json['nameFile'] as String?,
     trav: json['trav'] as String?,
     userid: json['userid'] as String?,
-    url: json['url'] as String?
+    url: json['url'] as String?,
+    ext: json['ext'] as String?
   );
 }
 
@@ -46,4 +49,5 @@ Map<String, dynamic> _ticketToJson(Ticket instance) => <String, dynamic>{
       'trav': instance.trav,
       'userid': instance.userid,
       'url': instance.url,
+      'ext': instance.ext
     };

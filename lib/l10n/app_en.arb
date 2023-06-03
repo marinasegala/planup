@@ -112,6 +112,7 @@
         }
     },
     "noTickets": "You don't have any ticket yet, click + to add one!",
+    "close": "Done",
     
     "share": "Share",
     "addMarker": "Add a new marker",
@@ -236,6 +237,8 @@
     },
     
     "noTravelFriend": "This user doesn't have any travel yet.\nGo and organize a trip together!",
+    "extPdf": "Pdf",
+    "extImage": "Image",
 
     "sureToExit": "Are you sure you want to exit?",
     "nameUser": "Name: {name}",

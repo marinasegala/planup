@@ -110,6 +110,8 @@
         }
     },
     "noTicket": "Non hai ancora biglietti, clicca su + per aggiungerne uno!",
+    "extPdf": "Pdf",
+    "extImage": "Immagine",
     
     "share": "Condividi",
     "addMarker": "Aggiungi un marker",
