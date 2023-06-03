@@ -73,7 +73,6 @@ class ShopCard extends StatelessWidget {
                     .then(
                   (querySnapshot) {
                     for (var docSnapshot in querySnapshot.docs) {
-                      // print('${docSnapshot.id} => ${docSnapshot.data()}');
                       deleteItem(docSnapshot.id);
                     }
                   },

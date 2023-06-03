@@ -101,8 +101,7 @@ class _TicketState extends State<Tickets> {
 
   Future<String> downloadUrl(String nameImage) async {
     String downloadUrl = await FirebaseStorage.instance
-        .ref(
-            'tickets/${widget.trav.referenceId}/${currentUser.uid}/${nameImage}')
+        .ref('tickets/${widget.trav.referenceId}/${currentUser.uid}/$nameImage')
         .getDownloadURL();
 
     return downloadUrl;
@@ -129,7 +128,8 @@ class _TicketState extends State<Tickets> {
                     ),
                     Center(
                       child: Text(
-                        '${(100 * progress).roundToDouble()}%',
+                        AppLocalizations.of(context)!.uploadProgress(
+                            (100 * progress).roundToDouble().toString()),
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -167,7 +167,6 @@ class _TicketState extends State<Tickets> {
                             height: 300,
                             child: ListView.builder(
                                 scrollDirection: Axis.vertical,
-                                // shrinkWrap: true,
                                 itemCount: snapshot.data!.items.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
@@ -195,7 +194,6 @@ class _TicketState extends State<Tickets> {
                         return Container(
                           width: 300,
                           height: 250,
-                          // child: Image.network(snapshot.data!, fit: BoxFit.cover),
                           child: PdfView(path: p),
                         );
                       }
@@ -203,8 +201,9 @@ class _TicketState extends State<Tickets> {
                         return const CircularProgressIndicator();
                       }
                       if (!snapshot.hasData) {
-                        return const Center(
-                            child: Text('Non ci sono biglietti'));
+                        return Center(
+                            child:
+                                Text(AppLocalizations.of(context)!.noTickets));
                       }
                       return const SizedBox.shrink();
                     }),
@@ -262,7 +261,8 @@ class _TicketState extends State<Tickets> {
                   ),
                   Center(
                     child: Text(
-                      '${(100 * progress).roundToDouble()}%',
+                      AppLocalizations.of(context)!.uploadProgress(
+                          (100 * progress).roundToDouble().toString()),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),

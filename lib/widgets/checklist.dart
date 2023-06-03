@@ -73,8 +73,8 @@ class _CheckListState extends State<ItemCheckList> {
       isChecked: false,
       whoBring: 'nil',
     );
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Processing Data')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.processingData)));
     return repository.add(newitemList);
   }
 
@@ -444,7 +444,6 @@ class _CheckListState extends State<ItemCheckList> {
                   icon: const Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
-                      // updateIsChecked('copied', !list.copied, list.referenceId as String);
                       copyItem(list);
                     });
                   },

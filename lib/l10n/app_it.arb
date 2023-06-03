@@ -9,6 +9,19 @@
     "myTravels": "I miei viaggi",
     "settings": "Impostazioni",
     "statisticCardDTitle": "{number}\n{title}",
+    "@statisticCardDTitle": {
+        "descrption": "Titolo della carta delle statistiche",
+        "placeholders": {
+            "number": {
+                "type": "String",
+                "example": "10"
+            },
+            "title": {
+                "type": "String",
+                "example": "Viaggi"
+            }
+        }
+    },
     
     "signOut": "Esci",
     
@@ -20,10 +33,27 @@
     "calendar": "Apri il calendario",
     "changePhoto": "Cambia la foto",
     "hintTextNameTravel": "Nome del viaggio: {name}",
+    "@hintTextNameTravel": {
+        "descrption": "Suggerimento per il nome del viaggio",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Parigi"
+            }
+        }
+    },
 
     "counterTextNameTravel": "Scrivi per modificare il nome del viaggio",
-
     "changeDateFrom": "Cambio la data del viaggio {date}",
+    "@changeDateFrom": {
+        "descrption": "Caambia la data del viaggio",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "2023-06-01"
+            }
+        }
+    },
 
     "oneDay": "Giornata",
     "weekend": "Fine Settimana",
@@ -69,12 +99,41 @@
     "addTicket": "Aggiungi biglietto",
     "nameTicket": "Nome",
     "uploadTicket": "Carica",
+    "uploadProgress": "{value}%",
+    "@uploadProgress": {
+        "descrption": "Progresso di caricamento di un file",
+        "placeholders": {
+            "value": {
+                "type": "String",
+                "example": "50%"
+            }
+        }
+    },
+    "noTicket": "Non hai ancora biglietti, clicca su + per aggiungerne uno!",
     
     "share": "Condividi",
     "addMarker": "Aggiungi un marker",
     "lat": "Latitudine: {lat}",
+    "@lat": {
+        "descrption": "Latitudine di un marker",
+        "placeholders": {
+            "lat": {
+                "type": "String",
+                "example": "45.123456"
+            }
+        }
+    },
 
     "long": "Longitudine: {long}",
+    "@long": {
+        "descrption": "Longitudine di un marker",
+        "placeholders": {
+            "long": {
+                "type": "String",
+                "example": "9.123456"
+            }
+        }
+    },
 
     "nameMarker": "Nome del posto",
     "nameRequired": "Il nome è obbligatorio",
@@ -85,8 +144,26 @@
     "remove": "Rimuovi",
 
     "friendLocation": "Il tuo amico {user} si trova qui",
+    "@friendLocation": {
+        "descrption": "Testo per mostrare la posizione di un amico",
+        "placeholders": {
+            "user": {
+                "type": "String",
+                "example": "Giovanni"
+            }
+        }
+    },
 
     "friendsLocation": "I tuoi amici {printUsers} si trovano qui",
+    "@friendsLocation": {
+        "descrption": "Testo per mostrare la posizione di più amici",
+        "placeholders": {
+            "printUsers": {
+                "type": "String",
+                "example": "Maria, Giovanni, Luca"
+            }
+        }
+    },
     
     "accomodation": "Alloggio",
     "food": "Alimentari",
@@ -111,8 +188,30 @@
     "noNotes": "Non sono ancora state inserite note, clicca su + per aggiungere la prima nota",
 
     "authorNote": "Autore {author}",
+    "@authorNote": {
+        "descrption": "Autore di una nota",
+        "placeholders": {
+            "author": {
+                "type": "String",
+                "example": "Luca"
+            }
+        }
+    },
 
     "authorNoteWithDescription": "Autore {author}\n{desc}",
+    "@authorNoteWithDescription": {
+        "descrption": "Testo per mostrare l'autore di una nota con la sua descrizione",
+        "placeholders": {
+            "author": {
+                "type": "String",
+                "example": "Luca"
+            },
+            "desc": {
+                "type": "String",
+                "example": "Questa è la mia nota"
+            }
+        }
+    },
     
     "private": "Privato",
     "public": "Pubblico",
@@ -124,6 +223,28 @@
     "groupList": "Lista di gruppo",
     "checkList": "Check list",
     "bringBy": "Portato da {user}",
+    "@bringBy": {
+        "descrption": "Testo per mostrare chi ha portato un oggetto",
+        "placeholders": {
+            "user": {
+                "type": "String",
+                "example": "Mario"
+            }
+        }
+    },
     
-    "noTravelFriend": "Questo utente non ha ancora viaggiato\nAndate ad organizzare un viaggio insieme!"
+    "noTravelFriend": "Questo utente non ha ancora viaggiato\nAndate ad organizzare un viaggio insieme!",
+
+    "sureToExit": "Sei sicuro di voler uscire?",
+    "nameUser": "Nome: {name}",
+    "@nameUser": {
+        "descrption": "Nome di un utente",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Luca"
+            }
+        }
+    },
+    "hintTextNameUser": "Inserisci il nome dell'utente"
 }
