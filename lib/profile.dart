@@ -41,8 +41,10 @@ class _ProfilePageState extends State<ProfilePage> {
     var currentMonth = DateTime.now().month.toString().length == 1
         ? "0${DateTime.now().month}"
         : DateTime.now().month;
-    var currentDate =
-        '${DateTime.now().year}-$currentMonth-${DateTime.now().day}';
+    var currentDay = DateTime.now().day.toString().length == 1
+        ? "0${DateTime.now().day}"
+        : DateTime.now().day;
+    var currentDate = '${DateTime.now().year}-$currentMonth-$currentDay';
     travelRepository.getStream().listen((event) {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
@@ -128,7 +130,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (builder) => SettingsProfile(user: widget.user!)));
+                        builder: (builder) =>
+                            SettingsProfile(user: widget.user!)));
               },
               icon: const Icon(Icons.settings)),
         ],
