@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 import 'package:planup/db/ticket_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -356,7 +355,7 @@ class _TicketState extends State<Tickets> {
             onTap: () {
               Navigator.push(context,
                 MaterialPageRoute(
-                  builder: (builder) => TicketInfo(tick: tick, trav: widget.trav)));
+                  builder: (builder) => TicketInfo(tick: tick, trav: widget.trav, path: p)));
             }
                 
         ));
