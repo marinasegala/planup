@@ -69,6 +69,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
   void initState() {
     super.initState();
     getUsers();
+    setState(() {});
   }
 
   Future getImageFromGallery() async {

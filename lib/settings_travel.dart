@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
+import 'package:planup/db/travel_rep.dart';
 import 'package:planup/home.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/users_rep.dart';
@@ -24,6 +25,7 @@ class SettingTravel extends StatefulWidget {
 }
 
 class _SettingTravelState extends State<SettingTravel> {
+  final _key = GlobalKey<State>();
   String changePeriod = "Giornata";
   bool changedata = false;
 
@@ -38,19 +40,19 @@ class _SettingTravelState extends State<SettingTravel> {
   List<String> listid = [];
   List<String> finalFriend = [];
   List<String> finalFriendId = [];
-  List<String> finalToUse = [];
-  List<String> hasAlredy = [];
   List<String> selectedFriends = [];
-  List<String> selectedFriendsId = [];
+  List<String> selectedFriendsId = []; 
   String namefriend = '';
   Map<String, dynamic> toMap() {
     return {
       'name': namefriend,
     };
   }
+  late List<String> hasAlready = [];
 
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
+  final TravelRepository travelRepository = TravelRepository();
 
   void getUsers() {
     // obtain users from the repository and add to the list
@@ -207,6 +209,7 @@ class _SettingTravelState extends State<SettingTravel> {
         .get()
         .then(
       (querySnapshot) {
+        // print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           if (where == 'userid') {
             friends.add(docSnapshot.get(add));
@@ -243,6 +246,8 @@ class _SettingTravelState extends State<SettingTravel> {
 
   @override
   Widget build(BuildContext context) {
+    getUsers();
+   
     List<RadioOption> options = [
       RadioOption("Giornata", AppLocalizations.of(context)!.oneDay),
       RadioOption("Weekend", AppLocalizations.of(context)!.weekend),
@@ -255,24 +260,24 @@ class _SettingTravelState extends State<SettingTravel> {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
     getfinal();
-    // FirebaseFirestore.instance.collection('travel')
-    //   .doc(id)
-    //   .get()
-    //   .then((querySnapshot){
-    //     // print('lista: ${querySnapshot.get('list part')}');
-    //     for(var x in querySnapshot.get('list part')){
-    //       if(x != currentUser.uid){
-    //         for(var userid in finalFriend){
-    //           print(userid);
-    //           if(x == userid){
-    //             print('ole - $x');
-    //           }
-    //         }
-    //       }
-    //       // print('list part: $x');
-    //     }
-    //   });
 
+    // for(var i = 0; i<widget.travel.listPart!.length; i++){
+      // for(var x = 0; x<selectedFriendsId.length; x++){
+      //   if(selectedFriendsId[x] == widget.travel.listPart?[i]){
+      //     for(var name in selectedFriends){
+      //       if(name == selectedFriendsId[x+1]){
+      //         selectedFriends.remove(name);
+      //         selectedFriendsId.removeAt(x+1);
+      //         selectedFriendsId.removeAt(x);
+      //       }
+      //     }
+      //   }
+      // }
+    // }
+
+    
+   
+    
     buildCalendarDialogButton(bool alone) {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
@@ -621,6 +626,7 @@ class _SettingTravelState extends State<SettingTravel> {
                   });
                 },
                 options: finalFriend,
+              
                 selectedValues: selectedFriends,
                 whenEmpty: AppLocalizations.of(context)!.addFriends,
                 icon: const Icon(Icons.person_add_alt_1_outlined),

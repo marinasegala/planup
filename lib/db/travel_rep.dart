@@ -22,15 +22,15 @@ class TravelRepository {
     await collection.doc(trav.referenceId).delete();
   }
 
-  // Future<List<String>> getPartecipants(String id) async {
-  //   // List<String> partecipants = [];
-  //   await collection.get().then((QuerySnapshot snapshot) {
-  //     for (var element in snapshot.docs) {
-  //       if (element['referenceId'] == id) {
-  //         return element['list part'];
-  //       }
-  //     }
-  //   });
-  //   return [];
-  // }
+  Future<List<String>> getPartecipants(String id) async {
+    List<String> partecipants = [];
+    await collection.get().then((QuerySnapshot snapshot) {
+      for (var element in snapshot.docs) {
+        if (element['referenceId'] == id) {
+          partecipants = element['list part'];
+        }
+      }
+    });
+    return partecipants;
+  }
 }
