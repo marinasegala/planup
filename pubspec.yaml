@@ -54,7 +54,7 @@ dependencies:
   crea_radio_button: ^0.6.0
 
   # maps
-  flutter_osm_plugin: ^0.55.0
+  flutter_osm_plugin: 0.55.0
   multiselect: ^0.1.0
   timeline_list: ^0.0.6
   firebase_messaging: ^14.6.2

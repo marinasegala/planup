@@ -21,8 +21,9 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
   // controller for map
-  final _mapController = MapController(
-      initMapWithUserPosition: const UserTrackingOption(enableTracking: true));
+  final _mapController = MapController.withUserPosition(
+      trackUserLocation:
+          const UserTrackingOption(enableTracking: true, unFollowUser: true));
 
   var markerApp = <String, String>{};
 
