@@ -9,7 +9,6 @@ import 'package:planup/db/ticket_rep.dart';
 import 'package:planup/model/travel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:planup/widgets/ticket_info.dart';
-
 import '../model/ticket.dart';
 
 class Tickets extends StatefulWidget {
@@ -25,6 +24,7 @@ class _TicketState extends State<Tickets> {
   String fileURL = '';
   final currentUser = FirebaseAuth.instance.currentUser!;
   final TicketRepository repository = TicketRepository();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   PlatformFile? pickedfile;
   UploadTask? uploadTask;
@@ -57,7 +57,6 @@ class _TicketState extends State<Tickets> {
     setState(() {
       pickedfile = result.files.first;
     });
-    print(pickedfile!.path!);
     uploadFile();
   }
 
@@ -79,7 +78,6 @@ class _TicketState extends State<Tickets> {
       uploadTask = null;
       p = file.path;
     });
-    print('ciao: ${file.path}');
 
     var newTicket = Ticket(
       name,
@@ -99,9 +97,6 @@ class _TicketState extends State<Tickets> {
     ListResult list = await FirebaseStorage.instance
         .ref('tickets/${widget.trav.referenceId}/${currentUser.uid}')
         .listAll();
-    list.items.forEach((Reference ref) {
-      print('found: $ref');
-    });
     return list;
   }
 
@@ -244,52 +239,62 @@ class _TicketState extends State<Tickets> {
                     scrollable: true,
                     title: Text(AppLocalizations.of(context)!.addTicket),
                     content: Column(children: [
-                      TextFormField(
-                        autofocus: true,
-                        decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.nameTicket),
-                        onChanged: (text) => name = text,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return AppLocalizations.of(context)!.requiredField;
-                          }
-                          return null;
-                        },
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                  hintText:
+                                      AppLocalizations.of(context)!.nameTicket,
+                                  border: const OutlineInputBorder()),
+                              onChanged: (text) => name = text,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(context)!
+                                      .requiredField;
+                                }
+                                return null;
+                              },
+                            ),
+                            RadioButtonGroup(
+                                options: options,
+                                preSelectedIdx: 0,
+                                vertical: true,
+                                textStyle: const TextStyle(
+                                    fontSize: 15, color: Colors.black),
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                selectedColor:
+                                    const Color.fromARGB(255, 195, 190, 190),
+                                mainColor:
+                                    const Color.fromARGB(255, 195, 190, 190),
+                                selectedBorderSide: const BorderSide(
+                                    width: 2,
+                                    color: Color.fromARGB(255, 64, 137, 168)),
+                                buttonWidth: 105,
+                                buttonHeight: 35,
+                                callback: (RadioOption val) {
+                                  setState(() {
+                                    changeExt = val.label;
+                                    ext = changeExt;
+                                  });
+                                }),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  selectFile()
+                                      .then((value) => Navigator.pop(context));
+                                }
+                              },
+                              child: Text(
+                                  AppLocalizations.of(context)!.uploadTicket),
+                            ),
+                          ],
+                        ),
                       ),
-                      RadioButtonGroup(
-                          options: options,
-                          preSelectedIdx: 0,
-                          vertical: true,
-                          textStyle: const TextStyle(
-                              fontSize: 15, color: Colors.black),
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          selectedColor:
-                              const Color.fromARGB(255, 195, 190, 190),
-                          mainColor: const Color.fromARGB(255, 195, 190, 190),
-                          selectedBorderSide: const BorderSide(
-                              width: 2,
-                              color: Color.fromARGB(255, 64, 137, 168)),
-                          buttonWidth: 105,
-                          buttonHeight: 35,
-                          callback: (RadioOption val) {
-                            setState(() {
-                              changeExt = val.label;
-                              ext = changeExt;
-                            });
-                          }),
                     ]),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: selectFile,
-                        child: Text(AppLocalizations.of(context)!.uploadTicket),
-                      ),
-                      // const SizedBox(width: 10,),
-                      // ElevatedButton(
-                      //   onPressed: () => Navigator.pop(context),
-                      //   child: Text(AppLocalizations.of(context)!.close),
-                      // )
-                    ],
                   );
                 });
           },
@@ -349,8 +354,11 @@ class _TicketState extends State<Tickets> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (builder) =>
-                              TicketInfo(tick: tick, trav: widget.trav, path: p,)));
+                          builder: (builder) => TicketInfo(
+                                tick: tick,
+                                trav: widget.trav,
+                                path: p,
+                              )));
                 }));
       }
     }
