@@ -29,7 +29,7 @@ class _SettingTravelState extends State<SettingTravel> {
 
   // ignore: unused_field
   List<DateTime?> _dialogCalendarPickerValue = [];
-  
+
   String date = '';
 
   final currentUser = FirebaseAuth.instance.currentUser!;
@@ -48,6 +48,7 @@ class _SettingTravelState extends State<SettingTravel> {
       'name': namefriend,
     };
   }
+
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
 
@@ -64,6 +65,7 @@ class _SettingTravelState extends State<SettingTravel> {
   void initState() {
     super.initState();
     getUsers();
+    oldPhoto = widget.travel.photo;
   }
 
   XFile? image;
@@ -71,7 +73,7 @@ class _SettingTravelState extends State<SettingTravel> {
   String imageUrl = '';
   String uniqueFileName = '';
   final ImagePicker picker = ImagePicker();
-  
+  String? oldPhoto;
 
   Future<void> updateItem(String field, String newField) {
     return FirebaseFirestore.instance
@@ -110,7 +112,9 @@ class _SettingTravelState extends State<SettingTravel> {
       imageUrl = await imageReference.getDownloadURL();
 
       // update the UI
-      setState(() {});
+      setState(() {
+        widget.travel.photo = imageUrl;
+      });
     } catch (e) {
       print(e);
     }
@@ -195,8 +199,7 @@ class _SettingTravelState extends State<SettingTravel> {
 
     return valueText;
   }
-  
-  
+
   get(String where, String add) {
     FirebaseFirestore.instance
         .collection('friends')
@@ -220,10 +223,11 @@ class _SettingTravelState extends State<SettingTravel> {
       if (asFriend.contains(id) && !listid.contains(id)) {
         listid.add(id);
         FirebaseFirestore.instance
-          .collection('users')
-          .where('userid', isEqualTo: id)
-          .get()
-          .then((querySnapshot) {
+            .collection('users')
+            .where('userid', isEqualTo: id)
+            .get()
+            .then(
+          (querySnapshot) {
             for (var docSnapshot in querySnapshot.docs) {
               setState(() {
                 finalFriend.add(docSnapshot.get('name'));
@@ -236,7 +240,6 @@ class _SettingTravelState extends State<SettingTravel> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -514,9 +517,9 @@ class _SettingTravelState extends State<SettingTravel> {
             height: 10,
           ),
           widget.travel.date == 'Giornata' ||
-            widget.travel.date == 'Settimana' ||
-            widget.travel.date == 'Weekend' ||
-            widget.travel.date == 'Altro'
+                  widget.travel.date == 'Settimana' ||
+                  widget.travel.date == 'Weekend' ||
+                  widget.travel.date == 'Altro'
               ? ToggleSwitch(
                   minWidth: 100.0,
                   cornerRadius: 20.0,
@@ -598,8 +601,8 @@ class _SettingTravelState extends State<SettingTravel> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                   scrollable: true,
-                                  title: Text(AppLocalizations.of(context)!
-                                      .addTicket),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.addTicket),
                                   content: buildCalendarDialogButton(false));
                             });
                   },
@@ -632,8 +635,8 @@ class _SettingTravelState extends State<SettingTravel> {
                     .get()
                     .then((DocumentSnapshot documentSnapshot) {
                   if (documentSnapshot.exists) {
-                    if (imageUrl != widget.travel.photo) {
-                      // updateItem('photo', imageUrl);
+                    if (imageUrl != oldPhoto && imageUrl != '') {
+                      updateItem('photo', imageUrl);
                     }
                     if (updateName != widget.travel.name) {
                       updateItem('name', updateName);
