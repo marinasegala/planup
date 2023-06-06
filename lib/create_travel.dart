@@ -184,6 +184,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
 
   @override
   Widget build(BuildContext context) {
+    getUsers();
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
     getfinal();
