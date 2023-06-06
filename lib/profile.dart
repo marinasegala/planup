@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'No'),
-                            child: const Text('No'),
+                            child: Text(AppLocalizations.of(context)!.no),
                           ),
                           TextButton(
                             onPressed: () {

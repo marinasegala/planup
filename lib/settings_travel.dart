@@ -267,6 +267,18 @@ class _SettingTravelState extends State<SettingTravel> {
 
   @override
   Widget build(BuildContext context) {
+
+    Future<void> deleteItem(String id, String collection) {
+      return FirebaseFirestore.instance
+          .collection(collection)
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
+
     getUsers();
 
     List<RadioOption> options = [
@@ -446,7 +458,102 @@ class _SettingTravelState extends State<SettingTravel> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back)
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        scrollable: true,
+                        title: Text(AppLocalizations.of(context)!.sureToDelete),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'No'),
+                            child: Text(AppLocalizations.of(context)!.no),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              //remove id from list 
+                              
+                              //decrement numFriend
+                              //remove all shopping
+                              FirebaseFirestore.instance.collection('shopping')
+                              .where('trav', isEqualTo: id)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'shopping');
+                                }
+                              });
+                              //remove all note
+                              FirebaseFirestore.instance.collection('note')
+                              .where('trav', isEqualTo: id)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'ticket');
+                                }
+                              });
+                              //remove all checklist
+                              FirebaseFirestore.instance.collection('check')
+                              .where('trav', isEqualTo: id)
+                              .where('creator', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'check');
+                                }
+                              });
+                              //remove all location
+                              FirebaseFirestore.instance.collection('location')
+                              .where('travelid', isEqualTo: id)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'location');
+                                }
+                              });
+                              //remove all places 
+                              FirebaseFirestore.instance.collection('places')
+                              .where('travelid', isEqualTo: id)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'places');
+                                }
+                              });
+                              //remove all ticket
+                              FirebaseFirestore.instance.collection('ticket')
+                              .where('trav', isEqualTo: id)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'ticket');
+                                }
+                              });
+
+                              Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (builder) => const HomePage()));
+                            },
+                            child: Text(AppLocalizations.of(context)!.yes),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.highlight_remove_outlined,
+                size: 30,
+              ))
+        ],
       ),
       body: Column(
         children: [
