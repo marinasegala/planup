@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/home.dart';
+import 'package:planup/home_travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/users_rep.dart';
 import 'model/travel.dart';
@@ -486,11 +487,36 @@ class _SettingTravelState extends State<SettingTravel> {
                           TextButton(
                             onPressed: () {
                               //remove id from list 
+                              FirebaseFirestore.instance.collection('travel')
+                              .doc(widget.travel.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                                List<String> list = [];
+                                for(var item in querySnapshot.get('list part')){
+                                  if(item != currentUser.uid){
+                                    list.add(item);
+                                  }
+                                }
+                                print(list);
+                                updateItem('userid', '');
+                                return FirebaseFirestore.instance
+                                  .collection('travel')
+                                  .doc(widget.travel.referenceId)
+                                  .update({'list part': list});
+                              });
                               
                               //decrement numFriend
+                              FirebaseFirestore.instance.collection('travel')
+                              .doc(widget.travel.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                                print(querySnapshot.data());
+                                int num = querySnapshot.get('numFriend')-1;
+                                updateItemNum('numFriend', num);
+                              });
                               //remove all shopping
                               FirebaseFirestore.instance.collection('shopping')
-                              .where('trav', isEqualTo: id)
+                              .where('trav', isEqualTo: widget.travel.referenceId)
                               .where('userid', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
@@ -500,17 +526,18 @@ class _SettingTravelState extends State<SettingTravel> {
                               });
                               //remove all note
                               FirebaseFirestore.instance.collection('note')
-                              .where('trav', isEqualTo: id)
+                              .where('trav', isEqualTo: widget.travel.referenceId)
                               .where('userid', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
                                 for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'ticket');
+                                  print(docSnapshot.data());
+                                  deleteItem(docSnapshot.id, 'note');
                                 }
                               });
                               //remove all checklist
                               FirebaseFirestore.instance.collection('check')
-                              .where('trav', isEqualTo: id)
+                              .where('trav', isEqualTo: widget.travel.referenceId)
                               .where('creator', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
@@ -520,7 +547,7 @@ class _SettingTravelState extends State<SettingTravel> {
                               });
                               //remove all location
                               FirebaseFirestore.instance.collection('location')
-                              .where('travelid', isEqualTo: id)
+                              .where('travelid', isEqualTo: widget.travel.referenceId)
                               .where('userid', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
@@ -530,7 +557,7 @@ class _SettingTravelState extends State<SettingTravel> {
                               });
                               //remove all places 
                               FirebaseFirestore.instance.collection('places')
-                              .where('travelid', isEqualTo: id)
+                              .where('travelid', isEqualTo: widget.travel.referenceId)
                               .where('userid', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
@@ -540,7 +567,7 @@ class _SettingTravelState extends State<SettingTravel> {
                               });
                               //remove all ticket
                               FirebaseFirestore.instance.collection('ticket')
-                              .where('trav', isEqualTo: id)
+                              .where('trav', isEqualTo: widget.travel.referenceId)
                               .where('userid', isEqualTo: currentUser.uid)
                               .get()
                               .then((querySnapshot) {
@@ -548,7 +575,7 @@ class _SettingTravelState extends State<SettingTravel> {
                                     deleteItem(docSnapshot.id, 'ticket');
                                 }
                               });
-
+                              setState(() {});
                               Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (builder) => const HomePage()));
                             },
