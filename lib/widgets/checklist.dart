@@ -81,6 +81,17 @@ class _CheckListState extends State<ItemCheckList> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> deleteItem(String id) {
+      return FirebaseFirestore.instance
+          .collection("check")
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
+
     List<RadioOption> options = [
       RadioOption("Pubblico", AppLocalizations.of(context)!.public),
       RadioOption("Privato", AppLocalizations.of(context)!.private)
@@ -445,6 +456,17 @@ class _CheckListState extends State<ItemCheckList> {
               subtitle: Text(list.isPublic
                   ? AppLocalizations.of(context)!.public
                   : AppLocalizations.of(context)!.private),
+              secondary: IconButton(
+                icon: const Icon(Icons.close_outlined),
+                onPressed: () {
+                  FirebaseFirestore.instance
+                    .collection('check')
+                    .doc(list.referenceId)
+                    .get()
+                    .then((querySnapshot) {
+                      // deleteItem(querySnapshot.id);
+                    });
+              })
             ),
             const Divider(height: 0),
           ]);
@@ -538,6 +560,7 @@ class _CheckListState extends State<ItemCheckList> {
     }
     return const Text('');
   }
+
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {

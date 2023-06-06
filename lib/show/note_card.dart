@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,8 +15,10 @@ class NoteCard extends StatelessWidget {
       required this.note,
       required this.boldStyle,
       required this.author})
-      : super(key: key);
+    : super(key: key);
 
+  final currentUser = FirebaseAuth.instance.currentUser;
+ 
   @override
   Widget build(BuildContext context) {
     Future<void> deleteItem(String id) {
@@ -46,21 +49,19 @@ class NoteCard extends StatelessWidget {
             subtitle: description
                 ? Text(AppLocalizations.of(context)!.authorNote(author))
                 : Text(AppLocalizations.of(context)!.authorNoteWithDescription(author, note.desc)),
-            trailing: IconButton(
-              icon: const Icon(Icons.close_outlined),
-              onPressed: () {
-                FirebaseFirestore.instance
-                    .collection('note')
-                    .where('name', isEqualTo: note.name)
-                    .get()
-                    .then((querySnapshot) {
-                  for (var docSnapshot in querySnapshot.docs) {
-                    print('${docSnapshot.id} - ${docSnapshot.data()}');
-                    deleteItem(docSnapshot.id);
-                  }
-                });
-              },
-            ),
+            trailing: note.userid == currentUser?.uid
+            ? IconButton(
+                icon: const Icon(Icons.close_outlined),
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection('note')
+                      .doc(note.referenceId)
+                      .get()
+                      .then((querySnapshot) {
+                          deleteItem(querySnapshot.id);
+                    });
+                },)
+            : SizedBox.shrink(),
           ),
         ],
       ),
