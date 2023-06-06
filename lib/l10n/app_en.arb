@@ -211,7 +211,7 @@
         }
     },
 
-    "authorNoteWithDescription": "Author {author}\n{desc}",
+    "authorNoteWithDescription": "{desc}\nAuthor {author}",
     "@authorNoteWithDescription": {
         "descrption": "Text to show the author of a note with the description",
         "placeholders": {

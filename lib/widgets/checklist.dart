@@ -151,14 +151,15 @@ class _CheckListState extends State<ItemCheckList> {
                         return Center(
                             child: Text(AppLocalizations.of(context)!.loading));
                       } else {
-                        final hasDataList =
-                            _hasDataList(snapshot, 'personal', true);
-                        if (!hasDataList) {
-                          return _noItem();
-                        } else {
+                        // final hasDataList =
+                        //     _hasDataList(snapshot, 'personal', true);
+                        // print('ciao -$hasDataList');
+                        // if (!hasDataList) {
+                        //   return _noItem();
+                        // } else {
                           return _buildListCheck(
                               context, snapshot.data!.docs, current, true);
-                        }
+                        // }
                       }
                     },
                   )
@@ -174,14 +175,14 @@ class _CheckListState extends State<ItemCheckList> {
                             return Center(
                                 child: Text(AppLocalizations.of(context)!.loading));
                           } else {
-                            final hasDataList =
-                                _hasDataList(snapshot, 'group', true);
-                            if (!hasDataList) {
-                              return _noItem();
-                            } else {
+                            // final hasDataList =
+                            //     _hasDataList(snapshot, 'group', true);
+                            // if (!hasDataList) {
+                            //   return _noItem();
+                            // } else {
                               return _buildListCheck(
                                   context, snapshot.data!.docs, current, true);
-                            }
+                            // }
                           }
                         },
                       )
@@ -573,7 +574,7 @@ bool _hasDataList(
     }
     if (type != 'group' && !bool) {
       if (listitem[i]['creator'] != currentUser.uid &&
-          !listitem[i]['isgroup']) {
+          !listitem[i]['isgroup'] && listitem[i]['isPublic']) {
         return true;
       }
     }

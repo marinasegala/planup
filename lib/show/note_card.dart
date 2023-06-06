@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../model/notes.dart';
 
@@ -32,7 +33,7 @@ class NoteCard extends StatelessWidget {
     if (note.desc == 'null') {
       description = true;
     }
-
+    
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -43,8 +44,8 @@ class NoteCard extends StatelessWidget {
               style: const TextStyle(fontSize: 18),
             ),
             subtitle: description
-                ? Text('Autore: $author')
-                : Text('Autore: $author \n ${note.desc}'),
+                ? Text(AppLocalizations.of(context)!.authorNote(author))
+                : Text(AppLocalizations.of(context)!.authorNoteWithDescription(author, note.desc)),
             trailing: IconButton(
               icon: const Icon(Icons.close_outlined),
               onPressed: () {

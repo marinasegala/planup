@@ -210,7 +210,7 @@
         }
     },
 
-    "authorNoteWithDescription": "Autore {author}\n{desc}",
+    "authorNoteWithDescription": "{desc}\nAutore {author}",
     "@authorNoteWithDescription": {
         "descrption": "Testo per mostrare l'autore di una nota con la sua descrizione",
         "placeholders": {

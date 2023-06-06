@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
@@ -41,7 +42,7 @@ class _CreateNoteState extends State<CreateNote> {
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
-                          icon: const Icon(Icons.shopping_bag_outlined),
+                          icon: const Icon(Icons.edit_document),
                           hintText: AppLocalizations.of(context)!.nameNote),
                       onChanged: (text) => name = text,
                       validator: (value) {
@@ -79,7 +80,7 @@ class _CreateNoteState extends State<CreateNote> {
                                 name,
                                 trav: widget.travel,
                                 desc: desc,
-                                userid: FirebaseAuth.instance.currentUser?.uid,
+                                userid: FirebaseAuth.instance.currentUser?.uid
                               );
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
