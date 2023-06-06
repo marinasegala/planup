@@ -81,16 +81,6 @@ class _CheckListState extends State<ItemCheckList> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> deleteItem(String id) {
-      return FirebaseFirestore.instance
-          .collection("check")
-          .doc(id)
-          .delete()
-          .then(
-            (doc) => print("Document deleted"),
-            onError: (e) => print("Error updating document $e"),
-          );
-    }
 
     List<RadioOption> options = [
       RadioOption("Pubblico", AppLocalizations.of(context)!.public),
@@ -464,7 +454,7 @@ class _CheckListState extends State<ItemCheckList> {
                     .doc(list.referenceId)
                     .get()
                     .then((querySnapshot) {
-                      // deleteItem(querySnapshot.id);
+                      delete(querySnapshot.id);
                     });
               })
             ),
@@ -509,6 +499,19 @@ class _CheckListState extends State<ItemCheckList> {
                   }
                 },
                 title: Text(list.name),
+                secondary: !list.isChecked
+                ? IconButton(
+                  icon: const Icon(Icons.close_outlined),
+                  onPressed: () {
+                    FirebaseFirestore.instance
+                      .collection('check')
+                      .doc(list.referenceId)
+                      .get()
+                      .then((querySnapshot) {
+                        delete(querySnapshot.id);
+                      });
+                })
+                : const SizedBox.shrink(),
                 subtitle: list.whoBring != ''
                     ? StreamBuilder<QuerySnapshot>(
                         stream: userRepository.getStream(),
@@ -524,6 +527,7 @@ class _CheckListState extends State<ItemCheckList> {
                         },
                       )
                     : const Text('')),
+                
             const Divider(height: 0),
           ]);
         }
@@ -531,6 +535,17 @@ class _CheckListState extends State<ItemCheckList> {
     }
     return const SizedBox.shrink();
   }
+
+  Future<void> delete(String id) {
+      return FirebaseFirestore.instance
+          .collection("check")
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
 
   Widget _title(String list) {
     String nameTitle;
