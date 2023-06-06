@@ -6,8 +6,6 @@ import 'package:planup/db/shopping_rep.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/model/travel.dart';
-import 'package:planup/model/user_account.dart';
-import 'package:planup/setting_profile.dart';
 import 'package:planup/show/statistic_card.dart';
 import 'package:planup/show/timeline_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,10 +14,7 @@ import 'db/authentication_service.dart';
 import 'login.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, this.user});
-
-  final UserAccount? user;
-
+  const ProfilePage({super.key});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -66,8 +61,8 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
 
-    name = widget.user!.name;
-    profilePhoto = widget.user!.photoUrl;
+    name = currentUser!.displayName;
+    profilePhoto = currentUser!.photoURL;
 
     // get the number of friends of currentuser from the list of friends
     _getLengthFriends();
@@ -161,15 +156,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icons.logout_outlined,
                 size: 30,
               ))
-          // IconButton(
-          //     onPressed: () {
-          //       Navigator.push(
-          //           context,
-          //           MaterialPageRoute(
-          //               builder: (builder) =>
-          //                   SettingsProfile(user: widget.user!)));
-          //     },
-          //     icon: const Icon(Icons.settings)),
         ],
       ),
       body: Column(

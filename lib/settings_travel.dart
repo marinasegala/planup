@@ -220,29 +220,6 @@ class _SettingTravelState extends State<SettingTravel> {
     );
   }
 
-  // getfinal() {
-  //   for (var id in friends) {
-  //     if (asFriend.contains(id) && !listid.contains(id)) {
-  //       listid.add(id);
-  //       FirebaseFirestore.instance
-  //           .collection('users')
-  //           .where('userid', isEqualTo: id)
-  //           .get()
-  //           .then(
-  //         (querySnapshot) {
-  //           for (var docSnapshot in querySnapshot.docs) {
-  //             setState(() {
-  //               finalFriend.add(docSnapshot.get('name'));
-  //               finalFriendId.add(docSnapshot.get('userid'));
-  //               finalFriendId.add(docSnapshot.get('name'));
-  //             });
-  //           }
-  //         },
-  //       );
-  //     }
-  //   }
-  // }
-
   getfinal(String idTravel) {
     for (var id in friends) {
       if (asFriend.contains(id) && !listid.contains(id)) {
@@ -264,22 +241,23 @@ class _SettingTravelState extends State<SettingTravel> {
         );
       }
     }
-    for (var x = 0; x<finalFriendId.length; x++){
-      FirebaseFirestore.instance.collection('travel')
-        .doc(idTravel)
-        .get()
-        .then((querySnapshot) {
-          for(var part in querySnapshot.get('list part')){
-            if(part == finalFriendId[x]){
-              for(var name in finalFriend){
-                if(name == finalFriendId[x+1]){
-                  finalFriend.remove(name);
-                  finalFriendId.removeAt(x);
-                  finalFriendId.remove(name);
-                }
+    for (var x = 0; x < finalFriendId.length; x++) {
+      FirebaseFirestore.instance
+          .collection('travel')
+          .doc(idTravel)
+          .get()
+          .then((querySnapshot) {
+        for (var part in querySnapshot.get('list part')) {
+          if (part == finalFriendId[x]) {
+            for (var name in finalFriend) {
+              if (name == finalFriendId[x + 1]) {
+                finalFriend.remove(name);
+                finalFriendId.removeAt(x);
+                finalFriendId.remove(name);
               }
             }
           }
+        }
       });
     }
   }
@@ -301,20 +279,24 @@ class _SettingTravelState extends State<SettingTravel> {
     get('userIdFriend', 'userid');
     getfinal(id as String);
 
-    for (var i = 0; i < widget.travel.listPart!.length; i++) {
-      int x = 0;
-      while (x < finalFriendId.length) {
-        if (finalFriendId[x] == widget.travel.listPart?[i]) {
-          for (var name in finalFriend) {
-            if (name == selectedFriendsId[x + 1]) {
-              finalFriend.remove(name);
-              finalFriendId.removeAt(x + 1);
-              finalFriendId.removeAt(x);
-              break;
+    for (var x = 0; x < finalFriendId.length; x++) {
+      FirebaseFirestore.instance
+          .collection('travel')
+          .doc(widget.travel.referenceId)
+          .get()
+          .then((querySnapshot) {
+        for (var part in querySnapshot.get('list part')) {
+          if (part == finalFriendId[x]) {
+            for (var name in finalFriend) {
+              if (name == finalFriendId[x + 1]) {
+                finalFriend.remove(name);
+                finalFriendId.removeAt(x);
+                finalFriendId.remove(name);
+              }
             }
           }
         }
-      }
+      });
     }
 
     buildCalendarDialogButton(bool alone) {
@@ -507,17 +489,6 @@ class _SettingTravelState extends State<SettingTravel> {
                         ),
                       ),
                     )
-                  // : widget.travel.photo! != imageUrl && image!=null
-                  //   ? ClipOval(
-                  //       child: Material(
-                  //         child: Image.file(
-                  //           File(image!.path),
-                  //           fit: BoxFit.cover,
-                  //           width: 100,
-                  //           height: 100,
-                  //         ),
-                  //       )
-                  //     )
                   : const ClipOval(
                       child: Material(
                         child: Padding(

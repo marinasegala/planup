@@ -71,8 +71,8 @@ class _ItemWidgetState extends State<ItemWidget> {
         child: Card(
           color: const Color.fromARGB(255, 231, 242, 239),
           child: SizedBox(
-              width: 270,
-              height: 90,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.13,
               child: Row(
                 children: [
                   const SizedBox(width: 15),

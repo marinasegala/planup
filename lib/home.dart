@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:planup/db/users_rep.dart';
 import 'package:planup/friends.dart';
 import 'package:planup/home_travel.dart';
-import 'package:planup/model/user_account.dart';
 import 'package:planup/profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,31 +29,15 @@ class _HomePageState extends State<HomePage> {
 
   UsersRepository usersRepository = UsersRepository();
   final currentUser = FirebaseAuth.instance.currentUser;
-  UserAccount? user;
 
-  void getUser() {
-    usersRepository.getStream().listen((event) {
-      for (var user in event.docs) {
-        if (user['userid'] == currentUser!.uid) {
-          if (mounted) {
-            setState(() {
-              this.user = UserAccount.fromSnapshot(user);
-            });
-          }
-        }
-      }
-    });
-  }
+  final List<Widget> widgetOptions = <Widget>[
+    const HomeTravel(),
+    const ProfilePage(),
+    const FriendPage()
+  ];
 
   @override
   Widget build(BuildContext context) {
-    getUser();
-    final List<Widget> widgetOptions = <Widget>[
-      const HomeTravel(),
-      ProfilePage(user: user),
-      const FriendPage()
-    ];
-
     return Scaffold(
       body: Center(
         child: widgetOptions.elementAt(_selectedIndex),

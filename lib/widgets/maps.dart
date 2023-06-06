@@ -239,52 +239,49 @@ class _MapsPageState extends State<MapsPage> {
           }),
       persistentFooterButtons: [
         // button for add the current user location on database in order to share it with other users
-        FloatingActionButton(
-            onPressed: () async {
+        TextButton(
+          onPressed: () async {
+            GeoPoint geoPoint = await _mapController.myLocation();
+            var latitude = geoPoint.latitude.toString();
+            var longitude = geoPoint.longitude.toString();
+            bool isAlreadyShared = await locationRepository.isAlreadyShared(
+                user.uid, widget.trav.referenceId!);
+            if (!isAlreadyShared) {
               GeoPoint geoPoint = await _mapController.myLocation();
               var latitude = geoPoint.latitude.toString();
               var longitude = geoPoint.longitude.toString();
-              bool isAlreadyShared = await locationRepository.isAlreadyShared(
-                  user.uid, widget.trav.referenceId!);
-              if (!isAlreadyShared) {
-                GeoPoint geoPoint = await _mapController.myLocation();
-                var latitude = geoPoint.latitude.toString();
-                var longitude = geoPoint.longitude.toString();
-                locationRepository.add(Location(
-                    latitude, longitude, user.uid, widget.trav.referenceId!));
-              } else {
-                // update my location on database
-                locationRepository.updateLocation(
-                    user.uid,
-                    widget.trav.referenceId!,
-                    Location(latitude, longitude, user.uid,
-                        widget.trav.referenceId!));
-              }
-              // add my location on database
-            },
-            child: const Column(
-              children: [
-                Icon(Icons.add),
-                Text('Share',
-                    style: TextStyle(fontSize: 7), textAlign: TextAlign.center),
-              ],
-            )),
+              locationRepository.add(Location(
+                  latitude, longitude, user.uid, widget.trav.referenceId!));
+            } else {
+              // update my location on database
+              locationRepository.updateLocation(
+                  user.uid,
+                  widget.trav.referenceId!,
+                  Location(
+                      latitude, longitude, user.uid, widget.trav.referenceId!));
+            }
+            // add my location on database
+          },
+          child: Column(children: [
+            Icon(Icons.add),
+            Text(AppLocalizations.of(context)!.share,
+                style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
+          ]),
+        ),
         // button for remove the current user location on database in order to stop sharing it with other users
-        FloatingActionButton(
+        TextButton(
             onPressed: () async {
               // remove my location on database
               // find the point in the database with lat and long and show the information
               locationRepository.deleteLocation(
                   user.uid, widget.trav.referenceId!);
             },
-            child: Column(
-              children: [
-                const Icon(Icons.remove),
-                Text(AppLocalizations.of(context)!.remove,
-                    style: const TextStyle(fontSize: 7),
-                    textAlign: TextAlign.center),
-              ],
-            )),
+            child: Column(children: [
+              Icon(Icons.remove),
+              Text(AppLocalizations.of(context)!.remove,
+                  style: const TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center),
+            ])),
       ],
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
     );

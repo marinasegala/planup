@@ -15,10 +15,10 @@ class NoteCard extends StatelessWidget {
       required this.note,
       required this.boldStyle,
       required this.author})
-    : super(key: key);
+      : super(key: key);
 
   final currentUser = FirebaseAuth.instance.currentUser;
- 
+
   @override
   Widget build(BuildContext context) {
     Future<void> deleteItem(String id) {
@@ -36,33 +36,37 @@ class NoteCard extends StatelessWidget {
     if (note.desc == 'null') {
       description = true;
     }
-    
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           ListTile(
             title: Text(
               note.name,
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             subtitle: description
                 ? Text(AppLocalizations.of(context)!.authorNote(author))
-                : Text(AppLocalizations.of(context)!.authorNoteWithDescription(author, note.desc)),
+                : Text(AppLocalizations.of(context)!
+                    .authorNoteWithDescription(author, note.desc)),
             trailing: note.userid == currentUser?.uid
-            ? IconButton(
-                icon: const Icon(Icons.close_outlined),
-                onPressed: () {
-                  FirebaseFirestore.instance
-                      .collection('note')
-                      .doc(note.referenceId)
-                      .get()
-                      .then((querySnapshot) {
-                          deleteItem(querySnapshot.id);
-                    });
-                },)
-            : SizedBox.shrink(),
+                ? IconButton(
+                    icon: const Icon(Icons.close_outlined),
+                    onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection('note')
+                          .doc(note.referenceId)
+                          .get()
+                          .then((querySnapshot) {
+                        deleteItem(querySnapshot.id);
+                      });
+                    },
+                  )
+                : SizedBox.shrink(),
           ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         ],
       ),
     );
