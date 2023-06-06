@@ -220,7 +220,7 @@ class _SettingsProfile extends State<SettingsProfile> {
               // check
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(AppLocalizations.of(context)!.processingData)));
-              setState(() {});
+              Navigator.pop(context);
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (builder) => const HomePage()));
             },

@@ -36,9 +36,11 @@ class _HomePageState extends State<HomePage> {
     usersRepository.getStream().listen((event) {
       for (var user in event.docs) {
         if (user['userid'] == currentUser!.uid) {
-          setState(() {
-            this.user = UserAccount.fromSnapshot(user);
-          });
+          if (mounted) {
+            setState(() {
+              this.user = UserAccount.fromSnapshot(user);
+            });
+          }
         }
       }
     });

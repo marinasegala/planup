@@ -25,7 +25,6 @@ class SettingTravel extends StatefulWidget {
 }
 
 class _SettingTravelState extends State<SettingTravel> {
-  final _key = GlobalKey<State>();
   String changePeriod = "Giornata";
   bool changedata = false;
 
@@ -41,13 +40,14 @@ class _SettingTravelState extends State<SettingTravel> {
   List<String> finalFriend = [];
   List<String> finalFriendId = [];
   List<String> selectedFriends = [];
-  List<String> selectedFriendsId = []; 
+  List<String> selectedFriendsId = [];
   String namefriend = '';
   Map<String, dynamic> toMap() {
     return {
       'name': namefriend,
     };
   }
+
   late List<String> hasAlready = [];
 
   late List<UserAccount> users = [];
@@ -66,7 +66,6 @@ class _SettingTravelState extends State<SettingTravel> {
   @override
   void initState() {
     super.initState();
-    getUsers();
     oldPhoto = widget.travel.photo;
   }
 
@@ -247,7 +246,7 @@ class _SettingTravelState extends State<SettingTravel> {
   @override
   Widget build(BuildContext context) {
     getUsers();
-   
+
     List<RadioOption> options = [
       RadioOption("Giornata", AppLocalizations.of(context)!.oneDay),
       RadioOption("Weekend", AppLocalizations.of(context)!.weekend),
@@ -261,23 +260,22 @@ class _SettingTravelState extends State<SettingTravel> {
     get('userIdFriend', 'userid');
     getfinal();
 
-    // for(var i = 0; i<widget.travel.listPart!.length; i++){
-      // for(var x = 0; x<selectedFriendsId.length; x++){
-      //   if(selectedFriendsId[x] == widget.travel.listPart?[i]){
-      //     for(var name in selectedFriends){
-      //       if(name == selectedFriendsId[x+1]){
-      //         selectedFriends.remove(name);
-      //         selectedFriendsId.removeAt(x+1);
-      //         selectedFriendsId.removeAt(x);
-      //       }
-      //     }
-      //   }
-      // }
-    // }
+    for (var i = 0; i < widget.travel.listPart!.length; i++) {
+      int x = 0;
+      while (x < finalFriendId.length) {
+        if (finalFriendId[x] == widget.travel.listPart?[i]) {
+          for (var name in finalFriend) {
+            if (name == selectedFriendsId[x + 1]) {
+              finalFriend.remove(name);
+              finalFriendId.removeAt(x + 1);
+              finalFriendId.removeAt(x);
+              break;
+            }
+          }
+        }
+      }
+    }
 
-    
-   
-    
     buildCalendarDialogButton(bool alone) {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
@@ -626,7 +624,6 @@ class _SettingTravelState extends State<SettingTravel> {
                   });
                 },
                 options: finalFriend,
-              
                 selectedValues: selectedFriends,
                 whenEmpty: AppLocalizations.of(context)!.addFriends,
                 icon: const Icon(Icons.person_add_alt_1_outlined),
