@@ -12,6 +12,9 @@ import 'package:planup/show/statistic_card.dart';
 import 'package:planup/show/timeline_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'db/authentication_service.dart';
+import 'login.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, this.user});
 
@@ -127,13 +130,46 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (builder) =>
-                            SettingsProfile(user: widget.user!)));
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        scrollable: true,
+                        title: Text(AppLocalizations.of(context)!.sureToExit),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'No'),
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              AuthenticationServices().signOut();
+                              Navigator.popUntil(
+                                  context, (route) => route.isFirst);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (builder) => const LoginPage()));
+                            },
+                            child: Text(AppLocalizations.of(context)!.yes),
+                          ),
+                        ],
+                      );
+                    });
               },
-              icon: const Icon(Icons.settings)),
+              icon: const Icon(
+                Icons.logout_outlined,
+                size: 30,
+              ))
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //               builder: (builder) =>
+          //                   SettingsProfile(user: widget.user!)));
+          //     },
+          //     icon: const Icon(Icons.settings)),
         ],
       ),
       body: Column(

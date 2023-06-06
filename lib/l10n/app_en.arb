@@ -8,6 +8,16 @@
     "places": "Places",
     "myTravels": "My Travels",
     "settings": "Settings",
+    "travSubtitle": "Partecipants: {numFriend}",
+    "@travSubtitle": {
+        "descrption": "Subtitle of the travel",
+        "placeholders": {
+            "numFriend": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
     "statisticCardTitle": "{number}\n{title}",
     "@statisticCardTitle": {
         "descrption": "Title of the statistic card",

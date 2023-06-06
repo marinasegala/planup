@@ -8,6 +8,16 @@
     "places": "Posti",
     "myTravels": "I miei viaggi",
     "settings": "Impostazioni",
+    "travSubtitle": "Partecipanti: {numFriend}",
+    "@travSubtitle": {
+        "descrption": "Sottotitolo del viaggio",
+        "placeholders": {
+            "numFriend": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
     "statisticCardDTitle": "{number}\n{title}",
     "@statisticCardDTitle": {
         "descrption": "Titolo della carta delle statistiche",
