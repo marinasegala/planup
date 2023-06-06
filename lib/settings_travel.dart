@@ -220,7 +220,30 @@ class _SettingTravelState extends State<SettingTravel> {
     );
   }
 
-  getfinal() {
+  // getfinal() {
+  //   for (var id in friends) {
+  //     if (asFriend.contains(id) && !listid.contains(id)) {
+  //       listid.add(id);
+  //       FirebaseFirestore.instance
+  //           .collection('users')
+  //           .where('userid', isEqualTo: id)
+  //           .get()
+  //           .then(
+  //         (querySnapshot) {
+  //           for (var docSnapshot in querySnapshot.docs) {
+  //             setState(() {
+  //               finalFriend.add(docSnapshot.get('name'));
+  //               finalFriendId.add(docSnapshot.get('userid'));
+  //               finalFriendId.add(docSnapshot.get('name'));
+  //             });
+  //           }
+  //         },
+  //       );
+  //     }
+  //   }
+  // }
+
+  getfinal(String idTravel) {
     for (var id in friends) {
       if (asFriend.contains(id) && !listid.contains(id)) {
         listid.add(id);
@@ -241,6 +264,24 @@ class _SettingTravelState extends State<SettingTravel> {
         );
       }
     }
+    for (var x = 0; x<finalFriendId.length; x++){
+      FirebaseFirestore.instance.collection('travel')
+        .doc(idTravel)
+        .get()
+        .then((querySnapshot) {
+          for(var part in querySnapshot.get('list part')){
+            if(part == finalFriendId[x]){
+              for(var name in finalFriend){
+                if(name == finalFriendId[x+1]){
+                  finalFriend.remove(name);
+                  finalFriendId.removeAt(x);
+                  finalFriendId.remove(name);
+                }
+              }
+            }
+          }
+      });
+    }
   }
 
   @override
@@ -258,7 +299,7 @@ class _SettingTravelState extends State<SettingTravel> {
 
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
-    getfinal();
+    getfinal(id as String);
 
     for (var i = 0; i < widget.travel.listPart!.length; i++) {
       int x = 0;

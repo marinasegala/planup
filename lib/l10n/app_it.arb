@@ -8,6 +8,16 @@
     "places": "Posti",
     "myTravels": "I miei viaggi",
     "settings": "Impostazioni",
+    "travSubtitle": "Partecipanti: {numFriend}",
+    "@travSubtitle": {
+        "descrption": "Sottotitolo del viaggio",
+        "placeholders": {
+            "numFriend": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
     "statisticCardDTitle": "{number}\n{title}",
     "@statisticCardDTitle": {
         "descrption": "Titolo della carta delle statistiche",
@@ -200,7 +210,7 @@
         }
     },
 
-    "authorNoteWithDescription": "Autore {author}\n{desc}",
+    "authorNoteWithDescription": "{desc}\nAutore {author}",
     "@authorNoteWithDescription": {
         "descrption": "Testo per mostrare l'autore di una nota con la sua descrizione",
         "placeholders": {
@@ -223,7 +233,16 @@
     "nameObject": "Nome oggetto",
     "noObjects": "Non sono ancora presenti gli oggetti da portare,\nclicca su + per aggiungere il primo oggetto",
     "groupList": "Lista di gruppo",
-    "checkList": "Check list",
+    "checkList": "Check list di {list}",
+    "@checkList": {
+        "descrption": "Titolo con il proprietario della lista",
+        "placeholders": {
+            "list": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
     "bringBy": "Portato da {user}",
     "@bringBy": {
         "descrption": "Testo per mostrare chi ha portato un oggetto",

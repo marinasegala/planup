@@ -154,66 +154,7 @@ class _TicketState extends State<Tickets> {
                 Navigator.pop(context);
               }),
         ),
-        // body: Padding(
-        //   padding: const EdgeInsets.only(left: 5.0, right: 5.0),
-        //   child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.start,
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         buildProgress(),
-        //         FutureBuilder(
-        //             future: listFiles(),
-        //             builder: (BuildContext context,
-        //                 AsyncSnapshot<ListResult> snapshot) {
-        //               if (snapshot.connectionState == ConnectionState.done &&
-        //                   snapshot.hasData) {
-        //                 return Container(
-        //                     padding: const EdgeInsets.symmetric(vertical: 20),
-        //                     height: 300,
-        //                     child: ListView.builder(
-        //                         scrollDirection: Axis.vertical,
-        //                         itemCount: snapshot.data!.items.length,
-        //                         itemBuilder: (context, index) {
-        //                           return Padding(
-        //                             padding: const EdgeInsets.all(8.0),
-        //                             child: ElevatedButton(
-        //                               onPressed: () {},
-        //                               child: Text(
-        //                                   snapshot.data!.items[index].name),
-        //                             ),
-        //                           );
-        //                         }));
-        //               }
-        //               if (snapshot.connectionState == ConnectionState.waiting ||
-        //                   !snapshot.hasData) {
-        //                 return const CircularProgressIndicator();
-        //               }
-        //               return Container();
-        //             }),
-        //         FutureBuilder(
-        //             future: downloadUrl('dispensa-fisica.pdf'),
-        //             builder:
-        //                 (BuildContext context, AsyncSnapshot<String> snapshot) {
-        //               if (snapshot.connectionState == ConnectionState.done &&
-        //                   snapshot.hasData) {
-        //                 return Container(
-        //                   width: 300,
-        //                   height: 250,
-        //                   child: PdfView(path: p),
-        //                 );
-        //               }
-        //               if (snapshot.connectionState == ConnectionState.waiting) {
-        //                 return const CircularProgressIndicator();
-        //               }
-        //               if (!snapshot.hasData) {
-        //                 return Center(
-        //                     child:
-        //                         Text(AppLocalizations.of(context)!.noTickets));
-        //               }
-        //               return const SizedBox.shrink();
-        //             }),
-        //       ]),
-        // ),
+        
         body: StreamBuilder<QuerySnapshot>(
             stream: repository.getStream(),
             builder: (context, snapshot) {
@@ -327,13 +268,6 @@ class _TicketState extends State<Tickets> {
     if (currentUser != null) {
       if (tick.userid == currentUser.uid &&
           tick.trav == widget.trav.referenceId) {
-        // return Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: ElevatedButton(
-        //     onPressed: () {},
-        //     child: Text(tick.name),
-        //   ),
-        // );
         return Card(
             elevation: 2,
             child: InkWell(

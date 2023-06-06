@@ -69,14 +69,14 @@ class _ShoppingState extends State<Shopping> {
     );
   }
 
-  Widget _noItem() {
+ Widget _noItem() {
     return Center(
         child: Text(
       AppLocalizations.of(context)!.noShopping,
       style: const TextStyle(fontSize: 17),
+      textAlign: TextAlign.center,
     ));
   }
-
   Widget _buildList(
       BuildContext context, List<DocumentSnapshot>? snapshot, String id) {
     return ListView(

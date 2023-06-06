@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
 import 'package:planup/model/travel.dart';
 import '../db/notes_rep.dart';
+import '../db/users_rep.dart';
+import '../model/user_account.dart';
 import '../show/note_card.dart';
 import 'create_note.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,10 +21,23 @@ class Notes extends StatefulWidget {
 class _NotesState extends State<Notes> {
   late TextEditingController controller;
 
+  late List<UserAccount> users = [];
+  final UsersRepository usersRepository = UsersRepository();
+
+  void getUsers() {
+    // obtain users from the repository and add to the list
+    usersRepository.getUsers().then((usersList) {
+      setState(() {
+        users = usersList;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     controller = TextEditingController();
+    getUsers();
   }
 
   @override
@@ -110,20 +125,15 @@ class _NotesState extends State<Notes> {
   Widget _buildListItem(
       BuildContext context, DocumentSnapshot snapshot, String id) {
     final note = Note.fromSnapshot(snapshot);
+    String author = '';
     if (FirebaseAuth.instance.currentUser != null) {
-      if (note.userid == FirebaseAuth.instance.currentUser?.uid &&
-          note.trav == id) {
-        FirebaseFirestore.instance
-            .collection('users')
-            .where('userid', isEqualTo: note.userid)
-            .get()
-            .then(
-          (querySnapshot) {
-            for (var docSnapshot in querySnapshot.docs) {
-              author = docSnapshot.get('name');
-            }
-          },
-        );
+      if (note.trav == id) {
+        for (var x in users){
+          if(x.userid == note.userid){
+            author = x.name;
+            break;
+          }
+        }
         return NoteCard(note: note, boldStyle: boldStyle, author: author);
       }
     }
