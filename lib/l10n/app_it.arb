@@ -233,7 +233,16 @@
     "nameObject": "Nome oggetto",
     "noObjects": "Non sono ancora presenti gli oggetti da portare,\nclicca su + per aggiungere il primo oggetto",
     "groupList": "Lista di gruppo",
-    "checkList": "Check list",
+    "checkList": "Check list di {list}",
+    "@checkList": {
+        "descrption": "Titolo con il proprietario della lista",
+        "placeholders": {
+            "list": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
     "bringBy": "Portato da {user}",
     "@bringBy": {
         "descrption": "Testo per mostrare chi ha portato un oggetto",

@@ -30,6 +30,7 @@ class _CheckListState extends State<ItemCheckList> {
   String stateItem = "Privato";
 
   late String current = currentUser?.uid as String;
+  late String currentName = 'My List';
 
   final currentUser = FirebaseAuth.instance.currentUser;
   late String? profilePhoto;
@@ -131,7 +132,7 @@ class _CheckListState extends State<ItemCheckList> {
             ],
           ),
         ),
-        _title(current),
+        _title(currentName),
         current == currentUser?.uid
             ? Column(
                 children: [
@@ -164,42 +165,49 @@ class _CheckListState extends State<ItemCheckList> {
                 ],
               )
             : current == 'group'
-                ? StreamBuilder<QuerySnapshot>(
-                    stream: ListRepository().getStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                            child: Text(AppLocalizations.of(context)!.loading));
-                      } else {
-                        final hasDataList =
-                            _hasDataList(snapshot, 'group', true);
-                        if (!hasDataList) {
-                          return _noItem();
-                        } else {
-                          return _buildListCheck(
-                              context, snapshot.data!.docs, current, true);
-                        }
-                      }
-                    },
-                  )
-                : StreamBuilder<QuerySnapshot>(
-                    stream: ListRepository().getStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                            child: Text(AppLocalizations.of(context)!.loading));
-                      } else {
-                        final hasDataList =
-                            _hasDataList(snapshot, 'personal', false);
-                        if (!hasDataList) {
-                          return _noItem();
-                        } else {
-                          return _buildListCheck(
-                              context, snapshot.data!.docs, current, false);
-                        }
-                      }
-                    },
-                  ),
+                ? Column(children: [
+                    // _title(current),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: ListRepository().getStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                                child: Text(AppLocalizations.of(context)!.loading));
+                          } else {
+                            final hasDataList =
+                                _hasDataList(snapshot, 'group', true);
+                            if (!hasDataList) {
+                              return _noItem();
+                            } else {
+                              return _buildListCheck(
+                                  context, snapshot.data!.docs, current, true);
+                            }
+                          }
+                        },
+                      )
+                ],) 
+                : Column(children: [
+                    // _title(current),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: ListRepository().getStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                                child: Text(AppLocalizations.of(context)!.loading));
+                          } else {
+                            final hasDataList =
+                                _hasDataList(snapshot, 'personal', false);
+                            
+                            if (!hasDataList) {
+                              return _noItem();
+                            } else {
+                              return _buildListCheck(
+                                  context, snapshot.data!.docs, current, false);
+                            }
+                          }
+                        },
+                      ),
+                ],),
       ]),
       floatingActionButton: current == currentUser?.uid
           ? FloatingActionButton(
@@ -348,6 +356,10 @@ class _CheckListState extends State<ItemCheckList> {
       onPressed: () {
         setState(() {
           current = id;
+          currentName = name;
+          if(name == widget.trav.name){
+            currentName = 'group';
+          }
         });
       },
       child: Column(children: [
@@ -503,8 +515,11 @@ class _CheckListState extends State<ItemCheckList> {
       case 'group':
         nameTitle = AppLocalizations.of(context)!.groupList;
         break;
+      case 'My List':
+        nameTitle = AppLocalizations.of(context)!.myList;
+        break;
       default:
-        nameTitle = AppLocalizations.of(context)!.checkList;
+        nameTitle = AppLocalizations.of(context)!.checkList(list);
     }
     return Text(
       nameTitle,

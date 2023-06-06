@@ -228,13 +228,22 @@
     
     "private": "Private",
     "public": "Public",
-    "myList": "My list",
+    "myList": "My List",
     "publicObjects": "Public objects are visible\nto all users of the travel",
     "newObject": "New object",
     "nameObject": "Object name",
     "noObjects": "You don't have any object yet,\nclick + to create one!",
     "groupList": "Group list",
-    "checkList": "Check list",
+    "checkList": "Check list of {list}",
+    "@checkList": {
+        "descrption": "Title with onwer of the list",
+        "placeholders": {
+            "list": {
+                "type": "String",
+                "example": "John"
+            }
+        }
+    },
     "bringBy": "Bring by {user}",
     "@bringBy": {
         "descrption": "Text to show who has to bring an object",
