@@ -188,8 +188,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
     getfinal();
-    // print('name: $finalFriend');
-    // print('mail: $finalFriendMail');
+
     // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
@@ -369,10 +368,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             date = 'Altro';
             break;
         }
-
-        // setState(() {
-        //   _swapDate = !_swapDate;
-        // });
       },
     ));
 

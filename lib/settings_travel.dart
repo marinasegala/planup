@@ -472,17 +472,6 @@ class _SettingTravelState extends State<SettingTravel> {
                         ),
                       ),
                     )
-                  // : widget.travel.photo! != imageUrl && image!=null
-                  //   ? ClipOval(
-                  //       child: Material(
-                  //         child: Image.file(
-                  //           File(image!.path),
-                  //           fit: BoxFit.cover,
-                  //           width: 100,
-                  //           height: 100,
-                  //         ),
-                  //       )
-                  //     )
                   : const ClipOval(
                       child: Material(
                         child: Padding(
