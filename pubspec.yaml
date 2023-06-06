@@ -73,7 +73,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true 
-  image_path: "assets/icon/iconWhite.jpeg"
+  image_path: "assets/icon/iconWhite.png"
   # min_sdk_android: 21 # android min sdk min:16, default 21
   # web:
   #   generate: true
@@ -111,7 +111,7 @@ flutter:
     - assets/google.jpg
     - assets/planup_black.png
     - assets/icon/icon.png
-    - assets/icon/iconWhite.jpeg
+    - assets/icon/iconWhite.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

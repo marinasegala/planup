@@ -35,9 +35,9 @@ class _StatisticCardState extends State<StatisticCard> {
         color: Colors.blueGrey[100],
         child: Column(
           children: [
-            const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.04),
             chooseIcon(widget.statisticTitle),
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
             Text(
               AppLocalizations.of(context)!.statisticCardTitle(
                   widget.statisticValue.toString(), getTitle()),

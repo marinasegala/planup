@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planup/model/notes.dart';
@@ -29,8 +28,8 @@ class _CreateNoteState extends State<CreateNote> {
         ),
         body: Column(
           children: [
-            const SizedBox(
-              height: 30,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.2,
             ),
             Form(
               key: _formKey,
@@ -38,7 +37,8 @@ class _CreateNoteState extends State<CreateNote> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.height * 0.04),
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -54,9 +54,10 @@ class _CreateNoteState extends State<CreateNote> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.height * 0.04),
                     child: TextField(
-                      maxLength: 30,
+                      maxLength: MediaQuery.of(context).size.width.toInt(),
                       autofocus: true,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.description_outlined),
@@ -65,7 +66,6 @@ class _CreateNoteState extends State<CreateNote> {
                       onChanged: (text) => desc = text,
                     ),
                   ),
-                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -76,12 +76,11 @@ class _CreateNoteState extends State<CreateNote> {
                               if (desc == '') {
                                 desc = 'null';
                               }
-                              final newShop = Note(
-                                name,
-                                trav: widget.travel,
-                                desc: desc,
-                                userid: FirebaseAuth.instance.currentUser?.uid
-                              );
+                              final newShop = Note(name,
+                                  trav: widget.travel,
+                                  desc: desc,
+                                  userid:
+                                      FirebaseAuth.instance.currentUser?.uid);
                               repository.add(
                                   newShop); //.then((DocumentReference doc) => this.listId.add(doc));
                               ScaffoldMessenger.of(context).showSnackBar(

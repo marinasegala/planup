@@ -67,7 +67,8 @@ class TimelineCard extends StatelessWidget {
             Text(travel.date as String, style: const TextStyle(fontSize: 12)),
         trailing: travel.photo!.isEmpty
             ? Container(
-                padding: const EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(50),

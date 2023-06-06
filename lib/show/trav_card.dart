@@ -14,36 +14,33 @@ class TravCard extends StatelessWidget {
     return Card(
       elevation: 2,
       child: ListTile(
-        title: Text(trav.name, style: boldStyle),
-        leading: Container(
-          width: 50,
-          height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.grey[300]!,
-              width: 1,
+          title: Text(trav.name, style: boldStyle),
+          leading: Container(
+            width: MediaQuery.of(context).size.width * 0.15,
+            height: MediaQuery.of(context).size.width * 0.15,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.grey[300]!,
+                width: 1,
+              ),
             ),
+            child: trav.photo!.isEmpty
+                ? ClipOval(
+                    child: const Icon(Icons.photo),
+                  )
+                : ClipOval(
+                    child: Image.network(trav.photo!),
+                  ),
           ),
-          child: trav.photo!.isEmpty
-            ? ClipOval(
-              child: const Icon(Icons.photo),
-            )
-            : ClipOval(
-              child: Image.network(trav.photo!),
-            ),
-        ),
-        subtitle: Text( 
-          AppLocalizations.of(context)!.travSubtitle(trav.numFriend as int), 
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (builder) => TravInfo(trav: trav)));
-        }
-      ),
+          subtitle: Text(
+            AppLocalizations.of(context)!.travSubtitle(trav.numFriend as int),
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (builder) => TravInfo(trav: trav)));
+          }),
     );
   }
 }

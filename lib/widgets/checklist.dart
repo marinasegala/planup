@@ -81,8 +81,8 @@ class _CheckListState extends State<ItemCheckList> {
 
   @override
   Widget build(BuildContext context) {
-
     List<RadioOption> options = [
+      // first the value that will be insert in the database, second the label
       RadioOption("Pubblico", AppLocalizations.of(context)!.public),
       RadioOption("Privato", AppLocalizations.of(context)!.private)
     ];
@@ -93,8 +93,9 @@ class _CheckListState extends State<ItemCheckList> {
       ),
       body: ListView(scrollDirection: Axis.vertical, children: [
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 10.0),
-          height: 100.0,
+          margin: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.02),
+          height: MediaQuery.of(context).size.height * 0.15,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
@@ -137,13 +138,16 @@ class _CheckListState extends State<ItemCheckList> {
         current == currentUser?.uid
             ? Column(
                 children: [
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.01,
                   ),
                   Text(
                     AppLocalizations.of(context)!.publicObjects,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: ListRepository().getStream(),
@@ -152,54 +156,46 @@ class _CheckListState extends State<ItemCheckList> {
                         return Center(
                             child: Text(AppLocalizations.of(context)!.loading));
                       } else {
-                        // final hasDataList =
-                        //     _hasDataList(snapshot, 'personal', true);
-                        // print('ciao -$hasDataList');
-                        // if (!hasDataList) {
-                        //   return _noItem();
-                        // } else {
-                          return _buildListCheck(
-                              context, snapshot.data!.docs, current, true);
-                        // }
+                        return _buildListCheck(
+                            context, snapshot.data!.docs, current, true);
                       }
                     },
                   )
                 ],
               )
             : current == 'group'
-                ? Column(children: [
-                    // _title(current),
-                    StreamBuilder<QuerySnapshot>(
+                ? Column(
+                    children: [
+                      StreamBuilder<QuerySnapshot>(
                         stream: ListRepository().getStream(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Center(
-                                child: Text(AppLocalizations.of(context)!.loading));
+                                child: Text(
+                                    AppLocalizations.of(context)!.loading));
                           } else {
-                            // final hasDataList =
-                            //     _hasDataList(snapshot, 'group', true);
-                            // if (!hasDataList) {
-                            //   return _noItem();
-                            // } else {
-                              return _buildListCheck(
-                                  context, snapshot.data!.docs, current, true);
-                            // }
+                            return _buildListCheck(
+                                context, snapshot.data!.docs, current, true);
                           }
                         },
                       )
-                ],) 
-                : Column(children: [
-                    // _title(current),
-                    StreamBuilder<QuerySnapshot>(
+                    ],
+                  )
+                : Column(
+                    children: [
+                      StreamBuilder<QuerySnapshot>(
                         stream: ListRepository().getStream(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Center(
-                                child: Text(AppLocalizations.of(context)!.loading));
+                                child: Text(
+                                    AppLocalizations.of(context)!.loading));
                           } else {
                             final hasDataList =
                                 _hasDataList(snapshot, 'personal', false);
-                            
+
                             if (!hasDataList) {
                               return _noItem();
                             } else {
@@ -209,7 +205,8 @@ class _CheckListState extends State<ItemCheckList> {
                           }
                         },
                       ),
-                ],),
+                    ],
+                  ),
       ]),
       floatingActionButton: current == currentUser?.uid
           ? FloatingActionButton(
@@ -221,7 +218,8 @@ class _CheckListState extends State<ItemCheckList> {
                         scrollable: true,
                         title: Text(AppLocalizations.of(context)!.newObject),
                         content: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.height * 0.01),
                           child: Form(
                             child: Column(
                               children: <Widget>[
@@ -232,8 +230,9 @@ class _CheckListState extends State<ItemCheckList> {
                                   ),
                                   onChanged: (text) => nameItem = text,
                                 ),
-                                const SizedBox(
-                                  height: 10,
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
                                 ),
                                 RadioButtonGroup(
                                     options: options,
@@ -246,11 +245,14 @@ class _CheckListState extends State<ItemCheckList> {
                                     mainColor: const Color.fromARGB(
                                         255, 195, 190, 190),
                                     selectedBorderSide: const BorderSide(
-                                        width: 2,
                                         color:
                                             Color.fromARGB(255, 64, 137, 168)),
-                                    buttonWidth: 100,
-                                    buttonHeight: 35,
+                                    buttonWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.25,
+                                    buttonHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.05,
                                     callback: (RadioOption val) {
                                       setState(() {
                                         stateItem = val.label;
@@ -296,7 +298,8 @@ class _CheckListState extends State<ItemCheckList> {
                             title:
                                 Text(AppLocalizations.of(context)!.newObject),
                             content: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(
+                                  MediaQuery.of(context).size.height * 0.01),
                               child: Form(
                                 child: Column(
                                   children: <Widget>[
@@ -359,25 +362,25 @@ class _CheckListState extends State<ItemCheckList> {
         setState(() {
           current = id;
           currentName = name;
-          if(name == widget.trav.name){
+          if (name == widget.trav.name) {
             currentName = 'group';
           }
         });
       },
       child: Column(children: [
         name == widget.trav.name
-            ? const CircleAvatar(
-                radius: 27,
+            ? CircleAvatar(
+                radius: MediaQuery.of(context).size.width * 0.08,
                 child: Icon(
                   Icons.group_outlined,
-                  size: 30,
+                  size: MediaQuery.of(context).size.width * 0.1,
                 ),
               )
             : CircleAvatar(
                 backgroundImage: NetworkImage(photo),
-                radius: 27,
+                radius: MediaQuery.of(context).size.width * 0.08,
               ),
-        const SizedBox(height: 10),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Text(
           name,
           style: const TextStyle(color: Colors.black),
@@ -437,27 +440,26 @@ class _CheckListState extends State<ItemCheckList> {
         if (userCurrent) {
           return Column(children: [
             CheckboxListTile(
-              value: list.isChecked,
-              onChanged: (bool? value) {
-                updateIsChecked(
-                    'isChecked', value!, list.referenceId as String);
-              },
-              title: Text(list.name),
-              subtitle: Text(list.isPublic
-                  ? AppLocalizations.of(context)!.public
-                  : AppLocalizations.of(context)!.private),
-              secondary: IconButton(
-                icon: const Icon(Icons.close_outlined),
-                onPressed: () {
-                  FirebaseFirestore.instance
-                    .collection('check')
-                    .doc(list.referenceId)
-                    .get()
-                    .then((querySnapshot) {
-                      delete(querySnapshot.id);
-                    });
-              })
-            ),
+                value: list.isChecked,
+                onChanged: (bool? value) {
+                  updateIsChecked(
+                      'isChecked', value!, list.referenceId as String);
+                },
+                title: Text(list.name),
+                subtitle: Text(list.isPublic
+                    ? AppLocalizations.of(context)!.public
+                    : AppLocalizations.of(context)!.private),
+                secondary: IconButton(
+                    icon: const Icon(Icons.close_outlined),
+                    onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection('check')
+                          .doc(list.referenceId)
+                          .get()
+                          .then((querySnapshot) {
+                        delete(querySnapshot.id);
+                      });
+                    })),
             const Divider(height: 0),
           ]);
         } else {
@@ -500,18 +502,18 @@ class _CheckListState extends State<ItemCheckList> {
                 },
                 title: Text(list.name),
                 secondary: !list.isChecked
-                ? IconButton(
-                  icon: const Icon(Icons.close_outlined),
-                  onPressed: () {
-                    FirebaseFirestore.instance
-                      .collection('check')
-                      .doc(list.referenceId)
-                      .get()
-                      .then((querySnapshot) {
-                        delete(querySnapshot.id);
-                      });
-                })
-                : const SizedBox.shrink(),
+                    ? IconButton(
+                        icon: const Icon(Icons.close_outlined),
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection('check')
+                              .doc(list.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                            delete(querySnapshot.id);
+                          });
+                        })
+                    : const SizedBox.shrink(),
                 subtitle: list.whoBring != ''
                     ? StreamBuilder<QuerySnapshot>(
                         stream: userRepository.getStream(),
@@ -527,7 +529,6 @@ class _CheckListState extends State<ItemCheckList> {
                         },
                       )
                     : const Text('')),
-                
             const Divider(height: 0),
           ]);
         }
@@ -537,15 +538,11 @@ class _CheckListState extends State<ItemCheckList> {
   }
 
   Future<void> delete(String id) {
-      return FirebaseFirestore.instance
-          .collection("check")
-          .doc(id)
-          .delete()
-          .then(
-            (doc) => print("Document deleted"),
-            onError: (e) => print("Error updating document $e"),
-          );
-    }
+    return FirebaseFirestore.instance.collection("check").doc(id).delete().then(
+          (doc) => print("Document deleted"),
+          onError: (e) => print("Error updating document $e"),
+        );
+  }
 
   Widget _title(String list) {
     String nameTitle;
@@ -575,7 +572,6 @@ class _CheckListState extends State<ItemCheckList> {
     }
     return const Text('');
   }
-
 }
 
 List<String> parts(AsyncSnapshot<QuerySnapshot> snapshot, String name) {
@@ -612,7 +608,8 @@ bool _hasDataList(
     }
     if (type != 'group' && !bool) {
       if (listitem[i]['creator'] != currentUser.uid &&
-          !listitem[i]['isgroup'] && listitem[i]['isPublic']) {
+          !listitem[i]['isgroup'] &&
+          listitem[i]['isPublic']) {
         return true;
       }
     }

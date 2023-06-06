@@ -75,9 +75,9 @@ class _ItemWidgetState extends State<ItemWidget> {
               height: MediaQuery.of(context).size.height * 0.13,
               child: Row(
                 children: [
-                  const SizedBox(width: 15),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                   Icon(widget.icon),
-                  const SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   Text(widget.name,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold)),
