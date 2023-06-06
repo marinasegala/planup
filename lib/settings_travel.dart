@@ -50,8 +50,8 @@ class _SettingTravelState extends State<SettingTravel> {
     };
   }
 
-  late List<String> hasAlready = [];
-
+  List<String> hasAlready = [];
+  
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
   final TravelRepository travelRepository = TravelRepository();
@@ -80,6 +80,12 @@ class _SettingTravelState extends State<SettingTravel> {
   String? oldPhoto;
 
   Future<void> updateItem(String field, String newField) {
+    return FirebaseFirestore.instance
+        .collection('travel')
+        .doc(widget.travel.referenceId)
+        .update({field: newField});
+  }
+  Future<void> updateItemNum(String field, int newField) {
     return FirebaseFirestore.instance
         .collection('travel')
         .doc(widget.travel.referenceId)
@@ -244,6 +250,7 @@ class _SettingTravelState extends State<SettingTravel> {
         );
       }
     }
+    
     for (var x = 0; x < finalFriendId.length; x++) {
       FirebaseFirestore.instance
           .collection('travel')
@@ -255,6 +262,7 @@ class _SettingTravelState extends State<SettingTravel> {
             for (var name in finalFriend) {
               if (name == finalFriendId[x + 1]) {
                 finalFriend.remove(name);
+                hasAlready.add(finalFriendId[x]);
                 finalFriendId.removeAt(x);
                 finalFriendId.remove(name);
               }
@@ -451,6 +459,7 @@ class _SettingTravelState extends State<SettingTravel> {
       );
     }
 
+    int count = hasAlready.length;
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -751,6 +760,23 @@ class _SettingTravelState extends State<SettingTravel> {
                         date = date.substring(0, 10);
                       }
                       updateItem('exactly date', date);
+                    }
+                    if (selectedFriends.isNotEmpty){
+                      hasAlready.add(currentUser.uid);
+                      count = hasAlready.length;
+                      for (var x in selectedFriends) {
+                        for (var i = 0; i < finalFriendId.length; i++) {
+                          if (x == finalFriendId[i]) {
+                            hasAlready.add(finalFriendId[i - 1]);
+                            count++;
+                          }
+                        }
+                      }
+                      updateItemNum('numFriend', count);
+                     return FirebaseFirestore.instance
+                      .collection('travel')
+                      .doc(widget.travel.referenceId)
+                      .update({'list part': hasAlready});
                     }
                   }
                 });
