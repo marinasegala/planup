@@ -90,7 +90,6 @@ class _TicketState extends State<Tickets> {
     repository.add(newTicket);
 
     setState(() {});
-    // buildProgress() ;
   }
 
   Future<ListResult> listFiles() async {

@@ -73,6 +73,7 @@
     "date": "Data",
     "changePeriod": "Cambia il periodo del viaggio",
     "changePeriodSaved": "Il periodo è stato modificato",
+    "sureToDelete": "Sei sicuro di eliminare questo viaggio?",
 
     "tickets": "Biglietti",
     "map": "Mappa",

@@ -82,7 +82,7 @@ class _CreateNoteState extends State<CreateNote> {
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid);
                               repository.add(
-                                  newShop); //.then((DocumentReference doc) => this.listId.add(doc));
+                                  newShop); 
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(

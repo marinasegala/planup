@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/home.dart';
+import 'package:planup/home_travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/users_rep.dart';
 import 'model/travel.dart';
@@ -50,8 +51,8 @@ class _SettingTravelState extends State<SettingTravel> {
     };
   }
 
-  late List<String> hasAlready = [];
-
+  List<String> hasAlready = [];
+  
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
   final TravelRepository travelRepository = TravelRepository();
@@ -80,6 +81,12 @@ class _SettingTravelState extends State<SettingTravel> {
   String? oldPhoto;
 
   Future<void> updateItem(String field, String newField) {
+    return FirebaseFirestore.instance
+        .collection('travel')
+        .doc(widget.travel.referenceId)
+        .update({field: newField});
+  }
+  Future<void> updateItemNum(String field, int newField) {
     return FirebaseFirestore.instance
         .collection('travel')
         .doc(widget.travel.referenceId)
@@ -244,6 +251,7 @@ class _SettingTravelState extends State<SettingTravel> {
         );
       }
     }
+    
     for (var x = 0; x < finalFriendId.length; x++) {
       FirebaseFirestore.instance
           .collection('travel')
@@ -255,6 +263,7 @@ class _SettingTravelState extends State<SettingTravel> {
             for (var name in finalFriend) {
               if (name == finalFriendId[x + 1]) {
                 finalFriend.remove(name);
+                hasAlready.add(finalFriendId[x]);
                 finalFriendId.removeAt(x);
                 finalFriendId.remove(name);
               }
@@ -267,6 +276,18 @@ class _SettingTravelState extends State<SettingTravel> {
 
   @override
   Widget build(BuildContext context) {
+
+    Future<void> deleteItem(String id, String collection) {
+      return FirebaseFirestore.instance
+          .collection(collection)
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
+
     getUsers();
 
     List<RadioOption> options = [
@@ -439,6 +460,7 @@ class _SettingTravelState extends State<SettingTravel> {
       );
     }
 
+    int count = hasAlready.length;
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -446,7 +468,128 @@ class _SettingTravelState extends State<SettingTravel> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back)
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        scrollable: true,
+                        title: Text(AppLocalizations.of(context)!.sureToDelete),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'No'),
+                            child: Text(AppLocalizations.of(context)!.no),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              //remove id from list 
+                              FirebaseFirestore.instance.collection('travel')
+                              .doc(widget.travel.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                                List<String> list = [];
+                                for(var item in querySnapshot.get('list part')){
+                                  if(item != currentUser.uid){
+                                    list.add(item);
+                                  }
+                                }
+                                print(list);
+                                updateItem('userid', '');
+                                return FirebaseFirestore.instance
+                                  .collection('travel')
+                                  .doc(widget.travel.referenceId)
+                                  .update({'list part': list});
+                              });
+                              
+                              //decrement numFriend
+                              FirebaseFirestore.instance.collection('travel')
+                              .doc(widget.travel.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                                print(querySnapshot.data());
+                                int num = querySnapshot.get('numFriend')-1;
+                                updateItemNum('numFriend', num);
+                              });
+                              //remove all shopping
+                              FirebaseFirestore.instance.collection('shopping')
+                              .where('trav', isEqualTo: widget.travel.referenceId)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'shopping');
+                                }
+                              });
+                              //remove all note
+                              FirebaseFirestore.instance.collection('note')
+                              .where('trav', isEqualTo: widget.travel.referenceId)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                  print(docSnapshot.data());
+                                  deleteItem(docSnapshot.id, 'note');
+                                }
+                              });
+                              //remove all checklist
+                              FirebaseFirestore.instance.collection('check')
+                              .where('trav', isEqualTo: widget.travel.referenceId)
+                              .where('creator', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'check');
+                                }
+                              });
+                              //remove all location
+                              FirebaseFirestore.instance.collection('location')
+                              .where('travelid', isEqualTo: widget.travel.referenceId)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'location');
+                                }
+                              });
+                              //remove all places 
+                              FirebaseFirestore.instance.collection('places')
+                              .where('travelid', isEqualTo: widget.travel.referenceId)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'places');
+                                }
+                              });
+                              //remove all ticket
+                              FirebaseFirestore.instance.collection('ticket')
+                              .where('trav', isEqualTo: widget.travel.referenceId)
+                              .where('userid', isEqualTo: currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                                for(var docSnapshot in querySnapshot.docs){
+                                    deleteItem(docSnapshot.id, 'ticket');
+                                }
+                              });
+                              setState(() {});
+                              Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (builder) => const HomePage()));
+                            },
+                            child: Text(AppLocalizations.of(context)!.yes),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.highlight_remove_outlined,
+                size: 30,
+              ))
+        ],
       ),
       body: Column(
         children: [
@@ -472,17 +615,6 @@ class _SettingTravelState extends State<SettingTravel> {
                         ),
                       ),
                     )
-                  // : widget.travel.photo! != imageUrl && image!=null
-                  //   ? ClipOval(
-                  //       child: Material(
-                  //         child: Image.file(
-                  //           File(image!.path),
-                  //           fit: BoxFit.cover,
-                  //           width: 100,
-                  //           height: 100,
-                  //         ),
-                  //       )
-                  //     )
                   : const ClipOval(
                       child: Material(
                         child: Padding(
@@ -655,6 +787,23 @@ class _SettingTravelState extends State<SettingTravel> {
                         date = date.substring(0, 10);
                       }
                       updateItem('exactly date', date);
+                    }
+                    if (selectedFriends.isNotEmpty){
+                      hasAlready.add(currentUser.uid);
+                      count = hasAlready.length;
+                      for (var x in selectedFriends) {
+                        for (var i = 0; i < finalFriendId.length; i++) {
+                          if (x == finalFriendId[i]) {
+                            hasAlready.add(finalFriendId[i - 1]);
+                            count++;
+                          }
+                        }
+                      }
+                      updateItemNum('numFriend', count);
+                     return FirebaseFirestore.instance
+                      .collection('travel')
+                      .doc(widget.travel.referenceId)
+                      .update({'list part': hasAlready});
                     }
                   }
                 });

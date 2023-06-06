@@ -75,6 +75,7 @@
     "date": "Date",
     "changePeriod": "Change period",
     "changePeriodSaved": "Period has been changed",
+    "sureToDelete": "Are you sure to delete this travel?",
 
     "tickets": "Tickets",
     "map": "Map",

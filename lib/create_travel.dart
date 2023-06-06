@@ -369,10 +369,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
             date = 'Altro';
             break;
         }
-
-        // setState(() {
-        //   _swapDate = !_swapDate;
-        // });
       },
     ));
 
