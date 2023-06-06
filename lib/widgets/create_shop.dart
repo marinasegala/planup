@@ -42,8 +42,8 @@ class _CreateItemState extends State<CreateShopItem> {
         ),
         body: Column(
           children: [
-            const SizedBox(
-              height: 30,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.23,
             ),
             Form(
               key: _formKey,
@@ -51,7 +51,9 @@ class _CreateItemState extends State<CreateShopItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.04,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -68,7 +70,9 @@ class _CreateItemState extends State<CreateShopItem> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.04,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -84,9 +88,11 @@ class _CreateItemState extends State<CreateShopItem> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.04,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: TextField(
-                      maxLength: 30,
+                      maxLength: MediaQuery.of(context).size.height.toInt(),
                       autofocus: true,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.description_outlined),
@@ -96,10 +102,13 @@ class _CreateItemState extends State<CreateShopItem> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.03,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: Row(
                       children: [
-                        const SizedBox(width: 34),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05),
                         SizedBox(
                           child: Center(
                               child: Text(
@@ -125,7 +134,7 @@ class _CreateItemState extends State<CreateShopItem> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -143,8 +152,7 @@ class _CreateItemState extends State<CreateShopItem> {
                                   userid:
                                       FirebaseAuth.instance.currentUser?.uid,
                                   trav: widget.travel);
-                              repository.add(
-                                  newShop); //.then((DocumentReference doc) => this.listId.add(doc));
+                              repository.add(newShop);
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
@@ -166,42 +174,3 @@ class _CreateItemState extends State<CreateShopItem> {
         ));
   }
 }
-
-// List<DropdownMenuItem<String>> addDividersAfterItems(List<String> items) {
-//   List<DropdownMenuItem<String>> menuItems = [];
-//   for (var item in items) {
-//     menuItems.addAll(
-//       [
-//         DropdownMenuItem<String>(
-//           value: item,
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//             child: Text(
-//               item,
-//               style: const TextStyle(
-//                 fontSize: 17,
-//               ),
-//             ),
-//           ),
-//         ),
-//         //If it's last item, we will not add Divider after it.
-//         if (item != items.last)
-//           const DropdownMenuItem<String>(
-//             enabled: false,
-//             child: Divider(),
-//           ),
-//       ],
-//     );
-//   }
-//   return menuItems;
-// }
-
-// List<double> getCustomItemsHeights() {
-//   List<double> itemsHeights = [];
-//   for (var i = 0; i < (items.length * 2) - 1; i++) {
-//     if (i.isEven) { itemsHeights.add(40); }
-//     //Dividers indexes will be the odd indexes
-//     if (i.isOdd) { itemsHeights.add(4); }
-//   }
-//   return itemsHeights;
-// }

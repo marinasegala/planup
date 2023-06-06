@@ -188,9 +188,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     get('userid', 'userIdFriend');
     get('userIdFriend', 'userid');
     getfinal();
-    // print('name: $finalFriend');
-    // print('mail: $finalFriendMail');
-    // calendar
     buildCalendarDialogButton() {
       const dayTextStyle =
           TextStyle(color: Colors.black, fontWeight: FontWeight.w700);
@@ -251,7 +248,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       style: textStyle,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 27.5),
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.01),
                       child: Container(
                         height: 4,
                         width: 4,
@@ -281,8 +279,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
           return Center(
             child: Container(
               decoration: decoration,
-              height: 36,
-              width: 72,
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.1,
               child: Center(
                 child: Semantics(
                   selected: isSelected,
@@ -296,8 +294,10 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                       ),
                       if (isCurrentYear == true)
                         Container(
-                          padding: const EdgeInsets.all(5),
-                          margin: const EdgeInsets.only(left: 5),
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.height * 0.01),
+                          margin: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.height * 0.01),
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.redAccent,
@@ -313,7 +313,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
       );
 
       return Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
             onPressed: () async {

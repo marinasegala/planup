@@ -41,7 +41,8 @@ class _ShoppingState extends State<Shopping> {
             stream: repository.getStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Text(AppLocalizations.of(context)!.loading));
+                return Center(
+                    child: Text(AppLocalizations.of(context)!.loading));
               } else {
                 final hasMyOnwData =
                     _hasMyOnwData(snapshot, widget.trav.referenceId!);
@@ -69,7 +70,7 @@ class _ShoppingState extends State<Shopping> {
     );
   }
 
- Widget _noItem() {
+  Widget _noItem() {
     return Center(
         child: Text(
       AppLocalizations.of(context)!.noShopping,
@@ -77,10 +78,11 @@ class _ShoppingState extends State<Shopping> {
       textAlign: TextAlign.center,
     ));
   }
+
   Widget _buildList(
       BuildContext context, List<DocumentSnapshot>? snapshot, String id) {
     return ListView(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
       children:
           snapshot!.map((data) => _buildListItem(context, data, id)).toList(),
     );

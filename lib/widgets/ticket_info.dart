@@ -35,7 +35,7 @@ class _TicketInfoState extends State<TicketInfo> {
                   Navigator.pop(context);
                 }),
           ),
-          body: Container(
+          body: Center(
             child: widget.tick.ext == 'Image'
                 ? Image.network(widget.tick.url!)
                 : SfPdfViewer.network(widget.tick.url!,

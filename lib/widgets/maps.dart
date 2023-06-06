@@ -50,19 +50,11 @@ class _MapsPageState extends State<MapsPage> {
         // when tap on map we will add new marker
         var position = _mapController.listenerMapLongTapping.value;
         if (position != null) {
-          await _mapController.addMarker(
-            position,
-            markerIcon: MarkerIcon(
-              icon: Icon(
-                Icons.location_on,
-                color: Colors.amber[700],
-                size: 100,
-              ),
-            ),
-          );
           // Add market to app, for hold information of marker to use it later
           var key = '${position.latitude}_${position.longitude}';
           markerApp[key] = markerApp.length.toString();
+
+          var length = placesRepository.getStream().length;
 
           // open a pop up to get name of marker
           // ignore: use_build_context_synchronously
@@ -75,6 +67,19 @@ class _MapsPageState extends State<MapsPage> {
               callback: addPlace,
             ),
           );
+          if (length.toString() !=
+              placesRepository.getStream().length.toString()) {
+            await _mapController.addMarker(
+              position,
+              markerIcon: MarkerIcon(
+                icon: Icon(
+                  Icons.location_on,
+                  color: Colors.amber[700],
+                  size: 100,
+                ),
+              ),
+            );
+          }
         }
       });
     });
@@ -151,7 +156,7 @@ class _MapsPageState extends State<MapsPage> {
         markerIcon: MarkerIcon(
           icon: Icon(
             Icons.location_on,
-            color: Colors.blueGrey[200],
+            color: Colors.amber[700],
             size: 100,
           ),
         ),
@@ -168,7 +173,7 @@ class _MapsPageState extends State<MapsPage> {
         markerIcon: MarkerIcon(
           icon: Icon(
             Icons.location_on,
-            color: Colors.blueGrey[200],
+            color: Colors.amber[700],
             size: 100,
           ),
         ),
@@ -320,9 +325,7 @@ class _DialagAddMarkerState extends State<DialagAddMarker> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(AppLocalizations.of(context)!.lat(widget.lat)),
-          Text(AppLocalizations.of(context)!.long(widget.long)),
-          const SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           TextFormField(
             controller: _nameController,
             decoration: InputDecoration(
@@ -334,7 +337,7 @@ class _DialagAddMarkerState extends State<DialagAddMarker> {
                 ? AppLocalizations.of(context)!.nameRequired
                 : null,
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           TextFormField(
             controller: _descriptionController,
             decoration: InputDecoration(
@@ -389,7 +392,7 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
   Widget build(BuildContext context) {
     return Card(
         child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,8 +403,8 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
                 child: Text(
                   widget.place.name,
                   style: const TextStyle(
@@ -409,24 +412,25 @@ class _CardRemovePlaceState extends State<CardRemovePlace> {
                 ),
               ),
               const Divider(thickness: 1),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Text(AppLocalizations.of(context)!.descriptionMarker,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16)),
+                  style: const TextStyle(fontSize: 14, letterSpacing: 1.5),
+                  textAlign: TextAlign.justify),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               SizedBox(
-                  height: 200,
-                  child: Center(
-                    child: widget.place.description != null
-                        ? Text(widget.place.description!,
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.grey),
-                            textAlign: TextAlign.center)
-                        : Text(
-                            AppLocalizations.of(context)!.noDescription,
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                  )),
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: widget.place.description != null
+                    ? Text(widget.place.description!,
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.grey),
+                        textAlign: TextAlign.justify)
+                    : Text(
+                        AppLocalizations.of(context)!.noDescription,
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+              ),
               TextButton(
                   onPressed: () async {
                     widget.callback(widget.place);
@@ -459,7 +463,7 @@ class _CardLocationState extends State<CardLocation> {
 
   List<String> users = [];
 
-  void getUsers(String userid) async {
+  void getUsers(String userid) {
     usersRepository.getStream().listen((event) {
       var user = event.docs
           .map((e) => UserAccount.fromSnapshot(e))
@@ -470,7 +474,16 @@ class _CardLocationState extends State<CardLocation> {
         users.add(user);
       });
     });
-    await Future.delayed(const Duration(milliseconds: 50));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (var location in widget.location) {
+      if (mounted) {
+        getUsers(location.userid);
+      }
+    }
   }
 
   String printUsers() {
@@ -490,11 +503,13 @@ class _CardLocationState extends State<CardLocation> {
   @override
   Widget build(BuildContext context) {
     for (var location in widget.location) {
-      getUsers(location.userid);
+      if (mounted) {
+        getUsers(location.userid);
+      }
     }
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,16 +519,19 @@ class _CardLocationState extends State<CardLocation> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 10),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Container(
                       alignment: Alignment.center,
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.01),
                       child: Text(
-                        widget.location.length == 1
-                            ? AppLocalizations.of(context)!
-                                .friendLocation(users[0])
-                            : AppLocalizations.of(context)!
-                                .friendsLocation(printUsers()),
+                        users.isEmpty
+                            ? ''
+                            : widget.location.length == 1
+                                ? AppLocalizations.of(context)!
+                                    .friendLocation(users[0])
+                                : AppLocalizations.of(context)!
+                                    .friendsLocation(printUsers()),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                         textAlign: TextAlign.center,

@@ -117,7 +117,7 @@ class _TicketState extends State<Tickets> {
             final data = snapshot.data!;
             double progress = data.bytesTransferred / data.totalBytes;
             return SizedBox(
-                height: 50,
+                height: MediaQuery.of(context).size.height * 0.1,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -154,7 +154,6 @@ class _TicketState extends State<Tickets> {
                 Navigator.pop(context);
               }),
         ),
-        
         body: StreamBuilder<QuerySnapshot>(
             stream: repository.getStream(),
             builder: (context, snapshot) {
@@ -199,10 +198,12 @@ class _TicketState extends State<Tickets> {
                                 return null;
                               },
                             ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02),
                             RadioButtonGroup(
                                 options: options,
                                 preSelectedIdx: 0,
-                                vertical: true,
                                 textStyle: const TextStyle(
                                     fontSize: 15, color: Colors.black),
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -214,14 +215,19 @@ class _TicketState extends State<Tickets> {
                                 selectedBorderSide: const BorderSide(
                                     width: 2,
                                     color: Color.fromARGB(255, 64, 137, 168)),
-                                buttonWidth: 105,
-                                buttonHeight: 35,
+                                buttonWidth:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                buttonHeight:
+                                    MediaQuery.of(context).size.height * 0.05,
                                 callback: (RadioOption val) {
                                   setState(() {
                                     changeExt = val.label;
                                     ext = changeExt;
                                   });
                                 }),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02),
                             ElevatedButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
@@ -257,7 +263,7 @@ class _TicketState extends State<Tickets> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot,
       AsyncSnapshot<QuerySnapshot> querysnapshot) {
     return ListView(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
       children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
     );
   }
@@ -275,8 +281,8 @@ class _TicketState extends State<Tickets> {
                   children: <Widget>[
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 11.0, horizontal: 16.0),
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.04),
                         child: Center(
                             child: Text(tick.name,
                                 style: const TextStyle(fontSize: 18.0))),

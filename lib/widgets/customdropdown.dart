@@ -97,9 +97,11 @@ class CustomDropdownButton extends StatelessWidget {
         onChanged: onChanged,
         selectedItemBuilder: selectedItemBuilder,
         buttonStyleData: ButtonStyleData(
-          height: buttonHeight ?? 40,
-          width: buttonWidth ?? 140,
-          padding: buttonPadding ?? const EdgeInsets.only(left: 14, right: 14),
+          height: buttonHeight ?? MediaQuery.of(context).size.height * 0.05,
+          width: buttonWidth ?? MediaQuery.of(context).size.width * 0.4,
+          padding: buttonPadding ??
+              EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02),
           decoration: buttonDecoration ??
               BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
@@ -111,14 +113,14 @@ class CustomDropdownButton extends StatelessWidget {
         ),
         iconStyleData: IconStyleData(
           icon: icon ?? const Icon(Icons.keyboard_arrow_down_outlined),
-          iconSize: iconSize ?? 30,
+          iconSize: iconSize ?? MediaQuery.of(context).size.height * 0.01,
           iconEnabledColor: iconEnabledColor,
           iconDisabledColor: iconDisabledColor,
         ),
         dropdownStyleData: DropdownStyleData(
           //Max height for the dropdown menu & becoming scrollable if there are more items. If you pass Null it will take max height possible for the items.
-          maxHeight: dropdownHeight ?? 200,
-          width: dropdownWidth ?? 140,
+          maxHeight: dropdownHeight ?? MediaQuery.of(context).size.height * 0.3,
+          width: dropdownWidth ?? MediaQuery.of(context).size.width * 0.4,
           padding: dropdownPadding,
           decoration: dropdownDecoration ??
               BoxDecoration(
@@ -141,7 +143,9 @@ class CustomDropdownButton extends StatelessWidget {
         ),
         menuItemStyleData: MenuItemStyleData(
           height: itemHeight ?? 40,
-          padding: itemPadding ?? const EdgeInsets.only(left: 14, right: 14),
+          padding: itemPadding ??
+              EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
         ),
       ),
     );
