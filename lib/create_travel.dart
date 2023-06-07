@@ -350,34 +350,6 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     ];
 
     var macroCharts = buildCalendarDialogButton();
-    // var microCharts = Center(
-    //     child: ToggleSwitch(
-    //   initialLabelIndex: 0,
-    //   // minWidth: MediaQuery.of(context).size.width * 0.225,
-    //   // minHeight: MediaQuery.of(context).size.height * 0.06,
-    //   activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
-    //   inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
-    //   totalSwitches: 4,
-    //   labels: [
-    //     AppLocalizations.of(context)!.oneDay,
-    //     AppLocalizations.of(context)!.weekend,
-    //     AppLocalizations.of(context)!.week,
-    //     AppLocalizations.of(context)!.other
-    //   ],
-    //   onToggle: (index) {
-    //     switch (index) {
-    //       case 1:
-    //         date = 'Weekend';
-    //         break;
-    //       case 2:
-    //         date = 'Settimana';
-    //         break;
-    //       case 3:
-    //         date = 'Altro';
-    //         break;
-    //     }
-    //   },
-    // ));
     var microCharts = Center(
       child: RadioButtonGroup(
         options: options,

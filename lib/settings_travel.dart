@@ -682,7 +682,10 @@ class _SettingTravelState extends State<SettingTravel> {
           widget.travel.date == 'Giornata' ||
                   widget.travel.date == 'Settimana' ||
                   widget.travel.date == 'Weekend' ||
-                  widget.travel.date == 'Altro'
+                  widget.travel.date == 'Altro' ||
+                  widget.travel.date == 'One day' ||
+                  widget.travel.date == 'Week' ||
+                  widget.travel.date == 'Other'
               ? ToggleSwitch(
                   minWidth: MediaQuery.of(context).size.width * 0.3,
                   cornerRadius: 20.0,
