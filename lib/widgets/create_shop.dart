@@ -75,6 +75,7 @@ class _CreateItemState extends State<CreateShopItem> {
                         vertical: MediaQuery.of(context).size.height * 0.01),
                     child: TextFormField(
                       autofocus: true,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.euro_outlined),
                           hintText: AppLocalizations.of(context)!.price),
@@ -92,7 +93,7 @@ class _CreateItemState extends State<CreateShopItem> {
                         horizontal: MediaQuery.of(context).size.height * 0.04,
                         vertical: MediaQuery.of(context).size.height * 0.01),
                     child: TextField(
-                      maxLength: MediaQuery.of(context).size.height.toInt(),
+                      maxLength: 100,
                       autofocus: true,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.description_outlined),
@@ -121,8 +122,7 @@ class _CreateItemState extends State<CreateShopItem> {
                           width: 20,
                         ),
                         CustomDropdownButton(
-                          hint:
-                              AppLocalizations.of(context)!.addCategoryShopping,
+                          hint: AppLocalizations.of(context)!.addCategoryShopping,
                           dropdownItems: items,
                           value: selectedValue,
                           onChanged: (value) {
