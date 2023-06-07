@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           profilePhoto != null
               ? ClipOval(
                   child: Material(
@@ -170,10 +170,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 )
-              : const ClipOval(
+              : ClipOval(
                   child: Material(
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.2),
                       child: Icon(
                         Icons.person,
                         size: 60,
@@ -181,15 +182,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-          const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Text(name!, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
             child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.myStatistics,
-                    style: const TextStyle(fontSize: 14))),
+                    style: const TextStyle(fontSize: 15))),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -208,19 +210,21 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
             child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.myTravels,
-                    style: const TextStyle(fontSize: 14))),
+                    style: const TextStyle(fontSize: 15))),
           ),
           const SizedBox(height: 15),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.02),
             child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.34,
                 child: TravelTimeline(pastTravels: pastTravels)),
           ),
         ],

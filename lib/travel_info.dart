@@ -35,35 +35,35 @@ class TravInfo extends StatelessWidget {
         ),
         body: Center(
           child: Column(children: [
-            const SizedBox(height: 30),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             ItemWidget(
               name: AppLocalizations.of(context)!.tickets,
               icon: Icons.airplane_ticket,
               index: 1,
               trav: trav,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
               name: AppLocalizations.of(context)!.map,
               icon: Icons.map,
               index: 2,
               trav: trav,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
               name: AppLocalizations.of(context)!.shopping,
               icon: Icons.euro_symbol,
               index: 3,
               trav: trav,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
               name: AppLocalizations.of(context)!.whatBring,
               icon: Icons.checklist,
               index: 4,
               trav: trav,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
               name: AppLocalizations.of(context)!.notes,
               icon: Icons.note,

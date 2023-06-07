@@ -51,7 +51,7 @@ class _SettingTravelState extends State<SettingTravel> {
   }
 
   List<String> hasAlready = [];
-  
+
   late List<UserAccount> users = [];
   final UsersRepository usersRepository = UsersRepository();
   final TravelRepository travelRepository = TravelRepository();
@@ -85,6 +85,7 @@ class _SettingTravelState extends State<SettingTravel> {
         .doc(widget.travel.referenceId)
         .update({field: newField});
   }
+
   Future<void> updateItemNum(String field, int newField) {
     return FirebaseFirestore.instance
         .collection('travel')
@@ -250,7 +251,7 @@ class _SettingTravelState extends State<SettingTravel> {
         );
       }
     }
-    
+
     for (var x = 0; x < finalFriendId.length; x++) {
       FirebaseFirestore.instance
           .collection('travel')
@@ -275,7 +276,6 @@ class _SettingTravelState extends State<SettingTravel> {
 
   @override
   Widget build(BuildContext context) {
-
     Future<void> deleteItem(String id, String collection) {
       return FirebaseFirestore.instance
           .collection(collection)
@@ -467,8 +467,7 @@ class _SettingTravelState extends State<SettingTravel> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back)
-        ),
+            icon: const Icon(Icons.arrow_back)),
         actions: [
           IconButton(
               onPressed: () {
@@ -485,114 +484,123 @@ class _SettingTravelState extends State<SettingTravel> {
                           ),
                           TextButton(
                             onPressed: () {
-                              //remove id from list 
-                              FirebaseFirestore.instance.collection('travel')
-                              .doc(widget.travel.referenceId)
-                              .get()
-                              .then((querySnapshot) {
+                              //remove id from list
+                              FirebaseFirestore.instance
+                                  .collection('travel')
+                                  .doc(widget.travel.referenceId)
+                                  .get()
+                                  .then((querySnapshot) {
                                 List<String> list = [];
-                                for(var item in querySnapshot.get('list part')){
-                                  if(item != currentUser.uid){
+                                for (var item
+                                    in querySnapshot.get('list part')) {
+                                  if (item != currentUser.uid) {
                                     list.add(item);
                                   }
                                 }
                                 print(list);
-                                if(list.isEmpty){
+                                if (list.isEmpty) {
                                   travelRepository.deleteTravel(widget.travel);
                                 } else {
                                   updateItem('userid', '');
                                   return FirebaseFirestore.instance
-                                    .collection('travel')
-                                    .doc(widget.travel.referenceId)
-                                    .update({'list part': list});
+                                      .collection('travel')
+                                      .doc(widget.travel.referenceId)
+                                      .update({'list part': list});
                                 }
                               });
-                              
+
                               //decrement numFriend
-                              FirebaseFirestore.instance.collection('travel')
-                              .doc(widget.travel.referenceId)
-                              .get()
-                              .then((querySnapshot) {
+                              FirebaseFirestore.instance
+                                  .collection('travel')
+                                  .doc(widget.travel.referenceId)
+                                  .get()
+                                  .then((querySnapshot) {
                                 print(querySnapshot.data());
-                                int num = querySnapshot.get('numFriend')-1;
+                                int num = querySnapshot.get('numFriend') - 1;
                                 updateItemNum('numFriend', num);
-                                
                               });
 
-                              // FirebaseFirestore.instance.collection('travel')
-                              // .doc(widget.travel.referenceId)
-                              // .get()
-                              // .then((querySnapshot) {
-                              //   print(querySnapshot.data());
-                              //   if(querySnapshot.get('numFriend')==0){
-                              //     travelRepository.deleteTravel(widget.travel);
-                              //   };  
-                              // });
-                              
                               //remove all shopping
-                              FirebaseFirestore.instance.collection('shopping')
-                              .where('trav', isEqualTo: widget.travel.referenceId)
-                              .where('userid', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'shopping');
+                              FirebaseFirestore.instance
+                                  .collection('shopping')
+                                  .where('trav',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('userid', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
+                                  deleteItem(docSnapshot.id, 'shopping');
                                 }
                               });
                               //remove all note
-                              FirebaseFirestore.instance.collection('note')
-                              .where('trav', isEqualTo: widget.travel.referenceId)
-                              .where('userid', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
+                              FirebaseFirestore.instance
+                                  .collection('note')
+                                  .where('trav',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('userid', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
                                   print(docSnapshot.data());
                                   deleteItem(docSnapshot.id, 'note');
                                 }
                               });
                               //remove all checklist
-                              FirebaseFirestore.instance.collection('check')
-                              .where('trav', isEqualTo: widget.travel.referenceId)
-                              .where('creator', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'check');
+                              FirebaseFirestore.instance
+                                  .collection('check')
+                                  .where('trav',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('creator', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
+                                  deleteItem(docSnapshot.id, 'check');
                                 }
                               });
                               //remove all location
-                              FirebaseFirestore.instance.collection('location')
-                              .where('travelid', isEqualTo: widget.travel.referenceId)
-                              .where('userid', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'location');
+                              FirebaseFirestore.instance
+                                  .collection('location')
+                                  .where('travelid',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('userid', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
+                                  deleteItem(docSnapshot.id, 'location');
                                 }
                               });
-                              //remove all places 
-                              FirebaseFirestore.instance.collection('places')
-                              .where('travelid', isEqualTo: widget.travel.referenceId)
-                              .where('userid', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'places');
+                              //remove all places
+                              FirebaseFirestore.instance
+                                  .collection('places')
+                                  .where('travelid',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('userid', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
+                                  deleteItem(docSnapshot.id, 'places');
                                 }
                               });
                               //remove all ticket
-                              FirebaseFirestore.instance.collection('ticket')
-                              .where('trav', isEqualTo: widget.travel.referenceId)
-                              .where('userid', isEqualTo: currentUser.uid)
-                              .get()
-                              .then((querySnapshot) {
-                                for(var docSnapshot in querySnapshot.docs){
-                                    deleteItem(docSnapshot.id, 'ticket');
+                              FirebaseFirestore.instance
+                                  .collection('ticket')
+                                  .where('trav',
+                                      isEqualTo: widget.travel.referenceId)
+                                  .where('userid', isEqualTo: currentUser.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                for (var docSnapshot in querySnapshot.docs) {
+                                  deleteItem(docSnapshot.id, 'ticket');
                                 }
                               });
                               setState(() {});
-                              Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (builder) => const HomePage()));
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (builder) => const HomePage()));
                             },
                             child: Text(AppLocalizations.of(context)!.yes),
                           ),
@@ -636,7 +644,7 @@ class _SettingTravelState extends State<SettingTravel> {
                           padding: EdgeInsets.all(16.0),
                           child: Icon(
                             Icons.add_a_photo_outlined,
-                            size: 60,
+                            size: 50,
                           ),
                         ),
                       ),
@@ -648,9 +656,9 @@ class _SettingTravelState extends State<SettingTravel> {
             },
             child: Text(AppLocalizations.of(context)!.changePhoto),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             child: TextField(
               autofocus: false,
               decoration: InputDecoration(
@@ -663,21 +671,20 @@ class _SettingTravelState extends State<SettingTravel> {
               onChanged: (text) => updateName = text,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          Text(
+            AppLocalizations.of(context)!.changeDateFrom(widget.travel.date!),
+            style: const TextStyle(fontSize: 15),
           ),
-          const SizedBox(height: 30),
-          Text(AppLocalizations.of(context)!
-              .changeDateFrom(widget.travel.date!)),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
           widget.travel.date == 'Giornata' ||
                   widget.travel.date == 'Settimana' ||
                   widget.travel.date == 'Weekend' ||
                   widget.travel.date == 'Altro'
               ? ToggleSwitch(
-                  minWidth: 100.0,
+                  minWidth: MediaQuery.of(context).size.width * 0.3,
                   cornerRadius: 20.0,
                   activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
                   inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
@@ -699,39 +706,56 @@ class _SettingTravelState extends State<SettingTravel> {
                                 title: Text(
                                     AppLocalizations.of(context)!.changePeriod),
                                 content: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.01),
                                   child: Form(
                                     child: Column(
                                       children: <Widget>[
-                                        RadioButtonGroup(
-                                            options: options,
-                                            preSelectedIdx: 0,
-                                            vertical: true,
-                                            textStyle: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            selectedColor: const Color.fromARGB(
-                                                255, 195, 190, 190),
-                                            mainColor: const Color.fromARGB(
-                                                255, 195, 190, 190),
-                                            selectedBorderSide:
-                                                const BorderSide(
-                                                    width: 2,
-                                                    color: Color.fromARGB(
-                                                        255, 64, 137, 168)),
-                                            buttonWidth: 105,
-                                            buttonHeight: 35,
-                                            callback: (RadioOption val) {
-                                              setState(() {
-                                                changePeriod = val.label;
-                                                date = changePeriod;
-                                                changedata = true;
-                                              });
-                                            }),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.1),
+                                          child: RadioButtonGroup(
+                                              options: options,
+                                              preSelectedIdx: 0,
+                                              vertical: true,
+                                              textStyle: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black),
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              selectedColor:
+                                                  const Color.fromARGB(
+                                                      255, 195, 190, 190),
+                                              mainColor: const Color.fromARGB(
+                                                  255, 195, 190, 190),
+                                              selectedBorderSide:
+                                                  const BorderSide(
+                                                      width: 2,
+                                                      color: Color.fromARGB(
+                                                          255, 64, 137, 168)),
+                                              buttonWidth: MediaQuery
+                                                          .of(context)
+                                                      .size
+                                                      .width *
+                                                  0.4,
+                                              buttonHeight:
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.05,
+                                              callback: (RadioOption val) {
+                                                setState(() {
+                                                  changePeriod = val.label;
+                                                  date = changePeriod;
+                                                  changedata = true;
+                                                });
+                                              }),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -764,12 +788,12 @@ class _SettingTravelState extends State<SettingTravel> {
                   },
                 )
               : buildCalendarDialogButton(true),
-          const SizedBox(
-            height: 30,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               child: DropDownMultiSelect(
                 onChanged: (List<String> x) {
                   setState(() {
@@ -803,7 +827,7 @@ class _SettingTravelState extends State<SettingTravel> {
                       }
                       updateItem('exactly date', date);
                     }
-                    if (selectedFriends.isNotEmpty){
+                    if (selectedFriends.isNotEmpty) {
                       hasAlready.add(currentUser.uid);
                       count = hasAlready.length;
                       for (var x in selectedFriends) {
@@ -815,10 +839,10 @@ class _SettingTravelState extends State<SettingTravel> {
                         }
                       }
                       updateItemNum('numFriend', count);
-                     return FirebaseFirestore.instance
-                      .collection('travel')
-                      .doc(widget.travel.referenceId)
-                      .update({'list part': hasAlready});
+                      return FirebaseFirestore.instance
+                          .collection('travel')
+                          .doc(widget.travel.referenceId)
+                          .update({'list part': hasAlready});
                     }
                   }
                 });

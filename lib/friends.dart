@@ -87,7 +87,7 @@ class _FriendPageState extends State<FriendPage> {
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
     return ListView(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
       children:
           snapshot!.map((friends) => _buildListItem(context, friends)).toList(),
     );
@@ -190,7 +190,7 @@ class UserSearch extends SearchDelegate<String> {
           leading: suggestion[index].photoUrl != null
               ? CircleAvatar(
                   backgroundImage: NetworkImage(suggestion[index].photoUrl!),
-                  radius: 18,
+                  radius: MediaQuery.of(context).size.width * 0.05,
                 )
               : const CircleAvatar(
                   child: Icon(Icons.person),

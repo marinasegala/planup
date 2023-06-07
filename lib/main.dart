@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           textTheme: const TextTheme(
               labelSmall: TextStyle(
             color: Colors.black,
-            fontSize: 14,
+            fontSize: 15,
           ))),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),

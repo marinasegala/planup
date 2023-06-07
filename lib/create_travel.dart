@@ -346,8 +346,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     var microCharts = Center(
         child: ToggleSwitch(
       initialLabelIndex: 0,
-      minWidth: 85.0,
-      minHeight: 50.0,
+      minWidth: MediaQuery.of(context).size.width * 0.225,
+      minHeight: MediaQuery.of(context).size.height * 0.06,
       activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
       inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
       totalSwitches: 4,
@@ -475,8 +475,9 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.height * 0.02),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.022,
+                        vertical: MediaQuery.of(context).size.height * 0.02),
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -509,7 +510,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         ),
                         ToggleSwitch(
                           initialLabelIndex: _swapDate ? 0 : 1,
-                          minWidth: MediaQuery.of(context).size.width * 0.2,
+                          minWidth: MediaQuery.of(context).size.width * 0.19,
                           minHeight: MediaQuery.of(context).size.height * 0.04,
                           activeBgColor: const [
                             Color.fromARGB(255, 59, 94, 115)
@@ -530,13 +531,14 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                     swapTile,
                   ]),
-                  const SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.022),
                       child: DropDownMultiSelect(
                         onChanged: (List<String> x) {
                           setState(() {

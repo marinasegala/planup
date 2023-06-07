@@ -110,7 +110,7 @@ class _FriendProfileState extends State<FriendProfile> {
         child: Column(
           children: [
             const Row(),
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             profilePhoto != null
                 ? ClipOval(
                     child: Material(
@@ -120,12 +120,13 @@ class _FriendProfileState extends State<FriendProfile> {
                       ),
                     ),
                   )
-                : const ClipOval(
+                : ClipOval(
                     child: Material(
                       shape: CircleBorder(
                           side: BorderSide(color: Colors.black, width: 1)),
                       child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.height * 0.02),
                           child: Icon(
                             Icons.person,
                             size: 60,
@@ -133,16 +134,17 @@ class _FriendProfileState extends State<FriendProfile> {
                           )),
                     ),
                   ),
-            const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Text(widget.friend.name,
                 style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.friendStatistics,
-                    style: const TextStyle(fontSize: 14)),
+                    style: const TextStyle(fontSize: 15)),
               ),
             ),
             Row(
@@ -162,20 +164,22 @@ class _FriendProfileState extends State<FriendProfile> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.friendTravels,
-                    style: const TextStyle(fontSize: 14)),
+                    style: const TextStyle(fontSize: 15)),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.34,
                 child: TravelTimeline(pastTravels: pastTravels),
               ),
             )

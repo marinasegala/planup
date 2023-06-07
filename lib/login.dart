@@ -13,15 +13,15 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
-        const SizedBox(height: 150),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.2),
 
         // logo
         Image.asset(
           'assets/planup_black.png',
-          height: 150,
-          width: 150,
+          height: MediaQuery.of(context).size.height * 0.2,
+          width: MediaQuery.of(context).size.width * 0.5,
         ),
-        const SizedBox(height: 50),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.1),
 
         Text(AppLocalizations.of(context)!.welcomeOnPlanUp,
             textAlign: TextAlign.center,
@@ -31,13 +31,9 @@ class LoginPage extends StatelessWidget {
               letterSpacing: 1.5,
             )),
 
-        const SizedBox(height: 25),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.05),
 
         const LoginButton(),
-
-        const SizedBox(
-          height: 25,
-        )
       ]),
     );
   }
@@ -56,10 +52,11 @@ class _LoginButtonState extends State<LoginButton> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: OutlinedButton(
+      child: ElevatedButton(
         style: OutlinedButton.styleFrom(
           shadowColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.15),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),

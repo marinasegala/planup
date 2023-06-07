@@ -66,7 +66,7 @@ class _HomeTravelState extends State<HomeTravel> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot,
       AsyncSnapshot<QuerySnapshot> querysnapshot) {
     return ListView(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
       children: snapshot!
           .map((data) => _buildListItem(context, data, querysnapshot))
           .toList(),
