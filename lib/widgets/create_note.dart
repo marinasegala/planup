@@ -57,7 +57,7 @@ class _CreateNoteState extends State<CreateNote> {
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.height * 0.04),
                     child: TextField(
-                      maxLength: MediaQuery.of(context).size.width.toInt(),
+                      maxLength: 200,
                       autofocus: true,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.description_outlined),
