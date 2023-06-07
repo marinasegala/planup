@@ -103,13 +103,17 @@ class _FriendProfileState extends State<FriendProfile> {
   }
 
   void _getLengthTravels() async {
-    var travelsList =
-        await FirebaseFirestore.instance.collection('travel').get();
-    final int count = travelsList.docs
-        .where((element) => element['userid'] == widget.friend.userid)
-        .length;
-    setState(() {
-      travels = count;
+    var travelsList = FirebaseFirestore.instance.collection('travel').get();
+    travelsList.then((value) {
+      for (var element in value.docs) {
+        for (var partecipant in element['list part']) {
+          if (partecipant == widget.friend.userid) {
+            setState(() {
+              travels++;
+            });
+          }
+        }
+      }
     });
   }
 

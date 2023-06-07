@@ -135,6 +135,9 @@ class UserSearch extends SearchDelegate<String> {
 
   final recentUsers = [];
 
+  FriendsRepository friendsRepository = FriendsRepository();
+  User currentUser = FirebaseAuth.instance.currentUser!;
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -160,20 +163,53 @@ class UserSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
+    List<UserAccount> matchQuery = [];
     for (var user in users) {
       if (user.name.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(user.name);
+        matchQuery.add(user);
       }
     }
+
     return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: ((context, index) {
-          var result = matchQuery[index];
-          return ListTile(
-            title: Text(result),
-          );
-        }));
+      itemBuilder: (context, index) => ListTile(
+          leading: matchQuery[index].photoUrl != null
+              ? CircleAvatar(
+                  backgroundImage: NetworkImage(matchQuery[index].photoUrl!),
+                  radius: MediaQuery.of(context).size.width * 0.05,
+                )
+              : const CircleAvatar(
+                  child: Icon(Icons.person),
+                ),
+          title: Text(matchQuery[index].name,
+              style: Theme.of(context).textTheme.labelSmall),
+          trailing: FutureBuilder(
+              future: friendsRepository.isAlreadyFriend(
+                  currentUser.uid, matchQuery[index].userid!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox.shrink();
+                } else {
+                  if (snapshot.data == true) {
+                    return TextButton(
+                      onPressed: () {
+                        removeFriend(matchQuery[index].userid!);
+                        close(context, '');
+                      },
+                      child: Text(AppLocalizations.of(context)!.remove),
+                    );
+                  } else {
+                    return TextButton(
+                      onPressed: () {
+                        addFriend(matchQuery[index].userid!);
+                        close(context, '');
+                      },
+                      child: Text(AppLocalizations.of(context)!.addFriend),
+                    );
+                  }
+                }
+              })),
+      itemCount: matchQuery.length,
+    );
   }
 
   @override
@@ -182,8 +218,8 @@ class UserSearch extends SearchDelegate<String> {
         ? recentUsers
         : users
             .where((element) =>
-                element.userid != FirebaseAuth.instance.currentUser!.uid &&
-                element.name.toLowerCase().startsWith(query))
+                element.userid != currentUser.uid &&
+                element.name.toLowerCase().startsWith(query.toLowerCase()))
             .toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
@@ -197,13 +233,32 @@ class UserSearch extends SearchDelegate<String> {
                 ),
           title: Text(suggestion[index].name,
               style: Theme.of(context).textTheme.labelSmall),
-          trailing: TextButton(
-            onPressed: () {
-              addFriend(suggestion[index].userid);
-              close(context, '');
-            },
-            child: Text(AppLocalizations.of(context)!.addFriend),
-          )),
+          trailing: FutureBuilder(
+              future: friendsRepository.isAlreadyFriend(
+                  currentUser.uid, suggestion[index].userid!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox.shrink();
+                } else {
+                  if (snapshot.data == true) {
+                    return TextButton(
+                      onPressed: () {
+                        removeFriend(suggestion[index].userid!);
+                        close(context, '');
+                      },
+                      child: Text(AppLocalizations.of(context)!.remove),
+                    );
+                  } else {
+                    return TextButton(
+                      onPressed: () {
+                        addFriend(suggestion[index].userid!);
+                        close(context, '');
+                      },
+                      child: Text(AppLocalizations.of(context)!.addFriend),
+                    );
+                  }
+                }
+              })),
       itemCount: suggestion.length,
     );
   }
