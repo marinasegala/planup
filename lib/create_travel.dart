@@ -509,8 +509,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         ),
                         ToggleSwitch(
                           initialLabelIndex: _swapDate ? 0 : 1,
-                          minWidth: MediaQuery.of(context).size.width * 0.25,
-                          minHeight: 27.0,
+                          minWidth: MediaQuery.of(context).size.width * 0.2,
+                          minHeight: MediaQuery.of(context).size.height * 0.04,
                           activeBgColor: const [
                             Color.fromARGB(255, 59, 94, 115)
                           ],
