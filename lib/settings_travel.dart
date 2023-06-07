@@ -498,7 +498,7 @@ class _SettingTravelState extends State<SettingTravel> {
                                 }
                                 print(list);
                                 if(list.isEmpty){
-                                  deleteItem('travel', widget.travel.referenceId as String);
+                                  travelRepository.deleteTravel(widget.travel);
                                 } else {
                                   updateItem('userid', '');
                                   return FirebaseFirestore.instance
@@ -516,7 +516,19 @@ class _SettingTravelState extends State<SettingTravel> {
                                 print(querySnapshot.data());
                                 int num = querySnapshot.get('numFriend')-1;
                                 updateItemNum('numFriend', num);
+                                
                               });
+
+                              // FirebaseFirestore.instance.collection('travel')
+                              // .doc(widget.travel.referenceId)
+                              // .get()
+                              // .then((querySnapshot) {
+                              //   print(querySnapshot.data());
+                              //   if(querySnapshot.get('numFriend')==0){
+                              //     travelRepository.deleteTravel(widget.travel);
+                              //   };  
+                              // });
+                              
                               //remove all shopping
                               FirebaseFirestore.instance.collection('shopping')
                               .where('trav', isEqualTo: widget.travel.referenceId)
