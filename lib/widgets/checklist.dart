@@ -217,49 +217,42 @@ class _CheckListState extends State<ItemCheckList> {
                       return AlertDialog(
                         scrollable: true,
                         title: Text(AppLocalizations.of(context)!.newObject),
-                        content: Padding(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.height * 0.01),
-                          child: Form(
-                            child: Column(
-                              children: <Widget>[
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!
-                                        .nameObject,
-                                  ),
-                                  onChanged: (text) => nameItem = text,
+                        content: Form(
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  labelText:
+                                      AppLocalizations.of(context)!.nameObject,
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.02,
-                                ),
-                                RadioButtonGroup(
-                                    options: options,
-                                    preSelectedIdx: 1,
-                                    textStyle: const TextStyle(
-                                        fontSize: 15, color: Colors.black),
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    selectedColor: const Color.fromARGB(
-                                        255, 195, 190, 190),
-                                    mainColor: const Color.fromARGB(
-                                        255, 195, 190, 190),
-                                    selectedBorderSide: const BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 64, 137, 168)),
-                                    buttonWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.25,
-                                    buttonHeight:
-                                        MediaQuery.of(context).size.height *
-                                            0.05,
-                                    callback: (RadioOption val) {
-                                      setState(() {
-                                        stateItem = val.label;
-                                      });
-                                    }),
-                              ],
-                            ),
+                                onChanged: (text) => nameItem = text,
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02,
+                              ),
+                              RadioButtonGroup(
+                                  options: options,
+                                  preSelectedIdx: 1,
+                                  textStyle: const TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  selectedColor:
+                                      const Color.fromARGB(255, 195, 190, 190),
+                                  mainColor:
+                                      const Color.fromARGB(255, 195, 190, 190),
+                                  selectedBorderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 64, 137, 168)),
+                                  buttonWidth:
+                                      MediaQuery.of(context).size.width * 0.26,
+                                  buttonHeight:
+                                      MediaQuery.of(context).size.height * 0.05,
+                                  callback: (RadioOption val) {
+                                    setState(() {
+                                      stateItem = val.label;
+                                    });
+                                  }),
+                            ],
                           ),
                         ),
                         actions: [

@@ -54,7 +54,7 @@
     },
 
     "counterTextNameTravel": "Scrivi per modificare il nome del viaggio",
-    "changeDateFrom": "Cambio la data del viaggio {date}",
+    "changeDateFrom": "Cambio la data del viaggio\n{date}",
     "@changeDateFrom": {
         "descrption": "Caambia la data del viaggio",
         "placeholders": {
@@ -268,5 +268,6 @@
             }
         }
     },
-    "hintTextNameUser": "Inserisci il nome dell'utente"
+    "hintTextNameUser": "Inserisci il nome dell'utente",
+    "hintInsertFriends": "Puoi inserire un amico solo se l'amicizia è reciproca"
 }

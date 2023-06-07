@@ -342,6 +342,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         ]),
       );
     }
+
     List<RadioOption> options = [
       RadioOption("Giornata", AppLocalizations.of(context)!.oneDay),
       RadioOption("Weekend", AppLocalizations.of(context)!.weekend),
@@ -352,76 +353,27 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
     var macroCharts = buildCalendarDialogButton();
     var microCharts = Center(
       child: RadioButtonGroup(
-        options: options,
-        preSelectedIdx: 0,
-        spaceBetween: 12.0,
-        betweenMultiLines: 12.0,
-        vertical: false,
-        multilineNumber: 3,
-        textStyle: const TextStyle(
-            fontSize: 15,
-            color: Colors.black),
-        mainAxisAlignment:
-            MainAxisAlignment.center,
-        crossAxisAlignment:
-            CrossAxisAlignment.center,
-        selectedColor:
-            const Color.fromARGB(
-                255, 195, 190, 190),
-        mainColor: const Color.fromARGB(
-            255, 195, 190, 190),
-        selectedBorderSide:
-            const BorderSide(
-                width: 2,
-                color: Color.fromARGB(
-                    255, 64, 137, 168)),
-        buttonWidth: MediaQuery
-                    .of(context)
-                .size
-                .width *
-            0.4,
-        buttonHeight:
-            MediaQuery.of(context)
-                    .size
-                    .height *
-                0.05,
-        callback: (RadioOption val) {
-          setState(() {
-            date = val.label;
-          });
-    }),);
-        // child: ToggleSwitch(
-        //   initialLabelIndex: 0,
-        //   minWidth: 85.0,
-        //   minHeight: 50.0,
-        //   activeBgColor: const [Color.fromARGB(255, 59, 94, 115)],
-        //   inactiveBgColor: const Color.fromARGB(255, 223, 227, 229),
-        //   totalSwitches: 4,
-        //   labels: [
-        //     AppLocalizations.of(context)!.oneDay,
-        //     AppLocalizations.of(context)!.weekend,
-        //     AppLocalizations.of(context)!.week,
-        //     AppLocalizations.of(context)!.other
-        //   ],
-        //   onToggle: (index) {
-            // switch (index) {
-            //   case 1:
-            //     date = 'Weekend';
-            //     break;
-            //   case 2:
-            //     date = 'Settimana';
-            //     break;
-            //   case 3:
-            //     date = 'Altro';
-            //     break;
-            // }
-            // setState(() {
-            //   _swapDate = !_swapDate;
-            // });
-          //   print('switched to $index -- $date');
-          // },
-    
-
+          options: options,
+          preSelectedIdx: 0,
+          spaceBetween: 12.0,
+          betweenMultiLines: 12.0,
+          vertical: false,
+          multilineNumber: 3,
+          textStyle: const TextStyle(fontSize: 15, color: Colors.black),
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          selectedColor: const Color.fromARGB(255, 195, 190, 190),
+          mainColor: const Color.fromARGB(255, 195, 190, 190),
+          selectedBorderSide: const BorderSide(
+              width: 2, color: Color.fromARGB(255, 64, 137, 168)),
+          buttonWidth: MediaQuery.of(context).size.width * 0.4,
+          buttonHeight: MediaQuery.of(context).size.height * 0.05,
+          callback: (RadioOption val) {
+            setState(() {
+              date = val.label;
+            });
+          }),
+    );
     var swapTile = Container(
       child: (_swapDate) ? macroCharts : microCharts,
     );
@@ -560,7 +512,7 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         ),
                         ToggleSwitch(
                           initialLabelIndex: _swapDate ? 0 : 1,
-                          minWidth: MediaQuery.of(context).size.width * 0.19,
+                          minWidth: MediaQuery.of(context).size.width * 0.14,
                           minHeight: MediaQuery.of(context).size.height * 0.04,
                           activeBgColor: const [
                             Color.fromARGB(255, 59, 94, 115)
@@ -585,10 +537,18 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     swapTile,
                   ]),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.022),
+                    child: Text(AppLocalizations.of(context)!.hintInsertFriends,
+                        style: TextStyle(color: Colors.grey[700])),
+                  ),
                   Center(
                     child: Padding(
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.height * 0.022),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              MediaQuery.of(context).size.height * 0.022,
+                          vertical: MediaQuery.of(context).size.height * 0.015),
                       child: DropDownMultiSelect(
                         onChanged: (List<String> x) {
                           setState(() {

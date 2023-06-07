@@ -33,20 +33,19 @@ class _FriendProfileState extends State<FriendProfile> {
   List<Travel> pastTravels = [];
   List<Travel> pastTrav = [];
 
-  bool getUserId(Travel element, String currentDate){
-    FirebaseFirestore.instance.collection('travel')
-    .doc(element.referenceId)
-    .get()
-    .then((querySnapshot){
-      
-      for(var x in querySnapshot.get('list part')){
-        if(x==currentUser.uid &&
-          element.date != "Giornata" &&
-          element.date != "Weekend" &&
-          element.date != "Settimana" &&
-          element.date != "Altro" &&
-          element.date!.compareTo(currentDate) < 0)
-        {
+  bool getUserId(Travel element, String currentDate) {
+    FirebaseFirestore.instance
+        .collection('travel')
+        .doc(element.referenceId)
+        .get()
+        .then((querySnapshot) {
+      for (var x in querySnapshot.get('list part')) {
+        if (x == widget.friend.userid &&
+            element.date != "Giornata" &&
+            element.date != "Weekend" &&
+            element.date != "Settimana" &&
+            element.date != "Altro" &&
+            element.date!.compareTo(currentDate) < 0) {
           print(element.name);
           setState(() {
             pastTrav.add(element);
@@ -70,9 +69,7 @@ class _FriendProfileState extends State<FriendProfile> {
     travelRepository.getStream().listen((event) {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
-          .where((element) =>
-            getUserId(element, currentDate)
-          )
+          .where((element) => getUserId(element, currentDate))
           .toList();
     });
   }

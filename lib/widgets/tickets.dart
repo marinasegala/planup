@@ -204,7 +204,7 @@ class _TicketState extends State<Tickets> {
                                 options: options,
                                 preSelectedIdx: 0,
                                 textStyle: const TextStyle(
-                                    fontSize: 15, color: Colors.black),
+                                    fontSize: 14, color: Colors.black),
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 selectedColor:
@@ -215,7 +215,7 @@ class _TicketState extends State<Tickets> {
                                     width: 2,
                                     color: Color.fromARGB(255, 64, 137, 168)),
                                 buttonWidth:
-                                    MediaQuery.of(context).size.width * 0.25,
+                                    MediaQuery.of(context).size.width * 0.27,
                                 buttonHeight:
                                     MediaQuery.of(context).size.height * 0.05,
                                 callback: (RadioOption val) {

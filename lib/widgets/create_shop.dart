@@ -104,7 +104,7 @@ class _CreateItemState extends State<CreateShopItem> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.height * 0.03,
+                        horizontal: MediaQuery.of(context).size.width * 0.03,
                         vertical: MediaQuery.of(context).size.height * 0.01),
                     child: Row(
                       children: [
@@ -122,7 +122,8 @@ class _CreateItemState extends State<CreateShopItem> {
                           width: 20,
                         ),
                         CustomDropdownButton(
-                          hint: AppLocalizations.of(context)!.addCategoryShopping,
+                          hint:
+                              AppLocalizations.of(context)!.addCategoryShopping,
                           dropdownItems: items,
                           value: selectedValue,
                           onChanged: (value) {

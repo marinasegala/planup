@@ -271,5 +271,6 @@
             }
         }
     },
-    "hintTextNameUser": "Insert the name of the user"
+    "hintTextNameUser": "Insert the name of the user",
+    "hintInsertFriends": "You can insert a friend only if the friendship is mutual"
 }

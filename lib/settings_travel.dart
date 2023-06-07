@@ -449,7 +449,9 @@ class _SettingTravelState extends State<SettingTravel> {
                           Text(AppLocalizations.of(context)!.changeDateSaved)));
             }
           },
-          child: Center(
+          child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.06),
               child: Text(
                   alone
                       ? AppLocalizations.of(context)!.changeDate
@@ -672,12 +674,13 @@ class _SettingTravelState extends State<SettingTravel> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          Text(
-            AppLocalizations.of(context)!.changeDateFrom(widget.travel.date!),
-            style: const TextStyle(fontSize: 15),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            child: Text(
+              AppLocalizations.of(context)!.changeDateFrom(widget.travel.date!),
+              style: const TextStyle(fontSize: 15),
+            ),
           ),
           widget.travel.date == 'Giornata' ||
                   widget.travel.date == 'Settimana' ||
