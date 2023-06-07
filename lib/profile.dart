@@ -44,16 +44,18 @@ class _ProfilePageState extends State<ProfilePage> {
         : DateTime.now().day;
     var currentDate = '${DateTime.now().year}-$currentMonth-$currentDay';
     travelRepository.getStream().listen((event) {
-      pastTravels = event.docs
-          .map((snapshot) => Travel.fromSnapshot(snapshot))
-          .where((element) =>
-              element.userid == currentUser!.uid &&
-              element.date != "Giornata" &&
-              element.date != "Weekend" &&
-              element.date != "Settimana" &&
-              element.date != "Altro" &&
-              element.date!.compareTo(currentDate) < 0)
-          .toList();
+      setState(() {
+        pastTravels = event.docs
+            .map((snapshot) => Travel.fromSnapshot(snapshot))
+            .where((element) =>
+                element.userid == currentUser!.uid &&
+                element.date != "Giornata" &&
+                element.date != "Weekend" &&
+                element.date != "Settimana" &&
+                element.date != "Altro" &&
+                element.date!.compareTo(currentDate) < 0)
+            .toList();
+      });
     });
   }
 

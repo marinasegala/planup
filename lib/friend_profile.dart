@@ -42,16 +42,18 @@ class _FriendProfileState extends State<FriendProfile> {
         : DateTime.now().day;
     var currentDate = '${DateTime.now().year}-$currentMonth-$currentDay';
     travelRepository.getStream().listen((event) {
-      pastTravels = event.docs
-          .map((snapshot) => Travel.fromSnapshot(snapshot))
-          .where((element) =>
-              element.userid == widget.friend.userid &&
-              element.date != "Giornata" &&
-              element.date != "Weekend" &&
-              element.date != "Settimana" &&
-              element.date != "Altro" &&
-              element.date!.compareTo(currentDate) < 0)
-          .toList();
+      setState(() {
+        pastTravels = event.docs
+            .map((snapshot) => Travel.fromSnapshot(snapshot))
+            .where((element) =>
+                element.userid == widget.friend.userid &&
+                element.date != "Giornata" &&
+                element.date != "Weekend" &&
+                element.date != "Settimana" &&
+                element.date != "Altro" &&
+                element.date!.compareTo(currentDate) < 0)
+            .toList();
+      });
     });
   }
 
@@ -65,6 +67,7 @@ class _FriendProfileState extends State<FriendProfile> {
     _getLengthFriends();
     _getLengthTravels();
     _getLengthPlaces();
+    getPastTravels();
   }
 
   void _getLengthFriends() {
@@ -80,13 +83,17 @@ class _FriendProfileState extends State<FriendProfile> {
   }
 
   void _getLengthTravels() async {
-    var travelsList =
-        await FirebaseFirestore.instance.collection('travel').get();
-    final int count = travelsList.docs
-        .where((element) => element['userid'] == widget.friend.userid)
-        .length;
-    setState(() {
-      travels = count;
+    var travelsList = FirebaseFirestore.instance.collection('travel').get();
+    travelsList.then((value) {
+      for (var element in value.docs) {
+        for (var partecipant in element['list part']) {
+          if (partecipant == widget.friend.userid) {
+            setState(() {
+              travels++;
+            });
+          }
+        }
+      }
     });
   }
 
