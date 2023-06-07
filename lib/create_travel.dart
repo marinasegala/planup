@@ -437,10 +437,10 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
         alignment: Alignment.topCenter,
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Container(
-                width: 100,
-                height: 100,
+                height: MediaQuery.of(context).size.height * 0.15,
+                width: MediaQuery.of(context).size.width * 0.3,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -453,21 +453,19 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         child: Image.file(
                           //to show image, you type like this.
                           File(image!.path),
-                          fit: BoxFit.cover,
-                          width: 100,
-                          height: 100,
+                          fit: BoxFit
+                              .fitWidth, //this is fit the image in the circle
                         ),
                       )
-                    : const ClipOval(
+                    : ClipOval(
                         child: Icon(
                           Icons.add_a_photo,
-                          size: 50,
+                          size: MediaQuery.of(context).size.width * 0.1,
                         ),
                       )),
             ElevatedButton(
               onPressed: () {
                 choosePhoto();
-                // reload the page
               },
               child: Text(AppLocalizations.of(context)!.uploadPhoto),
             ),
@@ -477,7 +475,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.height * 0.02),
                     child: TextFormField(
                       autofocus: true,
                       decoration: InputDecoration(
@@ -495,8 +494,8 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                     ),
                   ),
                   Column(children: [
-                    const SizedBox(
-                      height: 20,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -505,12 +504,12 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                           AppLocalizations.of(context)!.knownDate,
                           style: const TextStyle(fontSize: 16),
                         ),
-                        const SizedBox(
-                          width: 25,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.02,
                         ),
                         ToggleSwitch(
                           initialLabelIndex: _swapDate ? 0 : 1,
-                          minWidth: 45.0,
+                          minWidth: MediaQuery.of(context).size.width * 0.25,
                           minHeight: 27.0,
                           activeBgColor: const [
                             Color.fromARGB(255, 59, 94, 115)

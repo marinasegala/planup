@@ -30,7 +30,7 @@ class TravCard extends StatelessWidget {
                     child: const Icon(Icons.photo),
                   )
                 : ClipOval(
-                    child: Image.network(trav.photo!),
+                    child: Image.network(trav.photo!, fit: BoxFit.fitWidth),
                   ),
           ),
           subtitle: Text(

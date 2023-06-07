@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:planup/db/travel_rep.dart';
 import 'package:planup/home.dart';
-import 'package:planup/home_travel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'db/users_rep.dart';
 import 'model/travel.dart';
