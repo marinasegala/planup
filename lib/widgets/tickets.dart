@@ -35,7 +35,7 @@ class _TicketState extends State<Tickets> {
   String name = '';
 
   String changeExt = '';
-  String ext = '';
+  String ext = 'Pdf';
 
   late Future<ListResult> futureFiles;
 
