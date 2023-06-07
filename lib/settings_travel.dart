@@ -497,11 +497,15 @@ class _SettingTravelState extends State<SettingTravel> {
                                   }
                                 }
                                 print(list);
-                                updateItem('userid', '');
-                                return FirebaseFirestore.instance
-                                  .collection('travel')
-                                  .doc(widget.travel.referenceId)
-                                  .update({'list part': list});
+                                if(list.isEmpty){
+                                  deleteItem('travel', widget.travel.referenceId as String);
+                                } else {
+                                  updateItem('userid', '');
+                                  return FirebaseFirestore.instance
+                                    .collection('travel')
+                                    .doc(widget.travel.referenceId)
+                                    .update({'list part': list});
+                                }
                               });
                               
                               //decrement numFriend
