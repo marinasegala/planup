@@ -31,6 +31,32 @@ class _FriendProfileState extends State<FriendProfile> {
   int places = 0;
 
   List<Travel> pastTravels = [];
+  List<Travel> pastTrav = [];
+
+  bool getUserId(Travel element, String currentDate){
+    FirebaseFirestore.instance.collection('travel')
+    .doc(element.referenceId)
+    .get()
+    .then((querySnapshot){
+      
+      for(var x in querySnapshot.get('list part')){
+        if(x==currentUser.uid &&
+          element.date != "Giornata" &&
+          element.date != "Weekend" &&
+          element.date != "Settimana" &&
+          element.date != "Altro" &&
+          element.date!.compareTo(currentDate) < 0)
+        {
+          print(element.name);
+          setState(() {
+            pastTrav.add(element);
+          });
+          return true;
+        }
+      }
+    });
+    return false;
+  }
 
   // get all the past travels of currentuser
   void getPastTravels() {
@@ -45,12 +71,8 @@ class _FriendProfileState extends State<FriendProfile> {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
           .where((element) =>
-              element.userid == widget.friend.userid &&
-              element.date != "Giornata" &&
-              element.date != "Weekend" &&
-              element.date != "Settimana" &&
-              element.date != "Altro" &&
-              element.date!.compareTo(currentDate) < 0)
+            getUserId(element, currentDate)
+          )
           .toList();
     });
   }
@@ -65,6 +87,7 @@ class _FriendProfileState extends State<FriendProfile> {
     _getLengthFriends();
     _getLengthTravels();
     _getLengthPlaces();
+    getPastTravels();
   }
 
   void _getLengthFriends() {
@@ -180,7 +203,7 @@ class _FriendProfileState extends State<FriendProfile> {
                   horizontal: MediaQuery.of(context).size.width * 0.05),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.34,
-                child: TravelTimeline(pastTravels: pastTravels),
+                child: TravelTimeline(pastTravels: pastTrav),
               ),
             )
           ],

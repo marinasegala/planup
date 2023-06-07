@@ -30,9 +30,36 @@ class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser;
 
   List<Travel> pastTravels = [];
+  List<Travel> pastTrav = [];
 
   late String? name;
   late String? profilePhoto;
+  late List<String> usersId = [];
+
+  bool getUserId(Travel element, String currentDate){
+    FirebaseFirestore.instance.collection('travel')
+    .doc(element.referenceId)
+    .get()
+    .then((querySnapshot){
+      
+      for(var x in querySnapshot.get('list part')){
+        if(x==currentUser?.uid &&
+          element.date != "Giornata" &&
+          element.date != "Weekend" &&
+          element.date != "Settimana" &&
+          element.date != "Altro" &&
+          element.date!.compareTo(currentDate) < 0)
+        {
+          print(element.name);
+          setState(() {
+            pastTrav.add(element);
+          });
+          return true;
+        }
+      }
+    });
+    return false;
+  }
 
   // get all the past travels of currentuser
   void getPastTravels() {
@@ -47,12 +74,8 @@ class _ProfilePageState extends State<ProfilePage> {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
           .where((element) =>
-              element.userid == currentUser!.uid &&
-              element.date != "Giornata" &&
-              element.date != "Weekend" &&
-              element.date != "Settimana" &&
-              element.date != "Altro" &&
-              element.date!.compareTo(currentDate) < 0)
+            getUserId(element, currentDate)
+          )
           .toList();
     });
   }
@@ -225,7 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 horizontal: MediaQuery.of(context).size.width * 0.02),
             child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.34,
-                child: TravelTimeline(pastTravels: pastTravels)),
+                child: TravelTimeline(pastTravels: pastTrav)),
           ),
         ],
       ),
