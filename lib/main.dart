@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         Locale('it', ''),
         Locale('en', ''),
       ],
+      locale: const Locale('it', ''),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.blueGrey,
