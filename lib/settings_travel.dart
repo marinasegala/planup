@@ -618,12 +618,10 @@ class _SettingTravelState extends State<SettingTravel> {
       ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Container(
-              width: 100,
-              height: 100,
+              width: MediaQuery.of(context).size.height * 0.15,
+              height: MediaQuery.of(context).size.height * 0.15,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -640,10 +638,10 @@ class _SettingTravelState extends State<SettingTravel> {
                         ),
                       ),
                     )
-                  : const ClipOval(
+                  : ClipOval(
                       child: Material(
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                           child: Icon(
                             Icons.add_a_photo_outlined,
                             size: 50,

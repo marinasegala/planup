@@ -7,6 +7,7 @@
     "travels": "Viaggi",
     "places": "Posti",
     "myTravels": "I miei viaggi",
+    "numFriend": "Il numero di amici corrisponde alle amicizie reciproche",
     "settings": "Impostazioni",
     "travSubtitle": "Partecipanti: {numFriend}",
     "@travSubtitle": {
@@ -255,7 +256,7 @@
         }
     },
     
-    "noTravelFriend": "Questo utente non ha ancora viaggiato\nAndate ad organizzare un viaggio insieme!",
+    "noTravelFriend": "Questo utente non ha ancora viaggiato\n Inizia a pianificare un viaggio con i tuoi amici!",
 
     "sureToExit": "Sei sicuro di voler uscire?",
     "nameUser": "Nome: {name}",

@@ -36,9 +36,11 @@ class _TicketInfoState extends State<TicketInfo> {
                 }),
           ),
           body: Center(
-            child: widget.tick.ext == 'Image'
+            child: widget.tick.ext == 'Image' 
                 ? Image.network(widget.tick.url!)
-                : SfPdfViewer.network(widget.tick.url!,
+                : widget.tick.ext == 'Immagine' 
+                  ? Image.network(widget.tick.url!)
+                  : SfPdfViewer.network(widget.tick.url!,
                     scrollDirection: PdfScrollDirection.horizontal),
           ),
         ));

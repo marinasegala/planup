@@ -12,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'db/authentication_service.dart';
 import 'login.dart';
+import 'model/user_account.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,10 +25,16 @@ class _ProfilePageState extends State<ProfilePage> {
   int travels = 0;
   int places = 0;
 
+  List<String> friendsId = [];
+  List<String> asFriend = [];
+  List<String> listid = [];
+
   final FriendsRepository friendRepository = FriendsRepository();
   final ShopRepository dataRepository = ShopRepository();
   final TravelRepository travelRepository = TravelRepository();
   final currentUser = FirebaseAuth.instance.currentUser;
+  late List<UserAccount> users = [];
+  final UsersRepository usersRepository = UsersRepository();
 
   List<Travel> pastTravels = [];
   List<Travel> pastTrav = [];
@@ -61,6 +68,15 @@ class _ProfilePageState extends State<ProfilePage> {
     return false;
   }
 
+  void getUsers() {
+    // obtain users from the repository and add to the list
+    usersRepository.getUsers().then((usersList) {
+      setState(() {
+        users = usersList;
+      });
+    });
+  }
+
   // get all the past travels of currentuser
   void getPastTravels() {
     var currentMonth = DateTime.now().month.toString().length == 1
@@ -83,6 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    getUsers();
 
     name = currentUser!.displayName;
     profilePhoto = currentUser!.photoURL;
@@ -99,8 +116,6 @@ class _ProfilePageState extends State<ProfilePage> {
     getPastTravels();
   }
 
-  UsersRepository usersRepository = UsersRepository();
-
   void _getLengthFriends() {
     var friendsList = FirebaseFirestore.instance.collection('friends').get();
     friendsList.then((value) {
@@ -111,7 +126,44 @@ class _ProfilePageState extends State<ProfilePage> {
         friends = count;
       });
     });
+    friendsList.then((value) {
+      final int count = value.docs
+          .where((element) => element['userIdFriend'] == currentUser!.uid)
+          .length;
+      setState(() {
+        friends = count>friends ? friends : count ;
+      });
+    });
   }
+
+   get(String where, String add) {
+    FirebaseFirestore.instance
+        .collection('friends')
+        .where(where, isEqualTo: currentUser?.uid)
+        .get()
+        .then(
+      (querySnapshot) {
+        // print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          if (where == 'userid') {
+            friendsId.add(docSnapshot.get(add));
+          } else {
+            asFriend.add(docSnapshot.get(add));
+          }
+        }
+      },
+    );
+  }
+
+  getfinal() {
+    for (var id in friendsId) {
+      if (asFriend.contains(id) && !listid.contains(id)) {
+        listid.add(id);
+      }
+    }
+  }
+
+  
 
   void _getLengthTravels() async {
     // get the number of travels in which the currentuser has participated
@@ -183,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           profilePhoto != null
               ? ClipOval(
                   child: Material(
@@ -205,9 +257,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Text(name!, style: Theme.of(context).textTheme.titleLarge),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -233,14 +285,31 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05),
+                horizontal: MediaQuery.of(context).size.width * 0.06),
             child: Align(
                 alignment: Alignment.topLeft,
+                child: Text(AppLocalizations.of(context)!.numFriend,
+                    style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.04),
+            child: Row(children: [
+              Align(
+                alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.myTravels,
-                    style: const TextStyle(fontSize: 15))),
+                    style: const TextStyle(fontSize: 15))
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(onPressed: (){}, icon: Icon(Icons.help_outline_outlined)),
+              )
+              
+            ],)
           ),
           const SizedBox(height: 15),
           Padding(

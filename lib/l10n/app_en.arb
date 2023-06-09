@@ -7,6 +7,7 @@
     "travels": "Travels",
     "places": "Places",
     "myTravels": "My Travels",
+    "numFriend": "The number of friends corrispondes to mutual friendships",
     "settings": "Settings",
     "travSubtitle": "Partecipants: {numFriend}",
     "@travSubtitle": {
@@ -256,7 +257,7 @@
         }
     },
     
-    "noTravelFriend": "This user doesn't have any travel yet.\nGo and organize a trip together!",
+    "noTravelFriend": "This user doesn't have any travel yet.\nOrganize a trip with your friends!",
     "extPdf": "Pdf",
     "extImage": "Image",
 
