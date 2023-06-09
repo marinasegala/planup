@@ -110,7 +110,9 @@ class _NotesState extends State<Notes> {
         child: Text(
       AppLocalizations.of(context)!.noNotes,
       style: const TextStyle(fontSize: 17),
+      textAlign: TextAlign.center,
     ));
+    
   }
 
   Widget _buildList(

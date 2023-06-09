@@ -153,7 +153,7 @@
             }
         }
     },
-    "noTickets": "You don't have any ticket yet, click + to add one!",
+    "noTickets": "You don't have any ticket yet,\nclick + to add one!",
     "close": "Done",
     
     "share": "Share your position",
@@ -226,12 +226,12 @@
     "categoryShopping": "Expense category",
     "addCategoryShopping": "Select the category of the expense",
     "myShopping": "My expenses",
-    "noShopping": "You don't have any expense yet, click + to create one!",
+    "noShopping": "You don't have any expense yet,\nclick + to create one!",
     
     "newNote": "New note",
     "nameNote": "Note name",
     "descriptionNote": "Note description",
-    "noNotes": "You don't have any note yet, click + to create one!",
+    "noNotes": "You don't have any note yet,\nclick + to create one!",
 
     "authorNote": "Author {author}",
     "@authorNote": {
@@ -293,6 +293,7 @@
     "extImage": "Image",
 
     "sureToExit": "Are you sure you want to exit?",
+    "sureToDeleteTicket": "Are you sure to delete this ticket?",
     "nameUser": "Name: {name}",
     "@nameUser": {
         "descrption": "Name of the user",

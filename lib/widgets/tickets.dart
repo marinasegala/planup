@@ -257,6 +257,7 @@ class _TicketState extends State<Tickets> {
       style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,
     ));
+    
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot,
@@ -266,6 +267,16 @@ class _TicketState extends State<Tickets> {
       children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
     );
   }
+  Future<void> deleteItem(String id) {
+      return FirebaseFirestore.instance
+          .collection("ticket")
+          .doc(id)
+          .delete()
+          .then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final tick = Ticket.fromSnapshot(snapshot);
@@ -276,19 +287,49 @@ class _TicketState extends State<Tickets> {
         return Card(
             elevation: 2,
             child: InkWell(
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.04),
-                        child: Center(
-                            child: Text(tick.name,
-                                style: const TextStyle(fontSize: 18.0))),
-                      ),
+                child: ListTile(
+                    title: Text(
+                      tick.name,
+                      style: const TextStyle(fontSize: 18),
                     ),
-                  ],
-                ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.close_outlined),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              scrollable: true,
+                              title: Text(AppLocalizations.of(context)!.sureToDeleteTicket),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'No'),
+                                  child: Text(AppLocalizations.of(context)!.no, style: TextStyle(fontSize: 16),),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    FirebaseFirestore.instance
+                                        .collection('ticket')
+                                        .where("name", isEqualTo: tick.name)
+                                        .get()
+                                        .then(
+                                      (querySnapshot) {
+                                        for (var docSnapshot in querySnapshot.docs) {
+                                          deleteItem(docSnapshot.id);
+                                        }
+                                      },
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(AppLocalizations.of(context)!.yes, style: TextStyle(fontSize: 16),),
+                                ),
+                              ],
+                            );
+                          });
+                        
+                      },
+                    ),
+                  ),
                 onTap: () {
                   Navigator.push(
                       context,
