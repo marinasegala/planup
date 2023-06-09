@@ -68,6 +68,32 @@
         }
     },
 
+    "infowithoutdesc": "Prezzo: {price}",
+    "@infowithoutdesc": {
+        "descrption": "Prezzo: ",
+        "placeholders": {
+            "price": {
+                "type": "String",
+                "example": "20.0"
+            }
+        }
+    },
+
+    "infowithdesc": "Prezzo: {price}\n {desc}",
+    "@infowithdesc": {
+        "descrption": "Prezzo e descrizione ",
+        "placeholders": {
+            "price": {
+                "type": "String",
+                "example": "20.0"
+            }
+            "desc": {
+                "type": "String",
+                "example": "good"
+            }
+        }
+    },
+
     "oneDay": "Giornata",
     "weekend": "Weekend",
     "week": "Settimana",

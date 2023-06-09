@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../model/shopping.dart';
 
@@ -60,7 +61,9 @@ class ShopCard extends StatelessWidget {
               shop.name,
               style: const TextStyle(fontSize: 18),
             ),
-            subtitle: description ? const Text('') : Text(shop.desc),
+            subtitle: description 
+              ? Text(AppLocalizations.of(context)!.infowithoutdesc(shop.price.toString())) 
+              : Text(AppLocalizations.of(context)!.infowithdesc(shop.price.toString(), shop.desc)),
             trailing: IconButton(
               icon: const Icon(Icons.close_outlined),
               onPressed: () {
