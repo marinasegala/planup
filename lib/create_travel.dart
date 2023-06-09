@@ -533,9 +533,23 @@ class _CreateTravelFormState extends State<CreateTravelPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     swapTile,
                   ]),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Center(
+                    child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.height * 0.022),
+                    child: !_swapDate
+                      ? Text(AppLocalizations.of(context)!.selectedDate(date),
+                              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic), )
+                      : date.length>10
+                        ? Text(AppLocalizations.of(context)!.selectedDate(date),
+                              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic), )
+                        : SizedBox.shrink(),
+                  ),
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   Padding(
                     padding: EdgeInsets.symmetric(

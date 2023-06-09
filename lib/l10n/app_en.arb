@@ -82,16 +82,18 @@
     },
 
     "infowithdesc": "Price: {price}\n {desc}",
+    
+    "infowithdesc": "Price: {price}\n{desc}",
     "@infowithdesc": {
-        "descrption": "Price and description ",
+        "descrption": "Price and desc",
         "placeholders": {
             "price": {
                 "type": "String",
-                "example": "20.0"
-            }
+                "example": "10"
+            },
             "desc": {
                 "type": "String",
-                "example": "good"
+                "example": "Travels"
             }
         }
     },
@@ -117,7 +119,7 @@
     
     "loading": "Loading...",
     "processingData": "Processing data...",
-    "send": "Send",
+    "send": "Create",
     
     "myTravelsEmpty": "You don't have any travel yet, click + to create one!",
     "removeFriend": "Remove friend",
@@ -301,5 +303,16 @@
         }
     },
     "hintTextNameUser": "Insert the name of the user",
-    "hintInsertFriends": "You can insert a friend only if the friendship is mutual"
+    "hintInsertFriends": "You can insert a friend only if the friendship is mutual",
+    
+    "selectedDate": "Chosen date: {date}",
+    "@selectedDate": {
+        "descrption": "Chosen data by user",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "Day"
+            }
+        }
+    }
 }

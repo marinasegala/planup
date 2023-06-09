@@ -79,17 +79,17 @@
         }
     },
 
-    "infowithdesc": "Prezzo: {price}\n {desc}",
+    "infowithdesc": "Prezzo: {price}\n{desc}",
     "@infowithdesc": {
-        "descrption": "Prezzo e descrizione ",
+        "descrption": "Prezzo e desc",
         "placeholders": {
             "price": {
                 "type": "String",
-                "example": "20.0"
-            }
+                "example": "10"
+            },
             "desc": {
                 "type": "String",
-                "example": "good"
+                "example": "Travels"
             }
         }
     },
@@ -115,7 +115,7 @@
     
     "loading": "Caricamento...",
     "processingData": "Elaborazione dei dati",
-    "send": "Invia",
+    "send": "Crea",
     
     "myTravelsEmpty": "Non hai ancora viaggiato, clicca su + per creare il tuo primo viaggio!",
     "removeFriend": "Rimuovi amico",
@@ -298,5 +298,15 @@
         }
     },
     "hintTextNameUser": "Inserisci il nome dell'utente",
-    "hintInsertFriends": "Puoi inserire un amico solo se l'amicizia è reciproca"
+    "hintInsertFriends": "Puoi inserire un amico solo se l'amicizia è reciproca",
+    "selectedDate": "Data scelta: {date}",
+    "@selectedDate": {
+        "descrption": "Data scelta dall'utenet",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "Giornata"
+            }
+        }
+    }
 }
