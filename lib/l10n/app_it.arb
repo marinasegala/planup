@@ -153,7 +153,8 @@
     "extPdf": "Pdf",
     "extImage": "Immagine",
     
-    "share": "Condividi",
+    "share": "Condividi la tua posizione",
+    "removePosition": "Rimuovi la tua posizione",
     "addMarker": "Aggiungi un marker",
     "lat": "Latitudine: {lat}",
     "@lat": {

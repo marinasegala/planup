@@ -156,7 +156,8 @@
     "noTickets": "You don't have any ticket yet, click + to add one!",
     "close": "Done",
     
-    "share": "Share",
+    "share": "Share your position",
+    "removePosition": "Remove your position",
     "addMarker": "Add a new marker",
     "lat": "Latitude: {lat}",
     "@lat": {

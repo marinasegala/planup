@@ -283,7 +283,7 @@ class _MapsPageState extends State<MapsPage> {
             },
             child: Column(children: [
               Icon(Icons.remove),
-              Text(AppLocalizations.of(context)!.remove,
+              Text(AppLocalizations.of(context)!.removePosition,
                   style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center),
             ])),
