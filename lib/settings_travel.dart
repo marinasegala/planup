@@ -680,6 +680,9 @@ class _SettingTravelState extends State<SettingTravel> {
               style: const TextStyle(fontSize: 15),
             ),
           ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
           widget.travel.date == 'Giornata' ||
                   widget.travel.date == 'Settimana' ||
                   widget.travel.date == 'Weekend' ||
@@ -859,7 +862,7 @@ class _SettingTravelState extends State<SettingTravel> {
                     MaterialPageRoute(builder: (builder) => const HomePage()));
               },
               child: Text(
-                AppLocalizations.of(context)!.send,
+                AppLocalizations.of(context)!.modify,
                 style: const TextStyle(fontSize: 16),
               )),
         ],

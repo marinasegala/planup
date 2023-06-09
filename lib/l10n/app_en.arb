@@ -120,6 +120,7 @@
     "loading": "Loading...",
     "processingData": "Processing data...",
     "send": "Create",
+    "modify": "Modify",
     
     "myTravelsEmpty": "You don't have any travel yet, click + to create one!",
     "removeFriend": "Remove friend",
