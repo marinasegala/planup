@@ -294,7 +294,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text(AppLocalizations.of(context)!.numFriend,
                     style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          // SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.04),
@@ -306,12 +306,32 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Align(
                 alignment: Alignment.topRight,
-                child: IconButton(onPressed: (){}, icon: Icon(Icons.help_outline_outlined)),
+                child: IconButton(
+                  onPressed: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Text(AppLocalizations.of(context)!.infoTravelTimeline),
+                          actions: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              child: Text(AppLocalizations.of(context)!.ok),
+                              onPressed: () { Navigator.of(context).pop(); },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }, 
+                  icon: Icon(Icons.help_outline_outlined, size: 20,)),
               )
               
             ],)
           ),
-          const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.02),

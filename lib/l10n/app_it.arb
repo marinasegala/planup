@@ -8,6 +8,8 @@
     "places": "Posti",
     "myTravels": "I miei viaggi",
     "numFriend": "Il numero di amici corrisponde alle amicizie reciproche",
+    "infoTravelTimeline": "Solo i viaggi con la data esatta sono mostrati!\n\nRicorda: appena conosci la data esatta di un viaggio, inseriscila",
+    "ok": "Capito",
     "settings": "Impostazioni",
     "travSubtitle": "Partecipanti: {numFriend}",
     "@travSubtitle": {

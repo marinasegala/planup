@@ -8,6 +8,8 @@
     "places": "Places",
     "myTravels": "My Travels",
     "numFriend": "The number of friends corrispondes to mutual friendships",
+    "infoTravelTimeline": "Only travels with an exact date are shown!\n\nRemember: as soon as you know the exact date of a travel, insert it", 
+    "ok": "Ok",
     "settings": "Settings",
     "travSubtitle": "Partecipants: {numFriend}",
     "@travSubtitle": {
