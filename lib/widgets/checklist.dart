@@ -442,17 +442,19 @@ class _CheckListState extends State<ItemCheckList> {
                 subtitle: Text(list.isPublic
                     ? AppLocalizations.of(context)!.public
                     : AppLocalizations.of(context)!.private),
-                secondary: IconButton(
-                    icon: const Icon(Icons.close_outlined),
-                    onPressed: () {
-                      FirebaseFirestore.instance
-                          .collection('check')
-                          .doc(list.referenceId)
-                          .get()
-                          .then((querySnapshot) {
-                        delete(querySnapshot.id);
-                      });
-                    })),
+                secondary: !list.isChecked
+                    ? IconButton(
+                        icon: const Icon(Icons.close_outlined),
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection('check')
+                              .doc(list.referenceId)
+                              .get()
+                              .then((querySnapshot) {
+                            delete(querySnapshot.id);
+                          });
+                        })
+                    : const SizedBox.shrink()),
             const Divider(height: 0),
           ]);
         } else {
