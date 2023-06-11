@@ -215,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'No'),
-                            child: Text(AppLocalizations.of(context)!.no),
+                            child: Text(AppLocalizations.of(context)!.no,  style: TextStyle(fontSize: 19)),
                           ),
                           TextButton(
                             onPressed: () {
@@ -227,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   MaterialPageRoute(
                                       builder: (builder) => const LoginPage()));
                             },
-                            child: Text(AppLocalizations.of(context)!.yes),
+                            child: Text(AppLocalizations.of(context)!.yes, style: TextStyle(fontSize: 19),),
                           ),
                         ],
                       );

@@ -85,7 +85,7 @@ class _HomeTravelState extends State<HomeTravel> {
           stream: repository.getStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: Text(AppLocalizations.of(context)!.loading));
+              return Center(child: CircularProgressIndicator.adaptive());
             } else {
               final hasMyOwnTravel = _hasMyOwnTravel(snapshot);
               if (!hasMyOwnTravel) {

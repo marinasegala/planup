@@ -105,7 +105,7 @@ class _CheckListState extends State<ItemCheckList> {
               ),
               createButton(AppLocalizations.of(context)!.myList,
                   profilePhoto as String, currentUser?.uid as String),
-              createButton(widget.trav.name, '', 'group'),
+              createButton(widget.trav.name, widget.trav.photo as String, 'group'),
               StreamBuilder<QuerySnapshot>(
                   stream: travRepository.getStream(),
                   builder: (context, snapshot) {
@@ -365,15 +365,15 @@ class _CheckListState extends State<ItemCheckList> {
         });
       },
       child: Column(children: [
-        name == widget.trav.name
-            ? CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 0.08,
-                child: Icon(
-                  Icons.group_outlined,
-                  size: MediaQuery.of(context).size.width * 0.1,
-                ),
-              )
-            : CircleAvatar(
+        name == widget.trav.name && photo == ''
+          ? CircleAvatar(
+                  radius: MediaQuery.of(context).size.width * 0.08,
+                  child: Icon(
+                    Icons.group_outlined,
+                    size: MediaQuery.of(context).size.width * 0.1,
+                  ),
+                )
+          : CircleAvatar(
                 backgroundImage: NetworkImage(photo),
                 radius: MediaQuery.of(context).size.width * 0.08,
               ),

@@ -48,9 +48,15 @@ class NoteCard extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             subtitle: description
-                ? Text(AppLocalizations.of(context)!.authorNote(author))
-                : Text(AppLocalizations.of(context)!
-                    .authorNoteWithDescription(author, note.desc)),
+                ? Column(children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
+                  Text(AppLocalizations.of(context)!.authorNote(author))
+                ])
+                : Column(children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03,), 
+                  Text(AppLocalizations.of(context)!
+                    .authorNoteWithDescription(author, note.desc), textAlign: TextAlign.left),
+                ]),
             trailing: note.userid == currentUser?.uid
                 ? IconButton(
                     icon: const Icon(Icons.close_outlined),

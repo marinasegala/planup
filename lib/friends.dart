@@ -115,7 +115,7 @@ class _FriendPageState extends State<FriendPage> {
           stream: friendRepository.getStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: Text(AppLocalizations.of(context)!.loading));
+              return Center(child: CircularProgressIndicator.adaptive());
             } else {
               final hasFriends = _hasFriends(snapshot);
               if (!hasFriends) {

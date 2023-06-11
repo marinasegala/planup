@@ -35,7 +35,9 @@ class _TravelTimelineState extends State<TravelTimeline> {
     return widget.pastTravels.isEmpty
         ? Center(
             child: Text(
-              AppLocalizations.of(context)!.noTravelFriend,
+              widget.visibility
+              ? AppLocalizations.of(context)!.noTravelCurrentUser
+              : AppLocalizations.of(context)!.noTravelFriend,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),

@@ -268,7 +268,7 @@
     "descriptionNote": "Note description",
     "noNotes": "You don't have any note yet,\nclick + to create one!",
     "noNotesPast": "No notes were added during the travel",
-    "authorNote": "Author {author}",
+    "authorNote": "Author: {author}",
     "@authorNote": {
         "descrption": "Text to show the author of a note",
         "placeholders": {
@@ -279,7 +279,7 @@
         }
     },
 
-    "authorNoteWithDescription": "{desc}\nAuthor {author}",
+    "authorNoteWithDescription": "{desc}\n\nAuthor: {author}",
     "@authorNoteWithDescription": {
         "descrption": "Text to show the author of a note with the description",
         "placeholders": {
@@ -323,7 +323,8 @@
         }
     },
     
-    "noTravelFriend": "This user doesn't have any travel yet.\nOrganize a trip with your friends!",
+    "noTravelFriend": "This user doesn't have any past travel yet",
+    "noTravelCurrentUser": "You don't have any past travel yet.\nOrganize a trip with your friends!",
     "extPdf": "Pdf",
     "extImage": "Image",
 
