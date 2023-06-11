@@ -162,6 +162,7 @@
         }
     },
     "noTickets": "Non hai ancora biglietti,\n clicca su + per aggiungerne uno!",
+    "noTickPast": "Non sono aggiunti biglietti durante il viaggio",
     "extPdf": "Pdf",
     "extImage": "Immagine",
     
@@ -238,12 +239,12 @@
     "addCategoryShopping": "Seleziona la categoria della tua spesa",
     "myShopping": "I miei acquisti",
     "noShopping": "Non hai ancora acquistato nulla, clicca su + per aggiungere il tuo primo acquisto",
-    
+    "noShopPast": "Nessuna spesa è stata aggiunta durante il viaggio",
     "newNote": "Nuova nota",
     "nameNote": "Nome nota",
     "descriptionNote": "Descrizione nota",
     "noNotes": "Non sono ancora state inserite note,\nclicca su + per aggiungere la prima nota",
-
+    "noNotesPast": "Non sono state aggiunte note durante il viaggio",
     "authorNote": "Autore {author}",
     "@authorNote": {
         "descrption": "Autore di una nota",

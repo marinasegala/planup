@@ -256,7 +256,7 @@ class _TicketState extends State<Tickets> {
 
   Widget _noItem() {
     return Center(
-        child: Text(
+        child: Text( widget.isPast ? AppLocalizations.of(context)!.noTickPast :
       AppLocalizations.of(context)!.noTickets,
       style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,

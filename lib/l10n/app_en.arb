@@ -165,6 +165,7 @@
         }
     },
     "noTickets": "You don't have any ticket yet,\nclick + to add one!",
+    "noTickPast": "No tickets were added during the travel",
     "close": "Done",
     
     "share": "Share your position",
@@ -238,12 +239,13 @@
     "addCategoryShopping": "Select the category of the expense",
     "myShopping": "My expenses",
     "noShopping": "You don't have any expense yet,\nclick + to create one!",
+    "noShopPast": "No expenses were added during the travel",
     
     "newNote": "New note",
     "nameNote": "Note name",
     "descriptionNote": "Note description",
     "noNotes": "You don't have any note yet,\nclick + to create one!",
-
+    "noNotesPast": "No notes were added during the travel",
     "authorNote": "Author {author}",
     "@authorNote": {
         "descrption": "Text to show the author of a note",

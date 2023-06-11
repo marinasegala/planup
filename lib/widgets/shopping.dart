@@ -76,7 +76,7 @@ class _ShoppingState extends State<Shopping> {
 
   Widget _noItem() {
     return Center(
-        child: Text(
+        child: Text( widget.isPast ? AppLocalizations.of(context)!.noShopPast :
       AppLocalizations.of(context)!.noShopping,
       style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,

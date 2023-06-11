@@ -111,7 +111,7 @@ class _NotesState extends State<Notes> {
 
   Widget _noItem() {
     return Center(
-        child: Text(
+        child: Text( widget.isPast ? AppLocalizations.of(context)!.noNotesPast :
       AppLocalizations.of(context)!.noNotes,
       style: const TextStyle(fontSize: 17),
       textAlign: TextAlign.center,
