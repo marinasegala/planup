@@ -142,7 +142,9 @@ class _CheckListState extends State<ItemCheckList> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.01,
                   ),
-                  Text(
+                  widget.isPast
+                  ? const SizedBox.shrink()
+                  : Text(
                     AppLocalizations.of(context)!.publicObjects,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16),

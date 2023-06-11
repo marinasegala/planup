@@ -180,7 +180,17 @@
         }
     },
 
-    "visualize": "Vuoi vedere le informazioni su questo viaggio?",
+    "visualize": "Vuoi vedere le informazioni relative a {name}?",
+    "@visualize": {
+        "descrption": "Richiesa visualizzazione informazioni",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Mantova"
+            }
+        }
+    },
+    "visualizeonly": "Sei sul profilo di un tuo amico!\nNon sei autorizzato a vedere queste informazioni",
 
     "long": "Longitudine: {long}",
     "@long": {
@@ -267,6 +277,17 @@
             "desc": {
                 "type": "String",
                 "example": "Questa è la mia nota"
+            }
+        }
+    },
+
+    "tot": "Totale: {tot}",
+    "@tot": {
+        "descrption": "Totale spese",
+        "placeholders": {
+            "tot": {
+                "type": "double",
+                "example": "9.12"
             }
         }
     },

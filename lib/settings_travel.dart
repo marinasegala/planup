@@ -644,7 +644,7 @@ class _SettingTravelState extends State<SettingTravel> {
                         child: Padding(
                           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                           child: Icon(
-                            !widget.isPast ? Icons.photo : Icons.add_a_photo_outlined,
+                            widget.isPast ? Icons.photo : Icons.add_a_photo_outlined,
                             size: 50,
                           ),
                         ),

@@ -192,7 +192,29 @@
             }
         }
     },
-    "visualize": "Do you want to see information related to this travel?",
+    "tot": "Total: {tot}",
+    "@tot": {
+        "descrption": "Total of shopping",
+        "placeholders": {
+            "tot": {
+                "type": "double",
+                "example": "9.12"
+            }
+        }
+    },
+
+    "visualize": "Do you want to see informations related to {name}?",
+    "@visualize": {
+        "descrption": "Request for seeing information about a travel",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Mantova"
+            }
+        }
+    },
+    "visualizeonly": "You are on the profile of a your friend!\nYou don't have access to this information",
+
     "nameMarker": "Place name",
     "nameRequired": "The name is mandatory",
     "descriptionMarker": "Place description",

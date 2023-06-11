@@ -97,7 +97,7 @@ class _ShoppingState extends State<Shopping> {
     final shop = Shop.fromSnapshot(snapshot);
     if (FirebaseAuth.instance.currentUser != null) {
       if (shop.userid == FirebaseAuth.instance.currentUser?.uid &&
-          shop.trav == id) {
+          shop.trav == id) {    
         return ShopCard(shop: shop, boldStyle: boldStyle);
       }
     }

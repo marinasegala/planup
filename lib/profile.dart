@@ -61,10 +61,8 @@ class _ProfilePageState extends State<ProfilePage> {
           element.date!.length>14
           ? element.date!.substring(15,25)
           : element.date!;
-          print('${controlDate} - ${element.name}');
-          print(currentDate);
+          
           if (controlDate.compareTo(currentDate) < 0){
-            print(element.name);
             setState(() {
               pastTrav.add(element);
             });
@@ -345,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 horizontal: MediaQuery.of(context).size.width * 0.02),
             child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.34,
-                child: TravelTimeline(pastTravels: pastTrav)),
+                child: TravelTimeline(pastTravels: pastTrav, visibility: true)),
           ),
         ],
       ),

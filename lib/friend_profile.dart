@@ -204,7 +204,7 @@ class _FriendProfileState extends State<FriendProfile> {
                   horizontal: MediaQuery.of(context).size.width * 0.05),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.34,
-                child: TravelTimeline(pastTravels: pastTrav),
+                child: TravelTimeline(pastTravels: pastTrav, visibility: false,),
               ),
             )
           ],

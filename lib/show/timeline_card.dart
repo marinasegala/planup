@@ -10,9 +10,9 @@ import '../travel_info.dart';
 
 // ignore: must_be_immutable
 class TravelTimeline extends StatefulWidget {
-  TravelTimeline({super.key, required this.pastTravels});
-
   List<Travel> pastTravels;
+  final bool visibility;
+  TravelTimeline({super.key, required this.pastTravels, required this.visibility});
 
   @override
   State<StatefulWidget> createState() => _TravelTimelineState();
@@ -43,7 +43,7 @@ class _TravelTimelineState extends State<TravelTimeline> {
         : Timeline.builder(
             itemBuilder: (BuildContext context, int index) {
               return TimelineModel(
-                  TimelineCard(travel: widget.pastTravels[index]),
+                  TimelineCard(travel: widget.pastTravels[index], vis: widget.visibility),
                   icon: const Icon(Icons.flight),
                   iconBackground: Colors.amber[200]!);
             },
@@ -56,9 +56,9 @@ class _TravelTimelineState extends State<TravelTimeline> {
 }
 
 class TimelineCard extends StatelessWidget {
-  const TimelineCard({super.key, required this.travel});
-
   final Travel travel;
+  final bool vis;
+  const TimelineCard({super.key, required this.travel, required this.vis});
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +83,13 @@ class TimelineCard extends StatelessWidget {
               )
             : Image.network(travel.photo!),
         onTap: () {
-          showDialog(
+          vis
+          ? showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 scrollable: true,
-                content: Text(AppLocalizations.of(context)!.visualize),
+                content: Text(AppLocalizations.of(context)!.visualize(travel.name)),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'No'),
@@ -104,7 +105,22 @@ class TimelineCard extends StatelessWidget {
                   ),
                 ],
               );
-            });
+            })
+          // : showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return AlertDialog(
+          //       scrollable: true,
+          //       content: Text(AppLocalizations.of(context)!.visualizeonly),
+          //       actions: [
+          //         TextButton(
+          //           onPressed: () => Navigator.pop(context),
+          //           child: Text(AppLocalizations.of(context)!.ok, style: TextStyle(fontSize: 17),),
+          //         ),
+          //       ],
+          //     );
+          //   });
+          : null;
         },
       ),
     );
