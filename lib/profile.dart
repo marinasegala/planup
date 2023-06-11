@@ -43,31 +43,29 @@ class _ProfilePageState extends State<ProfilePage> {
   late String? profilePhoto;
   late List<String> usersId = [];
 
-  bool getId(Travel element, String currentDate){
-    FirebaseFirestore.instance.collection('travel')
-    .doc(element.referenceId)
-    .get()
-    .then((querySnapshot){ //14 alla fine o 0-10
-      for(var x in querySnapshot.get('list part')){
-        
-        
-        if(x==currentUser?.uid &&
-          element.date != "Giornata" &&
-          element.date != "Weekend" &&
-          element.date != "Settimana" &&
-          element.date != "Altro")
-        {
-          var controlDate = 
-          element.date!.length>14
-          ? element.date!.substring(15,25)
-          : element.date!;
-          
-          if (controlDate.compareTo(currentDate) < 0){
+  bool getId(Travel element, String currentDate) {
+    FirebaseFirestore.instance
+        .collection('travel')
+        .doc(element.referenceId)
+        .get()
+        .then((querySnapshot) {
+      //14 alla fine o 0-10
+      for (var x in querySnapshot.get('list part')) {
+        if (x == currentUser?.uid &&
+            element.date != "Giornata" &&
+            element.date != "Weekend" &&
+            element.date != "Settimana" &&
+            element.date != "Altro") {
+          var controlDate = element.date!.length > 14
+              ? element.date!.substring(15, 25)
+              : element.date!;
+
+          if (controlDate.compareTo(currentDate) < 0) {
             setState(() {
               pastTrav.add(element);
             });
             return true;
-            }
+          }
         }
       }
     });
@@ -95,9 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
     travelRepository.getStream().listen((event) {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
-          .where((element) =>
-            getId(element, currentDate)
-          )
+          .where((element) => getId(element, currentDate))
           .toList();
     });
   }
@@ -137,12 +133,12 @@ class _ProfilePageState extends State<ProfilePage> {
           .where((element) => element['userIdFriend'] == currentUser!.uid)
           .length;
       setState(() {
-        friends = count>friends ? friends : count ;
+        friends = count > friends ? friends : count;
       });
     });
   }
 
-   get(String where, String add) {
+  get(String where, String add) {
     FirebaseFirestore.instance
         .collection('friends')
         .where(where, isEqualTo: currentUser?.uid)
@@ -168,8 +164,6 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
   }
-
-  
 
   void _getLengthTravels() async {
     // get the number of travels in which the currentuser has participated
@@ -215,7 +209,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'No'),
-                            child: Text(AppLocalizations.of(context)!.no,  style: TextStyle(fontSize: 19)),
+                            child: Text(AppLocalizations.of(context)!.no,
+                                style: TextStyle(fontSize: 19)),
                           ),
                           TextButton(
                             onPressed: () {
@@ -227,7 +222,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                   MaterialPageRoute(
                                       builder: (builder) => const LoginPage()));
                             },
-                            child: Text(AppLocalizations.of(context)!.yes, style: TextStyle(fontSize: 19),),
+                            child: Text(
+                              AppLocalizations.of(context)!.yes,
+                              style: TextStyle(fontSize: 19),
+                            ),
                           ),
                         ],
                       );
@@ -298,51 +296,60 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(AppLocalizations.of(context)!.numFriend,
-                    style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
+                    style: const TextStyle(
+                        fontSize: 14, fontStyle: FontStyle.italic))),
           ),
           // SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.04),
-            child: Row(children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(AppLocalizations.of(context)!.myTravels,
-                    style: const TextStyle(fontSize: 15))
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: (){
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: Text(AppLocalizations.of(context)!.infoTravelTimeline),
-                          actions: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                textStyle: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              child: Text(AppLocalizations.of(context)!.ok),
-                              onPressed: () { Navigator.of(context).pop(); },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }, 
-                  icon: Icon(Icons.help_outline_outlined, size: 20,)),
-              )
-              
-            ],)
-          ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04),
+              child: Row(
+                children: [
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(AppLocalizations.of(context)!.myTravels,
+                          style: const TextStyle(fontSize: 15))),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Text(AppLocalizations.of(context)!
+                                    .infoTravelTimeline),
+                                actions: [
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                    child:
+                                        Text(AppLocalizations.of(context)!.ok),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(
+                          Icons.help_outline_outlined,
+                          size: 20,
+                        )),
+                  )
+                ],
+              )),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.02),
             child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.34,
+                height: MediaQuery.of(context).size.height * 0.32,
                 child: TravelTimeline(pastTravels: pastTrav, visibility: true)),
           ),
         ],
