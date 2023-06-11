@@ -59,7 +59,17 @@
     "counterTextNameTravel": "Scrivi per modificare il nome del viaggio",
     "changeDateFrom": "Cambio la data del viaggio\n{date}",
     "@changeDateFrom": {
-        "descrption": "Caambia la data del viaggio",
+        "descrption": "Cambia la data del viaggio",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "2023-06-01"
+            }
+        }
+    },
+    "dateFrom": "Il viaggio si è svolto nel seguente periodo:\n{date}",
+    "@dateFrom": {
+        "descrption": "Mostra la data del viaggio",
         "placeholders": {
             "date": {
                 "type": "String",
@@ -155,8 +165,8 @@
     "extPdf": "Pdf",
     "extImage": "Immagine",
     
-    "share": "Condividi la tua posizione",
-    "removePosition": "Rimuovi la tua posizione",
+    "share": "Condividi\nla tua posizione",
+    "removePosition": "Rimuovi\nla tua posizione",
     "addMarker": "Aggiungi un marker",
     "lat": "Latitudine: {lat}",
     "@lat": {
@@ -168,6 +178,8 @@
             }
         }
     },
+
+    "visualize": "Vuoi vedere le informazioni su questo viaggio?",
 
     "long": "Longitudine: {long}",
     "@long": {

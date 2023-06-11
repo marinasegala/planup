@@ -18,7 +18,8 @@ import 'model/user_account.dart';
 
 class SettingTravel extends StatefulWidget {
   final Travel travel;
-  const SettingTravel({Key? key, required this.travel}) : super(key: key);
+  final bool isPast;
+  const SettingTravel({Key? key, required this.travel, required this.isPast}) : super(key: key);
 
   @override
   State<SettingTravel> createState() => _SettingTravelState();
@@ -643,13 +644,15 @@ class _SettingTravelState extends State<SettingTravel> {
                         child: Padding(
                           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                           child: Icon(
-                            Icons.add_a_photo_outlined,
+                            !widget.isPast ? Icons.photo : Icons.add_a_photo_outlined,
                             size: 50,
                           ),
                         ),
                       ),
                     )),
-          ElevatedButton(
+          widget.isPast
+          ? const SizedBox.shrink()
+          : ElevatedButton(
             onPressed: () {
               choosePhoto();
               // reload the page
@@ -660,13 +663,14 @@ class _SettingTravelState extends State<SettingTravel> {
           Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             child: TextField(
+              readOnly: widget.isPast ? true : false,
               autofocus: false,
               decoration: InputDecoration(
                 icon: const Icon(Icons.pin_drop_outlined),
                 hintText: AppLocalizations.of(context)!
                     .hintTextNameTravel(widget.travel.name),
-                counterText:
-                    AppLocalizations.of(context)!.counterTextNameTravel,
+                counterText: widget.isPast ? ''
+                    : AppLocalizations.of(context)!.counterTextNameTravel,
               ),
               onChanged: (text) => updateName = text,
             ),
@@ -676,20 +680,24 @@ class _SettingTravelState extends State<SettingTravel> {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.05),
             child: Text(
-              AppLocalizations.of(context)!.changeDateFrom(widget.travel.date!),
+              widget.isPast 
+                ? AppLocalizations.of(context)!.dateFrom(widget.travel.date!)
+                : AppLocalizations.of(context)!.changeDateFrom(widget.travel.date!),
               style: const TextStyle(fontSize: 15),
             ),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          widget.travel.date == 'Giornata' ||
+          widget.isPast 
+           ? const SizedBox.shrink()
+           : widget.travel.date == 'Giornata' ||
                   widget.travel.date == 'Settimana' ||
                   widget.travel.date == 'Weekend' ||
                   widget.travel.date == 'Altro' ||
                   widget.travel.date == 'One day' ||
                   widget.travel.date == 'Week' ||
-                  widget.travel.date == 'Other'
+                  widget.travel.date == 'Other' 
               ? ToggleSwitch(
                   minWidth: MediaQuery.of(context).size.width * 0.3,
                   cornerRadius: 20.0,
@@ -798,7 +806,9 @@ class _SettingTravelState extends State<SettingTravel> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          Center(
+          widget.isPast
+          ? const SizedBox.shrink()
+          : Center(
             child: Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               child: DropDownMultiSelect(
@@ -814,7 +824,9 @@ class _SettingTravelState extends State<SettingTravel> {
               ),
             ),
           ),
-          ElevatedButton(
+          widget.isPast
+          ? const SizedBox.shrink()
+          : ElevatedButton(
               onPressed: () {
                 FirebaseFirestore.instance
                     .collection('travel')

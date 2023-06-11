@@ -13,7 +13,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // ignore: must_be_immutable
 class ItemCheckList extends StatefulWidget {
   Travel trav;
-  ItemCheckList({Key? key, required this.trav}) : super(key: key);
+  final bool isPast;
+  ItemCheckList({Key? key, required this.trav, required this.isPast}) : super(key: key);
 
   @override
   State<ItemCheckList> createState() => _CheckListState();
@@ -208,7 +209,8 @@ class _CheckListState extends State<ItemCheckList> {
                     ],
                   ),
       ]),
-      floatingActionButton: current == currentUser?.uid
+      floatingActionButton: 
+      current == currentUser?.uid && !widget.isPast
           ? FloatingActionButton(
               onPressed: () {
                 showDialog(
@@ -280,7 +282,7 @@ class _CheckListState extends State<ItemCheckList> {
               foregroundColor: Colors.black,
               child: const Icon(Icons.add),
             )
-          : current == 'group'
+          : current == 'group' && !widget.isPast
               ? FloatingActionButton(
                   onPressed: () {
                     showDialog(

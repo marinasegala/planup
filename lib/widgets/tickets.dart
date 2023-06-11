@@ -13,7 +13,8 @@ import '../model/ticket.dart';
 
 class Tickets extends StatefulWidget {
   final Travel trav;
-  const Tickets({Key? key, required this.trav}) : super(key: key);
+  final bool isPast;
+  const Tickets({Key? key, required this.trav, required this.isPast}) : super(key: key);
 
   @override
   State<Tickets> createState() => _TicketState();
@@ -169,7 +170,10 @@ class _TicketState extends State<Tickets> {
                 }
               }
             }),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: 
+        widget.isPast
+        ? SizedBox.shrink()
+        : FloatingActionButton(
           onPressed: () {
             showDialog(
                 context: context,

@@ -69,6 +69,16 @@
             }
         }
     },
+    "dateFrom": "Date of the travel:\n{date}",
+    "@dateFrom": {
+        "descrption": "Show the travel's date",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "2023-06-01"
+            }
+        }
+    },
 
     "infowithoutdesc": "Price: {price}",
     "@infowithoutdesc": {
@@ -181,7 +191,7 @@
             }
         }
     },
-
+    "visualize": "Do you want to see information related to this travel?",
     "nameMarker": "Place name",
     "nameRequired": "The name is mandatory",
     "descriptionMarker": "Place description",

@@ -6,7 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TravInfo extends StatelessWidget {
   final Travel trav;
-  const TravInfo({Key? key, required this.trav}) : super(key: key);
+  final bool isPast;
+  const TravInfo({Key? key, required this.trav, required this.isPast}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class TravInfo extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SettingTravel(travel: trav)),
+                        builder: (context) => SettingTravel(travel: trav, isPast: isPast)),
                   );
                 },
                 icon: const Icon(Icons.settings)),
@@ -41,6 +42,7 @@ class TravInfo extends StatelessWidget {
               icon: Icons.airplane_ticket,
               index: 1,
               trav: trav,
+              isPast: isPast,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
@@ -48,6 +50,7 @@ class TravInfo extends StatelessWidget {
               icon: Icons.map,
               index: 2,
               trav: trav,
+              isPast: isPast,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
@@ -55,6 +58,7 @@ class TravInfo extends StatelessWidget {
               icon: Icons.euro_symbol,
               index: 3,
               trav: trav,
+              isPast: isPast,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
@@ -62,6 +66,7 @@ class TravInfo extends StatelessWidget {
               icon: Icons.checklist,
               index: 4,
               trav: trav,
+              isPast: isPast,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ItemWidget(
@@ -69,6 +74,7 @@ class TravInfo extends StatelessWidget {
               icon: Icons.note,
               index: 5,
               trav: trav,
+              isPast: isPast,
             ),
           ]),
         ),

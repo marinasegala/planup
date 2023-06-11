@@ -12,7 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Notes extends StatefulWidget {
   final Travel trav;
-  const Notes({Key? key, required this.trav}) : super(key: key);
+  final bool isPast;
+  const Notes({Key? key, required this.trav, required this.isPast}) : super(key: key);
 
   @override
   State<Notes> createState() => _NotesState();
@@ -88,7 +89,10 @@ class _NotesState extends State<Notes> {
                 }
               }
             }),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton:
+        widget.isPast
+        ? const SizedBox.shrink()
+        : FloatingActionButton(
           onPressed: () async {
             Navigator.push(
               context,

@@ -13,6 +13,7 @@ class ItemWidget extends StatefulWidget {
   IconData icon;
   int index;
   Travel trav;
+  bool isPast;
 
   ItemWidget({
     Key? key,
@@ -20,6 +21,7 @@ class ItemWidget extends StatefulWidget {
     required this.icon,
     required this.index,
     required this.trav,
+    required this.isPast,
   }) : super(key: key);
 
   @override
@@ -36,7 +38,7 @@ class _ItemWidgetState extends State<ItemWidget> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (builder) => Tickets(trav: widget.trav)));
+                      builder: (builder) => Tickets(trav: widget.trav, isPast: widget.isPast)));
               break;
             case 2:
               Navigator.push(
@@ -48,19 +50,19 @@ class _ItemWidgetState extends State<ItemWidget> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (builder) => Shopping(trav: widget.trav)));
+                      builder: (builder) => Shopping(trav: widget.trav, isPast: widget.isPast)));
               break;
             case 4:
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (builder) => ItemCheckList(trav: widget.trav)));
+                      builder: (builder) => ItemCheckList(trav: widget.trav, isPast: widget.isPast)));
               break;
             case 5:
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (builder) => Notes(trav: widget.trav)));
+                      builder: (builder) => Notes(trav: widget.trav, isPast: widget.isPast)));
               break;
 
             default:

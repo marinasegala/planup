@@ -6,6 +6,8 @@ import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../travel_info.dart';
+
 // ignore: must_be_immutable
 class TravelTimeline extends StatefulWidget {
   TravelTimeline({super.key, required this.pastTravels});
@@ -80,6 +82,30 @@ class TimelineCard extends StatelessWidget {
                 child: const Icon(Icons.photo),
               )
             : Image.network(travel.photo!),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                scrollable: true,
+                content: Text(AppLocalizations.of(context)!.visualize),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'No'),
+                    child: Text(AppLocalizations.of(context)!.no),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) => TravInfo(trav: travel, isPast: true)));
+                    },
+                    child: Text(AppLocalizations.of(context)!.yes),
+                  ),
+                ],
+              );
+            });
+        },
       ),
     );
   }

@@ -39,7 +39,7 @@ class TravCard extends StatelessWidget {
           ),
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (builder) => TravInfo(trav: trav)));
+                MaterialPageRoute(builder: (builder) => TravInfo(trav: trav, isPast: false)));
           }),
     );
   }

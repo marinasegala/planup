@@ -43,25 +43,33 @@ class _ProfilePageState extends State<ProfilePage> {
   late String? profilePhoto;
   late List<String> usersId = [];
 
-  bool getUserId(Travel element, String currentDate){
+  bool getId(Travel element, String currentDate){
     FirebaseFirestore.instance.collection('travel')
     .doc(element.referenceId)
     .get()
-    .then((querySnapshot){
-      
+    .then((querySnapshot){ //14 alla fine o 0-10
       for(var x in querySnapshot.get('list part')){
+        
+        
         if(x==currentUser?.uid &&
           element.date != "Giornata" &&
           element.date != "Weekend" &&
           element.date != "Settimana" &&
-          element.date != "Altro" &&
-          element.date!.compareTo(currentDate) < 0)
+          element.date != "Altro")
         {
-          print(element.name);
-          setState(() {
-            pastTrav.add(element);
-          });
-          return true;
+          var controlDate = 
+          element.date!.length>14
+          ? element.date!.substring(15,25)
+          : element.date!;
+          print('${controlDate} - ${element.name}');
+          print(currentDate);
+          if (controlDate.compareTo(currentDate) < 0){
+            print(element.name);
+            setState(() {
+              pastTrav.add(element);
+            });
+            return true;
+            }
         }
       }
     });
@@ -90,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
       pastTravels = event.docs
           .map((snapshot) => Travel.fromSnapshot(snapshot))
           .where((element) =>
-            getUserId(element, currentDate)
+            getId(element, currentDate)
           )
           .toList();
     });

@@ -10,7 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Shopping extends StatefulWidget {
   final Travel trav;
-  const Shopping({Key? key, required this.trav}) : super(key: key);
+  final bool isPast;
+  const Shopping({Key? key, required this.trav, required this.isPast}) : super(key: key);
 
   @override
   State<Shopping> createState() => _ShoppingState();
@@ -54,7 +55,10 @@ class _ShoppingState extends State<Shopping> {
                 }
               }
             }),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: 
+        widget.isPast
+        ? SizedBox.shrink()
+        : FloatingActionButton(
           onPressed: () {
             Navigator.push(
                 context,

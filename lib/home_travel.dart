@@ -20,8 +20,63 @@ class _HomeTravelState extends State<HomeTravel> {
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 
+  final TravelRepository travelRepository = TravelRepository();
+  final currentUser = FirebaseAuth.instance.currentUser;
+  List<Travel> pastTravels = [];
+  List<String> pastTrav = [];
+
+  bool getId(Travel element, String currentDate){
+    FirebaseFirestore.instance.collection('travel')
+    .doc(element.referenceId)
+    .get()
+    .then((querySnapshot){
+      
+      for(var x in querySnapshot.get('list part')){
+        if(x==currentUser?.uid &&
+          element.date != "Giornata" &&
+          element.date != "Weekend" &&
+          element.date != "Settimana" &&
+          element.date != "Altro" &&
+          element.date!.compareTo(currentDate) < 0)
+        {
+          print(element.name);
+          setState(() {
+            pastTrav.add(element.referenceId as String);
+          });
+          return true;
+        }
+      }
+    });
+    return false;
+  }
+
+  // get all the past travels of currentuser
+  void getPastTravels() {
+    var currentMonth = DateTime.now().month.toString().length == 1
+        ? "0${DateTime.now().month}"
+        : DateTime.now().month;
+    var currentDay = DateTime.now().day.toString().length == 1
+        ? "0${DateTime.now().day}"
+        : DateTime.now().day;
+    var currentDate = '${DateTime.now().year}-$currentMonth-$currentDay';
+    travelRepository.getStream().listen((event) {
+      pastTravels = event.docs
+          .map((snapshot) => Travel.fromSnapshot(snapshot))
+          .where((element) =>
+            getId(element, currentDate)
+          )
+          .toList();
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    getPastTravels();
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.myTravels),
@@ -78,9 +133,10 @@ class _HomeTravelState extends State<HomeTravel> {
     final trav = Travel.fromSnapshot(snapshot);
     final currentUser = FirebaseAuth.instance.currentUser;
     final travels = querysnapshot.data!.docs;
-    if (currentUser != null) {
+    if (currentUser != null && !pastTrav.contains(trav.referenceId)) {
       if (trav.userid == currentUser.uid) {
         return TravCard(trav: trav, boldStyle: boldStyle);
+        // return TravCard(trav: trav, boldStyle: boldStyle);
       } else {
         for (var i = 0; i < travels.length; i++) {
           for (var x = 0; x < travels[i]['list part'].length; x++) {
